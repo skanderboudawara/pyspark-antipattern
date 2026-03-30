@@ -1,0 +1,32 @@
+[package]
+name = "pyspark-antipattern"
+version = "0.1.0"
+edition = "2021"
+description = "PySpark antipattern linter for CI/CD pipelines"
+
+[lib]
+name = "pyspark_antipattern"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pyspark-antipattern"
+path = "src/main.rs"
+
+[dependencies]
+clap        = { version = "4", features = ["derive"] }
+rustpython-parser = "0.3"
+toml        = "0.8"
+serde       = { version = "1", features = ["derive"] }
+walkdir     = "2"
+termcolor   = "1"
+rayon       = "1"
+
+[dev-dependencies]
+pretty_assertions = "1"
+
+[profile.release]
+opt-level = 3
+lto       = true
+strip     = true
+codegen-units = 1
+panic     = "abort"
