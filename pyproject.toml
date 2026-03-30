@@ -1,0 +1,27 @@
+[build-system]
+requires = ["maturin>=1,<2"]
+build-backend = "maturin"
+
+[project]
+name = "pyspark-antipattern"
+version = "0.1.0"
+description = "PySpark antipattern linter for CI/CD pipelines"
+requires-python = ">=3.8"
+readme = "README.md"
+
+[tool.maturin]
+bindings = "bin"
+
+# ---------------------------------------------------------------------------
+# Example linter configuration — copy this section into YOUR project's
+# pyproject.toml and adjust as needed.
+# ---------------------------------------------------------------------------
+# [tool.pyspark-antipattern]
+# failing_rules = []          # Rules that cause exit code 1 (default: all)
+# warning_rules = []          # Rules that only warn (exit code 0)
+# show_best_practice = false
+# show_information = false
+# distinct_threshold = 5      # S004: flag when distinct() count exceeds this
+# explode_threshold = 3       # S008: flag when explode() count exceeds this
+# loop_threshold = 10         # L001/L002/L003: flag for-loops where range(N) > threshold;
+#                             #   while-loops always assume 99 iterations
