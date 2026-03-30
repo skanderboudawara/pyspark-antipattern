@@ -100,6 +100,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "F011" => "Avoid backslash line continuation; use parentheses",
         "F012" => "Always wrap literal values with lit()",
         "F013" => "Avoid reserved column names with __ prefix and __ suffix",
+        "F014" => "Avoid explode_outer(); handle nulls with higher-order functions",
         "L001" => "Avoid looping without .localCheckpoint() or .checkpoint()",
         "L002" => "Avoid while loops with DataFrames",
         "L003" => "Avoid calling withColumn() inside a loop",

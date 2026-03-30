@@ -70,3 +70,9 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f013_no_single_underscore()       { assert_no_violation(&check(f013::check, "df.withColumn('_internal', lit(1))"), "F013"); }
 #[test] fn f013_no_only_prefix()             { assert_no_violation(&check(f013::check, "df.withColumn('__index', lit(1))"), "F013"); }
 #[test] fn f013_no_only_suffix()             { assert_no_violation(&check(f013::check, "df.withColumn('index__', lit(1))"), "F013"); }
+
+// ── F014: explode_outer() instead of null handling ───────────────────────────
+#[test] fn f014_fires_free_fn()    { assert_violation(&check(f014::check, "df.withColumn('x', explode_outer(col('items')))"), "F014", 1); }
+#[test] fn f014_fires_qualified()  { assert_violation(&check(f014::check, "df.withColumn('x', F.explode_outer(col('items')))"), "F014", 1); }
+#[test] fn f014_no_explode()       { assert_no_violation(&check(f014::check, "df.withColumn('x', explode(col('items')))"), "F014"); }
+#[test] fn f014_no_transform()     { assert_no_violation(&check(f014::check, "df.withColumn('x', transform(col('items'), lambda i: i))"), "F014"); }
