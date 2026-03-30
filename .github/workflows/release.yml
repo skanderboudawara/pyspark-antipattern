@@ -97,6 +97,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # full history so git describe can find the previous tag
 
       - name: Download all wheel artifacts
         uses: actions/download-artifact@v8
