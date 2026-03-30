@@ -43,6 +43,22 @@ pyspark-antipattern check src/ --config path/to/pyproject.toml
 
 ---
 
+## CLI output
+
+Default output — violations only:
+
+![Default behavior](img/default_behavior.png)
+
+With `show_information = true` — inline explanation for each rule:
+
+![Show information](img/show_info_true.png)
+
+With `show_best_practice = true` — best-practice guidance for each rule:
+
+![Show best practice](img/show_best_practice_true.png)
+
+---
+
 ## Rules
 
 Rules are organized by category in the [`rules/`](rules/) folder. Each rule has its own markdown file with a full explanation and best-practice guidance.
@@ -53,6 +69,7 @@ Rules are organized by category in the [`rules/`](rules/) folder. Each rule has 
 | **F** — Format | [`rules/format/`](rules/format/) | Code style and DataFrame API misuse |
 | **L** — Looping | [`rules/looping/`](rules/looping/) | DataFrame operations inside loops |
 | **P** — Pandas | [`rules/pandas/`](rules/pandas/) | Pandas interop pitfalls |
+| **PERF** — Performance | [`rules/performance/`](rules/performance/) | Runtime performance antipatterns |
 | **S** — Shuffle | [`rules/shuffle/`](rules/shuffle/) | Joins, partitioning, and data movement |
 | **U** — UDF | [`rules/udf/`](rules/udf/) | User-defined functions and their alternatives |
 
@@ -73,9 +90,9 @@ warning_rules = ["F008", "F011"]
 
 # Completely silence these rules — no output, no exit code impact
 # Accepts exact rule IDs or single-letter group prefixes
-ignore_rules = ["S004"]        # silence one rule
-# ignore_rules = ["F"]         # silence all F rules
-# ignore_rules = ["S", "L"]    # silence all S and L rules
+ignore_rules = ["S004"]                # silence one rule
+# ignore_rules = ["F"]                 # silence all F rules
+# ignore_rules = ["S", "L", "D001"]    # silence all S and L rules
 
 # Show inline explanation for each rule that fired (default: false)
 show_information = false
