@@ -14,7 +14,7 @@ path = "src/main.rs"
 
 [dependencies]
 clap        = { version = "4", features = ["derive"] }
-rustpython-parser = "0.3"
+rustpython-parser = "0.4"
 toml        = "0.8"
 serde       = { version = "1", features = ["derive"] }
 walkdir     = "2"
