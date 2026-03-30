@@ -2,6 +2,7 @@ mod common;
 use common::{assert_no_violation, assert_violation, check};
 use pyspark_antipattern::rules::f_rules::*;
 
+
 // ── F001: withColumn + withColumnRenamed mixed ────────────────────────────────
 #[test] fn f001_fires()           { assert_violation(&check(f001::check, "df.withColumn('a', col('x')).withColumnRenamed('a', 'b')"), "F001", 1); }
 #[test] fn f001_no_false_positive(){ assert_no_violation(&check(f001::check, "df.withColumn('a', col('x')).withColumn('b', col('y'))"), "F001"); }
@@ -60,3 +61,12 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f012_otherwise_lit()      { assert_no_violation(&check(f012::check, "when(col('a') > 1, lit(1)).otherwise(lit(0))"), "F012"); }
 #[test] fn f012_select_str_no_flag() { assert_no_violation(&check(f012::check, "df.select('id', 'name')"), "F012"); }
 #[test] fn f012_withcolumn_col()     { assert_no_violation(&check(f012::check, "df.withColumn('n', col('x') + 1)"), "F012"); }
+
+// ── F013: reserved column names (__dunder__) ─────────────────────────────────
+#[test] fn f013_withcolumn_reserved()        { assert_violation(&check(f013::check, "df.withColumn('__index__', lit(1))"), "F013", 1); }
+#[test] fn f013_withcolumnrenamed_reserved() { assert_violation(&check(f013::check, "df.withColumnRenamed('id', '__natural_order__')"), "F013", 1); }
+#[test] fn f013_alias_reserved()             { assert_violation(&check(f013::check, "col('x').alias('__metadata__')"), "F013", 1); }
+#[test] fn f013_no_normal_name()             { assert_no_violation(&check(f013::check, "df.withColumn('my_col', lit(1))"), "F013"); }
+#[test] fn f013_no_single_underscore()       { assert_no_violation(&check(f013::check, "df.withColumn('_internal', lit(1))"), "F013"); }
+#[test] fn f013_no_only_prefix()             { assert_no_violation(&check(f013::check, "df.withColumn('__index', lit(1))"), "F013"); }
+#[test] fn f013_no_only_suffix()             { assert_no_violation(&check(f013::check, "df.withColumn('index__', lit(1))"), "F013"); }
