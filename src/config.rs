@@ -51,9 +51,18 @@ impl Config {
             .unwrap_or_default())
     }
 
+    /// Returns true if `id` matches a rule entry exactly ("F012") or by group prefix ("F").
+    fn matches(entry: &str, id: &str) -> bool {
+        entry == id || (entry.len() == 1 && id.starts_with(entry))
+    }
+
+    pub fn is_ignored(&self, id: &str) -> bool {
+        self.ignore_rules.iter().any(|r| Self::matches(r, id))
+    }
+
     pub fn severity_of(&self, id: &str) -> crate::violation::Severity {
         use crate::violation::Severity;
-        if self.warning_rules.iter().any(|r| r == id) {
+        if self.warning_rules.iter().any(|r| Self::matches(r, id)) {
             return Severity::Warning;
         }
         Severity::Error

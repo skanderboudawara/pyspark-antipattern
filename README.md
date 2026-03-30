@@ -72,7 +72,10 @@ Add a `[tool.pyspark-antipattern]` section to your project's `pyproject.toml`:
 warning_rules = ["F008", "F011"]
 
 # Completely silence these rules — no output, no exit code impact
-ignore_rules = ["S004"]
+# Accepts exact rule IDs or single-letter group prefixes
+ignore_rules = ["S004"]        # silence one rule
+# ignore_rules = ["F"]         # silence all F rules
+# ignore_rules = ["S", "L"]    # silence all S and L rules
 
 # Show inline explanation for each rule that fired (default: false)
 show_information = false
