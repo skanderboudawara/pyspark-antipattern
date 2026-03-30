@@ -15,13 +15,15 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
 
       - name: Cache Rust dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
@@ -32,14 +34,14 @@ jobs:
       - name: Run tests
         run: cargo test
 
-  # ── 2. Build wheels for each platform ─────────────────────────────────────
+  # ── 2. Build wheels for each platform ──────────────────────────────────────
   build:
     name: Build wheel (${{ matrix.target }})
     needs: test
     strategy:
       matrix:
         include:
-          # Linux x86_64  — manylinux for broad pip compatibility
+          # Linux x86_64 — manylinux for broad pip compatibility
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             manylinux: auto
@@ -66,9 +68,9 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -80,7 +82,7 @@ jobs:
           manylinux: ${{ matrix.manylinux }}
 
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheel-${{ matrix.target }}
           path: dist/*.whl
@@ -93,10 +95,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download all wheel artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: wheel-*
           merge-multiple: true
@@ -119,17 +121,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all wheel artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: wheel-*
           merge-multiple: true
           path: dist/
 
-      - name: Install twine
-        run: pip install twine
-
-      - name: Upload to PyPI
+      - name: Publish to PyPI
+        uses: PyO3/maturin-action@v1
+        with:
+          command: upload
+          args: --non-interactive --skip-existing dist/*.whl
         env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*.whl
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
