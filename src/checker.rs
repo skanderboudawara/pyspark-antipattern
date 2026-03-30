@@ -29,6 +29,7 @@ pub fn check_file(path: &str, config: &Config) -> Result<Vec<Violation>, String>
     let mut violations: Vec<Violation> = ALL_RULES
         .iter()
         .flat_map(|rule_fn| rule_fn(&stmts, &source, path, config, &index))
+        .filter(|v| !config.ignore_rules.iter().any(|r| r == &v.rule_id.0))
         .collect();
 
     violations = noqa::filter_suppressed(violations, &suppressions);

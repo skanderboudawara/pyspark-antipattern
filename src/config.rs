@@ -16,6 +16,7 @@ pub struct ToolSection {
 pub struct Config {
     pub failing_rules:      Vec<String>,
     pub warning_rules:      Vec<String>,
+    pub ignore_rules:       Vec<String>,
     pub show_best_practice: bool,
     pub show_information:   bool,
     pub distinct_threshold: usize,
@@ -28,6 +29,7 @@ impl Default for Config {
         Self {
             failing_rules:      vec![],
             warning_rules:      vec![],
+            ignore_rules:       vec![],
             show_best_practice: false,
             show_information:   false,
             distinct_threshold: 5,
