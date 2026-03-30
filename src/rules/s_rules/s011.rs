@@ -11,6 +11,24 @@ use crate::{
 
 const ID: &str = "S011";
 
+/// Returns true when the `on` argument is a complex expression (a function or
+/// method call that is not simply `col(...)`) rather than a plain column key.
+/// Examples that return true:  df[a].startswith(df[b]),  array_contains(col("a"), col("b"))
+/// Examples that return false: "id", col("id"), ["id", "type"]
+fn is_complex_condition(expr: &Expr) -> bool {
+    match expr {
+        Expr::Call(c) => {
+            let name = match c.func.as_ref() {
+                Expr::Name(n) => n.id.as_str(),
+                Expr::Attribute(a) => a.attr.as_str(),
+                _ => return true,
+            };
+            name != "col"
+        }
+        _ => false,
+    }
+}
+
 struct Check<'a> {
     source: &'a str,
     file: &'a str,
@@ -43,7 +61,12 @@ impl<'a> Visitor for Check<'a> {
                     let no_on_kw = !call.keywords.iter().any(|k| {
                         k.arg.as_ref().map_or(false, |a| a.as_str() == "on")
                     });
-                    if no_on_arg && no_on_kw {
+                    // Flag if the `on` argument is a complex expression rather than
+                    // a plain column key — e.g. df[a].startswith(df[b]) or
+                    // array_contains(col("a"), col("b")).
+                    let complex_condition = call.args.get(1)
+                        .map_or(false, is_complex_condition);
+                    if (no_on_arg && no_on_kw) || complex_condition {
                         self.violations.push(method_violation(
                             attr, "join", self.source, self.file, self.index,
                             self.severity, ID,

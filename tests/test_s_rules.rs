@@ -99,6 +99,22 @@ fn s011_no_fire_with_key()   { assert_no_violation(&check(s011::check, "df.join(
 fn s011_no_fire_str_join()   { assert_no_violation(&check(s011::check, "' '.join(x for x in items)"), "S011"); }
 #[test]
 fn s011_no_fire_comma_join() { assert_no_violation(&check(s011::check, "','.join(cols)"), "S011"); }
+#[test]
+fn s011_fires_startswith_condition() {
+    assert_violation(&check(s011::check, "df.join(df2, df['a'].startswith(df2['b']), 'left')"), "S011", 1);
+}
+#[test]
+fn s011_fires_array_contains_condition() {
+    assert_violation(&check(s011::check, "df.join(df2, array_contains(col('a'), col('b')), 'left')"), "S011", 1);
+}
+#[test]
+fn s011_no_fire_col_condition() {
+    assert_no_violation(&check(s011::check, "df.join(df2, col('id'), 'left')"), "S011");
+}
+#[test]
+fn s011_no_fire_list_condition() {
+    assert_no_violation(&check(s011::check, "df.join(df2, ['id', 'type'], 'left')"), "S011");
+}
 
 // ── S012: filter() on inner join ─────────────────────────────────────────────
 #[test]
