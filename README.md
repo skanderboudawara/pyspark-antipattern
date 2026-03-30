@@ -143,3 +143,9 @@ The strictest setup is the default: every rule is a hard error. Relax only what 
 ## License
 
 MIT — see [LICENSE](LICENSE)
+
+---
+
+## Author
+
+**Skander Boudawara** — [skander.education@proton.me](mailto:skander.education@proton.me)

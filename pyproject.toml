@@ -8,6 +8,8 @@ version = "0.1.0"
 description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
 readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Skander Boudawara", email = "skander.education@proton.me" }]
 
 [tool.maturin]
 bindings = "bin"
