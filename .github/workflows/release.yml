@@ -108,11 +108,25 @@ jobs:
       - name: List wheels
         run: ls -lh dist/
 
+      - name: Build release notes
+        id: notes
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..HEAD"
+          else
+            RANGE="HEAD"
+          fi
+          BULLETS=$(git log $RANGE --pretty=format:"- %s" --no-merges)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BULLETS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.whl
-          generate_release_notes: true
+          body: ${{ steps.notes.outputs.body }}
           fail_on_unmatched_files: true
 
   # ── 4. Publish all wheels to PyPI ──────────────────────────────────────────
