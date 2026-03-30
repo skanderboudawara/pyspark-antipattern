@@ -3,6 +3,7 @@ pub mod d_rules;
 pub mod f_rules;
 pub mod l_rules;
 pub mod p_rules;
+pub mod perf_rules;
 pub mod s_rules;
 pub mod u_rules;
 
@@ -57,4 +58,5 @@ pub static ALL_RULES: &[RuleFn] = &[
     u_rules::u001::check,
     u_rules::u002::check,
     u_rules::u003::check,
+    perf_rules::perf001::check,
 ];

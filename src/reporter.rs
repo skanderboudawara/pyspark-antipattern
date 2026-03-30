@@ -120,6 +120,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "S011" => "Join without join conditions causes a nested-loop scan",
         "S012" => "Avoid inner join followed by filter; prefer leftSemi join",
         "S013" => "Avoid reduceByKey(); use DataFrame groupBy().agg() instead",
+        "PERF001" => "Avoid .rdd.collect(); use .toPandas() for driver-side consumption",
         "U001" => "Avoid UDFs that return StringType; use built-in string functions",
         "U002" => "Avoid UDFs that return ArrayType; use built-in array functions",
         "U003" => "Avoid UDFs; use Spark built-in functions instead",
