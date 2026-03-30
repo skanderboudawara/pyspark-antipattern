@@ -71,6 +71,9 @@ Add a `[tool.pyspark-antipattern]` section to your project's `pyproject.toml`:
 # Downgrade these rules from error to warning (exit code stays 0)
 warning_rules = ["F008", "F011"]
 
+# Completely silence these rules — no output, no exit code impact
+ignore_rules = ["S004"]
+
 # Show inline explanation for each rule that fired (default: false)
 show_information = false
 

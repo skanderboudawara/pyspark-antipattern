@@ -47,6 +47,16 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f011_fires()           { assert_violation(&check(f011::check, "x = df.select('a') \\\n    .filter(col('a') > 1)"), "F011", 1); }
 #[test] fn f011_no_false_positive(){ assert_no_violation(&check(f011::check, "x = (df.select('a')\n    .filter(col('a') > 1))"), "F011"); }
 
-// ── F012: bare literal in withColumn ─────────────────────────────────────────
-#[test] fn f012_fires()           { assert_violation(&check(f012::check, "df.withColumn('n', 42)"), "F012", 1); }
-#[test] fn f012_no_false_positive(){ assert_no_violation(&check(f012::check, "df.withColumn('n', lit(42))"), "F012"); }
+// ── F012: bare literal must be wrapped with lit() ────────────────────────────
+// fires
+#[test] fn f012_withcolumn_int()     { assert_violation(&check(f012::check, "df.withColumn('n', 42)"), "F012", 1); }
+#[test] fn f012_withcolumn_str()     { assert_violation(&check(f012::check, "df.withColumn('n', 'hello')"), "F012", 1); }
+#[test] fn f012_withcolumn_bool()    { assert_violation(&check(f012::check, "df.withColumn('n', True)"), "F012", 1); }
+#[test] fn f012_when_value()         { assert_violation(&check(f012::check, "when(col('a') > 1, 99)"), "F012", 1); }
+#[test] fn f012_otherwise_value()    { assert_violation(&check(f012::check, "when(col('a') > 1, lit(1)).otherwise(0)"), "F012", 1); }
+// no false positives
+#[test] fn f012_withcolumn_lit()     { assert_no_violation(&check(f012::check, "df.withColumn('n', lit(42))"), "F012"); }
+#[test] fn f012_when_lit()           { assert_no_violation(&check(f012::check, "when(col('a') > 1, lit(99))"), "F012"); }
+#[test] fn f012_otherwise_lit()      { assert_no_violation(&check(f012::check, "when(col('a') > 1, lit(1)).otherwise(lit(0))"), "F012"); }
+#[test] fn f012_select_str_no_flag() { assert_no_violation(&check(f012::check, "df.select('id', 'name')"), "F012"); }
+#[test] fn f012_withcolumn_col()     { assert_no_violation(&check(f012::check, "df.withColumn('n', col('x') + 1)"), "F012"); }
