@@ -1,4 +1,5 @@
 pub mod utils;
+pub mod arr_rules;
 pub mod d_rules;
 pub mod f_rules;
 pub mod l_rules;
@@ -14,6 +15,7 @@ use crate::{config::Config, line_index::LineIndex, violation::Violation};
 pub type RuleFn = fn(&[Stmt], &str, &str, &Config, &LineIndex) -> Vec<Violation>;
 
 pub static ALL_RULES: &[RuleFn] = &[
+    arr_rules::arr001::check,
     d_rules::d001::check,
     d_rules::d002::check,
     d_rules::d003::check,

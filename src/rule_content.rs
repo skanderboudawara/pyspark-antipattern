@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 
 static RULE_MARKDOWN: &[(&str, &str)] = &[
+    ("ARR001", include_str!("../rules/arr/ARR001.md")),
     ("D001", include_str!("../rules/driver/D001.md")),
     ("D002", include_str!("../rules/driver/D002.md")),
     ("D003", include_str!("../rules/driver/D003.md")),

@@ -65,6 +65,7 @@ Rules are organized by category in the [`rules/`](rules/) folder. Each rule has 
 
 | Category | Folder | Focus |
 |---|---|---|
+| **ARR** — Array | [`rules/arr/`](rules/arr/) | Array function antipatterns |
 | **D** — Driver | [`rules/driver/`](rules/driver/) | Actions that pull data to the driver node |
 | **F** — Format | [`rules/format/`](rules/format/) | Code style and DataFrame API misuse |
 | **L** — Looping | [`rules/looping/`](rules/looping/) | DataFrame operations inside loops |

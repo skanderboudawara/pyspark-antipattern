@@ -79,6 +79,7 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
 
 pub fn rule_title(id: &str) -> &'static str {
     match id {
+        "ARR001" => "Avoid array_distinct(collect_list()); use collect_set() instead",
         "D001" => "Avoid using collect()",
         "D002" => "Avoid accessing .rdd",
         "D003" => "Avoid .show() in production",
