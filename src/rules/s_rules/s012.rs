@@ -51,7 +51,12 @@ impl<'a> Visitor for Check<'a> {
                 if matches!(outer_attr.attr.as_str(), "filter" | "where") {
                     if let Expr::Call(inner_call) = outer_attr.value.as_ref() {
                         if let Expr::Attribute(inner_attr) = inner_call.func.as_ref() {
+                            let inner_receiver_is_str = matches!(
+                                inner_attr.value.as_ref(),
+                                Expr::Constant(c) if matches!(c.value, Constant::Str(_))
+                            );
                             if inner_attr.attr.as_str() == "join"
+                                && !inner_receiver_is_str
                                 && is_inner_join(&inner_call.args, &inner_call.keywords)
                             {
                                 self.violations.push(method_violation(

@@ -24,6 +24,11 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr {
             if let Expr::Attribute(attr) = call.func.as_ref() {
                 if attr.attr.as_str() == "join" {
+                    // Skip str.join(...) — receiver is a string literal
+                    if matches!(attr.value.as_ref(), Expr::Constant(c) if matches!(c.value, rustpython_parser::ast::Constant::Str(_))) {
+                        walk_expr(self, expr);
+                        return;
+                    }
                     // Check that neither the left DataFrame nor the first
                     // argument (right DataFrame) has a .hint() call.
                     let left_has_hint = chain_has_method(attr.value.as_ref(), "hint");

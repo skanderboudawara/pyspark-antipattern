@@ -58,6 +58,19 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr {
             if let Expr::Attribute(attr) = call.func.as_ref() {
                 if matches!(attr.attr.as_str(), "union" | "unionByName") {
+                    // Skip set/frozenset literals — e.g. {1,2}.union({3,4})
+                    let receiver_is_set = match attr.value.as_ref() {
+                        Expr::Set(_) => true,
+                        Expr::Call(c) => matches!(
+                            c.func.as_ref(),
+                            Expr::Name(n) if matches!(n.id.as_str(), "set" | "frozenset")
+                        ),
+                        _ => false,
+                    };
+                    if receiver_is_set {
+                        walk_expr(self, expr);
+                        return;
+                    }
                     let offset: u32 = call.range.start().into();
                     if !self.ok_unions.contains(&offset) {
                         self.violations.push(method_violation(

@@ -16,16 +16,20 @@ use pyspark_antipattern::rules::d_rules::*;
 #[test] fn d003_no_false_positive(){ assert_no_violation(&check(d003::check, "df.write.parquet('out')"), "D003"); }
 
 // ── D004: count() ────────────────────────────────────────────────────────────
-#[test] fn d004_fires()           { assert_violation(&check(d004::check, "n = df.count()"), "D004", 1); }
-#[test] fn d004_no_false_positive(){ assert_no_violation(&check(d004::check, "df.show()"), "D004"); }
+#[test] fn d004_fires()                { assert_violation(&check(d004::check, "n = df.count()"), "D004", 1); }
+#[test] fn d004_no_false_positive()    { assert_no_violation(&check(d004::check, "df.show()"), "D004"); }
+#[test] fn d004_no_str_count()         { assert_no_violation(&check(d004::check, r#"n = "hello".count("l")"#), "D004"); }
+#[test] fn d004_no_list_count()        { assert_no_violation(&check(d004::check, "n = [1,2,2].count(2)"), "D004"); }
 
 // ── D005: .rdd.isEmpty() ─────────────────────────────────────────────────────
 #[test] fn d005_fires()           { assert_violation(&check(d005::check, "x = df.rdd.isEmpty()"), "D005", 1); }
 #[test] fn d005_no_false_positive(){ assert_no_violation(&check(d005::check, "x = df.isEmpty()"), "D005"); }
 
 // ── D006: count() == 0 ───────────────────────────────────────────────────────
-#[test] fn d006_fires()           { assert_violation(&check(d006::check, "if df.count() == 0: pass"), "D006", 1); }
-#[test] fn d006_no_false_positive(){ assert_no_violation(&check(d006::check, "if df.isEmpty(): pass"), "D006"); }
+#[test] fn d006_fires()             { assert_violation(&check(d006::check, "if df.count() == 0: pass"), "D006", 1); }
+#[test] fn d006_no_false_positive() { assert_no_violation(&check(d006::check, "if df.isEmpty(): pass"), "D006"); }
+#[test] fn d006_no_str_count_eq()   { assert_no_violation(&check(d006::check, r#"if "hello".count("x") == 0: pass"#), "D006"); }
+#[test] fn d006_no_list_count_eq()  { assert_no_violation(&check(d006::check, "if [1,2].count(3) == 0: pass"), "D006"); }
 
 // ── D007: filter().count() == 0 ──────────────────────────────────────────────
 #[test] fn d007_fires()           { assert_violation(&check(d007::check, "if df.filter(col('a') > 1).count() == 0: pass"), "D007", 1); }

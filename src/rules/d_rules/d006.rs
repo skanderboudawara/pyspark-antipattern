@@ -22,7 +22,13 @@ struct Check<'a> {
 fn is_count_call(expr: &Expr) -> bool {
     if let Expr::Call(call) = expr {
         if let Expr::Attribute(attr) = call.func.as_ref() {
-            return attr.attr.as_str() == "count";
+            if attr.attr.as_str() == "count" {
+                // Skip str/list/tuple/set literals — e.g. "hello".count("x") == 0
+                return !matches!(
+                    attr.value.as_ref(),
+                    Expr::Constant(_) | Expr::List(_) | Expr::Tuple(_) | Expr::Set(_) | Expr::Dict(_)
+                );
+            }
         }
     }
     false

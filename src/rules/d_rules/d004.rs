@@ -11,6 +11,13 @@ use crate::{
 
 const ID: &str = "D004";
 
+fn is_non_df_literal(expr: &Expr) -> bool {
+    matches!(
+        expr,
+        Expr::Constant(_) | Expr::List(_) | Expr::Tuple(_) | Expr::Set(_) | Expr::Dict(_)
+    )
+}
+
 struct Check<'a> {
     source: &'a str,
     file: &'a str,
@@ -24,6 +31,11 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr {
             if let Expr::Attribute(attr) = call.func.as_ref() {
                 if attr.attr.as_str() == "count" {
+                    // Skip str/list/tuple/set literals — e.g. "hello".count("l")
+                    if is_non_df_literal(attr.value.as_ref()) {
+                        walk_expr(self, expr);
+                        return;
+                    }
                     self.violations.push(method_violation(
                         attr, "count", self.source, self.file, self.index,
                         self.severity, ID,

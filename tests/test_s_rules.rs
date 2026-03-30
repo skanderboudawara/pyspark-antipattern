@@ -4,15 +4,23 @@ use pyspark_antipattern::{rules::s_rules::*};
 
 // ── S001: union() without coalesce() ─────────────────────────────────────────
 #[test]
-fn s001_fires()            { assert_violation(&check(s001::check, "df.union(df2)"), "S001", 1); }
+fn s001_fires()              { assert_violation(&check(s001::check, "df.union(df2)"), "S001", 1); }
 #[test]
-fn s001_no_fire_coalesce() { assert_no_violation(&check(s001::check, "df.union(df2).coalesce(4)"), "S001"); }
+fn s001_no_fire_coalesce()   { assert_no_violation(&check(s001::check, "df.union(df2).coalesce(4)"), "S001"); }
+#[test]
+fn s001_no_set_literal()     { assert_no_violation(&check(s001::check, "result = {1,2}.union({3,4})"), "S001"); }
+#[test]
+fn s001_no_set_call()        { assert_no_violation(&check(s001::check, "result = set(a).union(set(b))"), "S001"); }
 
 // ── S002: join() without hint ────────────────────────────────────────────────
 #[test]
-fn s002_fires()         { assert_violation(&check(s002::check, "df.join(df2, 'id')"), "S002", 1); }
+fn s002_fires()              { assert_violation(&check(s002::check, "df.join(df2, 'id')"), "S002", 1); }
 #[test]
-fn s002_no_fire_hint()  { assert_no_violation(&check(s002::check, "df.hint('broadcast').join(df2, 'id')"), "S002"); }
+fn s002_no_fire_hint()       { assert_no_violation(&check(s002::check, "df.hint('broadcast').join(df2, 'id')"), "S002"); }
+#[test]
+fn s002_no_str_join()        { assert_no_violation(&check(s002::check, "' '.join(cols)"), "S002"); }
+#[test]
+fn s002_no_comma_join()      { assert_no_violation(&check(s002::check, "','.join(str(x) for x in items)"), "S002"); }
 
 // ── S003: groupBy() followed by distinct() ───────────────────────────────────
 #[test]
@@ -84,12 +92,18 @@ fn s010_no_false_positive() { assert_no_violation(&check(s010::check, "df.join(d
 
 // ── S011: join() with no condition ───────────────────────────────────────────
 #[test]
-fn s011_fires()            { assert_violation(&check(s011::check, "df.join(df2)"), "S011", 1); }
+fn s011_fires()              { assert_violation(&check(s011::check, "df.join(df2)"), "S011", 1); }
 #[test]
-fn s011_no_fire_with_key() { assert_no_violation(&check(s011::check, "df.join(df2, 'id')"), "S011"); }
+fn s011_no_fire_with_key()   { assert_no_violation(&check(s011::check, "df.join(df2, 'id')"), "S011"); }
+#[test]
+fn s011_no_fire_str_join()   { assert_no_violation(&check(s011::check, "' '.join(x for x in items)"), "S011"); }
+#[test]
+fn s011_no_fire_comma_join() { assert_no_violation(&check(s011::check, "','.join(cols)"), "S011"); }
 
 // ── S012: filter() on inner join ─────────────────────────────────────────────
 #[test]
-fn s012_fires()            { assert_violation(&check(s012::check, "df.join(df2, 'id', 'inner').filter(col('age') > 18)"), "S012", 1); }
+fn s012_fires()              { assert_violation(&check(s012::check, "df.join(df2, 'id', 'inner').filter(col('age') > 18)"), "S012", 1); }
 #[test]
-fn s012_no_fire_left_join() { assert_no_violation(&check(s012::check, "df.join(df2, 'id', 'left').filter(col('age') > 18)"), "S012"); }
+fn s012_no_fire_left_join()  { assert_no_violation(&check(s012::check, "df.join(df2, 'id', 'left').filter(col('age') > 18)"), "S012"); }
+#[test]
+fn s012_no_str_join_filter() { assert_no_violation(&check(s012::check, "' '.join(items).filter(x)"), "S012"); }
