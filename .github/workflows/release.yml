@@ -80,6 +80,7 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }} --out dist
           manylinux: ${{ matrix.manylinux }}
+          maturin-version: latest
 
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v7
