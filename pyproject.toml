@@ -1,5 +1,5 @@
 [build-system]
-requires = ["maturin"]
+requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
@@ -7,10 +7,6 @@ name = "pyspark-antipattern"
 version = "0.1.1"
 description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
-license = "MIT"
-license-files = [
-    "LICENSE",
-]
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Skander Boudawara", email = "skander.education@proton.me" }]
 classifiers = [
@@ -21,7 +17,7 @@ classifiers = [
 
 [tool.maturin]
 bindings = "bin"
-sdist-include = ["LICENSE", "README.md"]
+
 
 # ---------------------------------------------------------------------------
 # Example linter configuration — copy this section into YOUR project's
