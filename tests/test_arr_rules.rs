@@ -2,6 +2,7 @@ mod common;
 use common::{assert_no_violation, assert_violation, check};
 use pyspark_antipattern::rules::arr_rules::*;
 
+
 // ── ARR001: array_distinct(collect_list()) → collect_set() ───────────────────
 
 // pattern 1: inline nesting
@@ -25,6 +26,26 @@ use pyspark_antipattern::rules::arr_rules::*;
 #[test] fn arr001_fires_split_over_window() {
     let src = "df = df.withColumn('items', collect_list(col('item')).over(w))\ndf = df.withColumn('items', array_distinct(col('items')))";
     assert_violation(&check(arr001::check, src), "ARR001", 2);
+}
+
+// ── ARR002: array_except(col, None/lit(None)) → array_compact() ──────────────
+
+#[test] fn arr002_fires_bare_none() {
+    assert_violation(&check(arr002::check, "df.withColumn('a', array_except(col('items'), None))"), "ARR002", 1);
+}
+#[test] fn arr002_fires_lit_none() {
+    assert_violation(&check(arr002::check, "df.withColumn('a', array_except(col('items'), lit(None)))"), "ARR002", 1);
+}
+#[test] fn arr002_fires_qualified() {
+    assert_violation(&check(arr002::check, "df.withColumn('a', F.array_except(col('items'), lit(None)))"), "ARR002", 1);
+}
+
+// no false positives
+#[test] fn arr002_no_valid_second_arg() {
+    assert_no_violation(&check(arr002::check, "df.withColumn('a', array_except(col('x'), col('y')))"), "ARR002");
+}
+#[test] fn arr002_no_array_compact() {
+    assert_no_violation(&check(arr002::check, "df.withColumn('a', array_compact(col('items')))"), "ARR002");
 }
 
 // no false positives

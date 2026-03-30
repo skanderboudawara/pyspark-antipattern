@@ -16,6 +16,7 @@ pub type RuleFn = fn(&[Stmt], &str, &str, &Config, &LineIndex) -> Vec<Violation>
 
 pub static ALL_RULES: &[RuleFn] = &[
     arr_rules::arr001::check,
+    arr_rules::arr002::check,
     d_rules::d001::check,
     d_rules::d002::check,
     d_rules::d003::check,
