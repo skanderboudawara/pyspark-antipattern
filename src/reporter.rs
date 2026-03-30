@@ -119,6 +119,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "S010" => "Avoid crossJoin(); produces a Cartesian product",
         "S011" => "Join without join conditions causes a nested-loop scan",
         "S012" => "Avoid inner join followed by filter; prefer leftSemi join",
+        "S013" => "Avoid reduceByKey(); use DataFrame groupBy().agg() instead",
         "U001" => "Avoid UDFs that return StringType; use built-in string functions",
         "U002" => "Avoid UDFs that return ArrayType; use built-in array functions",
         "U003" => "Avoid UDFs; use Spark built-in functions instead",

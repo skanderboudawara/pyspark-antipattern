@@ -107,3 +107,9 @@ fn s012_fires()              { assert_violation(&check(s012::check, "df.join(df2
 fn s012_no_fire_left_join()  { assert_no_violation(&check(s012::check, "df.join(df2, 'id', 'left').filter(col('age') > 18)"), "S012"); }
 #[test]
 fn s012_no_str_join_filter() { assert_no_violation(&check(s012::check, "' '.join(items).filter(x)"), "S012"); }
+
+// ── S013: reduceByKey() ───────────────────────────────────────────────────────
+#[test]
+fn s013_fires()              { assert_violation(&check(s013::check, "result = df.rdd.reduceByKey(lambda a, b: a + b)"), "S013", 1); }
+#[test]
+fn s013_no_groupby_agg()     { assert_no_violation(&check(s013::check, "result = df.groupBy('key').agg(sum('value'))"), "S013"); }
