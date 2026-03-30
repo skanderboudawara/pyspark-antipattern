@@ -1,8 +1,9 @@
 [package]
 name = "pyspark-antipattern"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "PySpark antipattern linter for CI/CD pipelines"
+license = "MIT"
 
 [lib]
 name = "pyspark_antipattern"
