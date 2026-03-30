@@ -84,3 +84,25 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f015_fires_triple()         { assert_violation(&check(f015::check, "df.filter(col('a') > 1).filter(col('b') == 2).filter(col('c') < 5)"), "F015", 1); }
 #[test] fn f015_no_single_filter()     { assert_no_violation(&check(f015::check, "df.filter((col('a') > 1) & (col('b') == 2))"), "F015"); }
 #[test] fn f015_no_filter_then_select(){ assert_no_violation(&check(f015::check, "df.filter(col('a') > 1).select('a', 'b')"), "F015"); }
+
+// ── F016: long DataFrame renaming chains ─────────────────────────────────────
+#[test] fn f016_fires_three_renames() {
+    let src = "df_a = df.filter(col('x') > 1)\ndf_b = df_a.distinct()\ndf_c = df_b.join(ref_df, 'id')";
+    assert_violation(&check(f016::check, src), "F016", 3);
+}
+#[test] fn f016_fires_numbered() {
+    let src = "df1 = df.filter(col('x') > 1)\ndf2 = df1.distinct()\ndf3 = df2.join(ref_df, 'id')";
+    assert_violation(&check(f016::check, src), "F016", 3);
+}
+#[test] fn f016_no_two_renames() {
+    let src = "df_a = df.filter(col('x') > 1)\ndf_b = df_a.distinct()";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
+#[test] fn f016_no_self_overwrite() {
+    let src = "df = df.filter(col('x') > 1)\ndf = df.distinct()\ndf = df.join(ref_df, 'id')";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
+#[test] fn f016_no_exactly_two_renames() {
+    let src = "df_active = df.filter(col('active') == True)\ndf_joined = df_active.join(ref_df, 'id')";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
