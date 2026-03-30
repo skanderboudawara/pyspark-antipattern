@@ -76,3 +76,11 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f014_fires_qualified()  { assert_violation(&check(f014::check, "df.withColumn('x', F.explode_outer(col('items')))"), "F014", 1); }
 #[test] fn f014_no_explode()       { assert_no_violation(&check(f014::check, "df.withColumn('x', explode(col('items')))"), "F014"); }
 #[test] fn f014_no_transform()     { assert_no_violation(&check(f014::check, "df.withColumn('x', transform(col('items'), lambda i: i))"), "F014"); }
+
+// ── F015: consecutive filter() calls ─────────────────────────────────────────
+#[test] fn f015_fires_filter_filter()  { assert_violation(&check(f015::check, "df.filter(col('a') > 1).filter(col('b') == 2)"), "F015", 1); }
+#[test] fn f015_fires_where_where()    { assert_violation(&check(f015::check, "df.where(col('a') > 1).where(col('b') == 2)"), "F015", 1); }
+#[test] fn f015_fires_filter_where()   { assert_violation(&check(f015::check, "df.filter(col('a') > 1).where(col('b') == 2)"), "F015", 1); }
+#[test] fn f015_fires_triple()         { assert_violation(&check(f015::check, "df.filter(col('a') > 1).filter(col('b') == 2).filter(col('c') < 5)"), "F015", 1); }
+#[test] fn f015_no_single_filter()     { assert_no_violation(&check(f015::check, "df.filter((col('a') > 1) & (col('b') == 2))"), "F015"); }
+#[test] fn f015_no_filter_then_select(){ assert_no_violation(&check(f015::check, "df.filter(col('a') > 1).select('a', 'b')"), "F015"); }
