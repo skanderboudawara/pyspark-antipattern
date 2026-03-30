@@ -106,3 +106,12 @@ use pyspark_antipattern::rules::f_rules::*;
     let src = "df_active = df.filter(col('active') == True)\ndf_joined = df_active.join(ref_df, 'id')";
     assert_no_violation(&check(f016::check, src), "F016");
 }
+
+// ── F017: Avoid expr() ────────────────────────────────────────────────────────
+#[test] fn f017_fires_free_fn()         { assert_violation(&check(f017::check, "df.withColumn('total', expr('price * quantity'))"), "F017", 1); }
+#[test] fn f017_fires_alias_f()         { assert_violation(&check(f017::check, "df.withColumn('total', F.expr('price * quantity'))"), "F017", 1); }
+#[test] fn f017_fires_alias_functions() { assert_violation(&check(f017::check, "df.withColumn('total', functions.expr('price * quantity'))"), "F017", 1); }
+#[test] fn f017_fires_qualified()       { assert_violation(&check(f017::check, "df.select(F.expr('upper(name)'))"), "F017", 1); }
+#[test] fn f017_fires_in_select()       { assert_violation(&check(f017::check, "df.select(expr('a + b').alias('sum'))"), "F017", 1); }
+#[test] fn f017_no_col()                { assert_no_violation(&check(f017::check, "df.withColumn('total', col('price') * col('quantity'))"), "F017"); }
+#[test] fn f017_no_when()               { assert_no_violation(&check(f017::check, "df.withColumn('f', when(col('a') > 0, 1).otherwise(0))"), "F017"); }
