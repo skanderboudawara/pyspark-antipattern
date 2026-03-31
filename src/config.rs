@@ -16,9 +16,9 @@ pub struct ToolSection {
 #[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
 pub struct Config {
-    pub failing_rules:      Vec<String>,
-    pub warning_rules:      Vec<String>,
-    pub ignore_rules:       Vec<String>,
+    pub select:  Vec<String>,
+    pub warn:    Vec<String>,
+    pub ignore:  Vec<String>,
     pub show_best_practice: bool,
     pub show_information:   bool,
     pub distinct_threshold: usize,
@@ -52,9 +52,9 @@ pub fn default_exclude_dirs() -> Vec<String> {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            failing_rules:      vec![],
-            warning_rules:      vec![],
-            ignore_rules:       vec![],
+            select:  vec![],
+            warn:    vec![],
+            ignore:  vec![],
             show_best_practice: false,
             show_information:   false,
             distinct_threshold: 5,
@@ -91,18 +91,18 @@ impl Config {
     }
 
     pub fn is_ignored(&self, id: &str) -> bool {
-        // failing_rules acts as a selector: when non-empty, only listed rules are shown
-        if !self.failing_rules.is_empty() {
-            if !self.failing_rules.iter().any(|r| Self::matches(r, id)) {
+        // select acts as a selector: when non-empty, only listed rules are shown
+        if !self.select.is_empty() {
+            if !self.select.iter().any(|r| Self::matches(r, id)) {
                 return true;
             }
         }
-        self.ignore_rules.iter().any(|r| Self::matches(r, id))
+        self.ignore.iter().any(|r| Self::matches(r, id))
     }
 
     pub fn severity_of(&self, id: &str) -> crate::violation::Severity {
         use crate::violation::Severity;
-        if self.warning_rules.iter().any(|r| Self::matches(r, id)) {
+        if self.warn.iter().any(|r| Self::matches(r, id)) {
             return Severity::Warning;
         }
         Severity::Error

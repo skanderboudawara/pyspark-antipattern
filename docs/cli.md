@@ -31,10 +31,47 @@ pyspark-antipattern check src/ --config infra/pyproject.toml
 
 ---
 
-### `--ignore_rules`
+### `--select`
 
 ```
---ignore_rules=<ID,...>
+--select=<ID,...>
+```
+
+Show only the listed rules — everything else is silenced.  Accepts exact rule
+IDs or single-letter group prefixes.
+
+```bash
+# Show only F018
+pyspark-antipattern check src/ --select=F018
+
+# Show only driver-side rules
+pyspark-antipattern check src/ --select=D
+
+# Show a specific mix
+pyspark-antipattern check src/ --select=D001,S002,F018
+```
+
+---
+
+### `--warn`
+
+```
+--warn=<ID,...>
+```
+
+Downgrade rules from **error** to **warning**.  Warnings are printed but do not
+cause exit code 1.
+
+```bash
+pyspark-antipattern check src/ --warn=F008,F011
+```
+
+---
+
+### `--ignore`
+
+```
+--ignore=<ID,...>
 ```
 
 Completely silence one or more rules.  Accepts exact rule IDs or single-letter
@@ -43,43 +80,13 @@ affect the exit code.
 
 ```bash
 # Silence one rule
-pyspark-antipattern check src/ --ignore_rules=D001
+pyspark-antipattern check src/ --ignore=D001
 
 # Silence an entire category
-pyspark-antipattern check src/ --ignore_rules=F
+pyspark-antipattern check src/ --ignore=F
 
 # Silence a mix
-pyspark-antipattern check src/ --ignore_rules=S,D001,L003
-```
-
----
-
-### `--warning_rules`
-
-```
---warning_rules=<ID,...>
-```
-
-Downgrade rules from **error** to **warning**.  Warnings are printed but do not
-cause exit code 1.
-
-```bash
-pyspark-antipattern check src/ --warning_rules=F008,F011
-```
-
----
-
-### `--failing_rules`
-
-```
---failing_rules=<ID,...>
-```
-
-Explicitly mark rules as hard errors (exit code 1).  Useful when most rules are
-set to warnings in `pyproject.toml` but you want CI to block on specific ones.
-
-```bash
-pyspark-antipattern check src/ --failing_rules=D001,S002
+pyspark-antipattern check src/ --ignore=S,D001,L003
 ```
 
 ---
@@ -196,8 +203,8 @@ All options can be combined freely:
 ```bash
 pyspark-antipattern check src/pipelines/ \
   --config pyproject.toml \
-  --ignore_rules=F008,F011 \
-  --warning_rules=S004,S008 \
+  --ignore=F008,F011 \
+  --warn=S004,S008 \
   --show_best_practice=true \
   --max_shuffle_operations=5 \
   --distinct_threshold=3 \
@@ -224,9 +231,9 @@ precedence.  This makes it easy to tighten or relax rules for a single run
 without editing config files — useful in CI matrix builds or one-off audits.
 
 ```bash
-# pyproject.toml has warning_rules = ["D001"]
-# but this run treats D001 as an error:
-pyspark-antipattern check src/ --failing_rules=D001
+# pyproject.toml has warn = ["D001"]
+# but this run shows only F018:
+pyspark-antipattern check src/ --select=F018
 ```
 
 ---

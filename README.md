@@ -88,17 +88,17 @@ Add a `[tool.pyspark-antipattern]` section to your project's `pyproject.toml`:
 ```toml
 [tool.pyspark-antipattern]
 
-# Rules listed here cause exit code 1 (default: all rules are failing)
-# failing_rules = []
+# Show only these rules — everything else is silenced (default: all active)
+# select = ["D001", "S"]
 
 # Downgrade these rules from error to warning (exit code stays 0)
-warning_rules = ["F008", "F011"]
+warn = ["F008", "F011"]
 
 # Completely silence these rules — no output, no exit code impact
 # Accepts exact rule IDs or single-letter group prefixes
-ignore_rules = ["S004"]                # silence one rule
-# ignore_rules = ["F"]                 # silence all F rules
-# ignore_rules = ["S", "L", "D001"]    # silence all S and L rules
+ignore = ["S004"]                # silence one rule
+# ignore = ["F"]                 # silence all F rules
+# ignore = ["S", "L", "D001"]    # silence all S and L rules
 
 # Show inline explanation for each rule that fired (default: false)
 show_information = false

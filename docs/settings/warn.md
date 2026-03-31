@@ -1,4 +1,4 @@
-# warning_rules
+# warn
 
 **Type:** `list[str]`
 **Default:** `[]`
@@ -20,7 +20,7 @@ Accepts exact rule IDs or single-letter group prefixes.
 ```toml
 [tool.pyspark-antipattern]
 # print() and backslash continuations are reported but don't block CI
-warning_rules = ["F008", "F011"]
+warn = ["F008", "F011"]
 ```
 
 ---
@@ -28,7 +28,7 @@ warning_rules = ["F008", "F011"]
 ## Notes
 
 !!! info
-    A rule in `warning_rules` is still visible in the output — it just won't fail the pipeline. Use `ignore_rules` to silence it completely.
+    A rule in `warn` is still visible in the output — it just won't fail the pipeline. Use [`ignore`](ignore.md) to silence it completely.
 
 - Group prefix `"F"` downgrades all F rules to warnings
-- If a rule appears in both `warning_rules` and `ignore_rules`, `ignore_rules` wins
+- If a rule appears in both `warn` and `ignore`, `ignore` wins

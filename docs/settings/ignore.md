@@ -1,4 +1,4 @@
-# ignore_rules
+# ignore
 
 **Type:** `list[str]`
 **Default:** `[]`
@@ -20,19 +20,19 @@ Accepts exact rule IDs or single-letter group prefixes.
 ```toml
 [tool.pyspark-antipattern]
 # Silence one specific rule
-ignore_rules = ["S004"]
+ignore = ["S004"]
 ```
 
 ```toml
 [tool.pyspark-antipattern]
 # Silence an entire category
-ignore_rules = ["F"]
+ignore = ["F"]
 ```
 
 ```toml
 [tool.pyspark-antipattern]
 # Mix: silence all S and L rules, plus one specific D rule
-ignore_rules = ["S", "L", "D001"]
+ignore = ["S", "L", "D001"]
 ```
 
 ---
@@ -40,7 +40,7 @@ ignore_rules = ["S", "L", "D001"]
 ## Notes
 
 !!! warning
-    Ignoring a rule means violations are never surfaced — not even as warnings. Prefer `warning_rules` if you still want visibility without blocking CI.
+    Ignoring a rule means violations are never surfaced — not even as warnings. Prefer [`warn`](warn.md) if you still want visibility without blocking CI.
 
-- Group prefix `"U"` silences all UDF rules (U001, U002, U003)
+- Group prefix `"U"` silences all UDF rules (U001, U002, U003, U004)
 - For per-line suppression, use `# noqa: pap: RULE_ID` instead — see [Installation](../installation.md#suppressing-a-specific-line)

@@ -4,9 +4,9 @@ All settings live under `[tool.pyspark-antipattern]` in your `pyproject.toml`.
 
 | Setting | Type | Default | Description |
 |---|---|---|---|
-| [`failing_rules`](failing_rules.md) | `list[str]` | all rules | Rules that produce exit code 1 |
-| [`warning_rules`](warning_rules.md) | `list[str]` | `[]` | Rules downgraded to warnings |
-| [`ignore_rules`](ignore_rules.md) | `list[str]` | `[]` | Rules completely silenced |
+| [`select`](select.md) | `list[str]` | `[]` | Show only these rules (whitelist) |
+| [`warn`](warn.md) | `list[str]` | `[]` | Rules downgraded to warnings |
+| [`ignore`](ignore.md) | `list[str]` | `[]` | Rules completely silenced |
 | [`show_information`](show_information.md) | `bool` | `false` | Show inline explanation per violation |
 | [`show_best_practice`](show_best_practice.md) | `bool` | `false` | Show best-practice guidance per violation |
 | [`distinct_threshold`](distinct_threshold.md) | `int` | `5` | Max `.distinct()` calls before S004 fires |

@@ -40,9 +40,9 @@ bindings = "bin"
 # pyproject.toml and adjust as needed.
 # ---------------------------------------------------------------------------
 # [tool.pyspark-antipattern]
-# failing_rules = []          # Rules that cause exit code 1 (default: all)
-# warning_rules = []          # Rules that only warn (exit code 0)
-# ignore_rules  = []          # Rules that are completely silenced (e.g. ["S004"] or ["F"] for all F rules)
+# select = []                 # Show only these rules — everything else is silenced (default: all active)
+# warn   = []                 # Rules that only warn (exit code 0)
+# ignore = []                 # Rules that are completely silenced (e.g. ["S004"] or ["F"] for all F rules)
 # show_best_practice = false
 # show_information = false
 # distinct_threshold = 5      # S004: flag when distinct() count exceeds this

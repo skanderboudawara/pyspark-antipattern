@@ -26,20 +26,20 @@ enum Command {
         #[arg(long, default_value = "pyproject.toml")]
         config: String,
 
-        /// Comma-separated rule IDs or group prefixes to silence completely
-        /// (e.g. --ignore_rules=F,D001)
-        #[arg(long = "ignore_rules", value_delimiter = ',')]
-        ignore_rules: Option<Vec<String>>,
+        /// Comma-separated rule IDs or group prefixes to select (only these are shown)
+        /// (e.g. --select=F018,D001)
+        #[arg(long = "select", value_delimiter = ',')]
+        select: Option<Vec<String>>,
 
         /// Comma-separated rule IDs or group prefixes to downgrade to warnings
-        /// (e.g. --warning_rules=F008,F011)
-        #[arg(long = "warning_rules", value_delimiter = ',')]
-        warning_rules: Option<Vec<String>>,
+        /// (e.g. --warn=F008,F011)
+        #[arg(long = "warn", value_delimiter = ',')]
+        warn: Option<Vec<String>>,
 
-        /// Comma-separated rule IDs or group prefixes to treat as hard errors
-        /// (e.g. --failing_rules=D001,S)
-        #[arg(long = "failing_rules", value_delimiter = ',')]
-        failing_rules: Option<Vec<String>>,
+        /// Comma-separated rule IDs or group prefixes to silence completely
+        /// (e.g. --ignore=F,D001)
+        #[arg(long = "ignore", value_delimiter = ',')]
+        ignore: Option<Vec<String>>,
 
         /// Show inline rule explanation for every violation
         #[arg(long = "show_best_practice")]
@@ -79,9 +79,9 @@ fn main() {
         Command::Check {
             path,
             config: config_path,
-            ignore_rules,
-            warning_rules,
-            failing_rules,
+            select,
+            warn,
+            ignore,
             show_best_practice,
             show_information,
             distinct_threshold,
@@ -97,9 +97,9 @@ fn main() {
                 });
 
             // CLI flags override pyproject.toml values.
-            if let Some(v) = ignore_rules          { config.ignore_rules          = v; }
-            if let Some(v) = warning_rules         { config.warning_rules         = v; }
-            if let Some(v) = failing_rules         { config.failing_rules         = v; }
+            if let Some(v) = select   { config.select  = v; }
+            if let Some(v) = warn     { config.warn     = v; }
+            if let Some(v) = ignore   { config.ignore   = v; }
             if let Some(v) = show_best_practice    { config.show_best_practice    = v; }
             if let Some(v) = show_information      { config.show_information      = v; }
             if let Some(v) = distinct_threshold    { config.distinct_threshold    = v; }

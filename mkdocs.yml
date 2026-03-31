@@ -62,9 +62,9 @@ nav:
   - CLI Reference: cli.md
   - Settings:
     - settings/index.md
-    - failing_rules: settings/failing_rules.md
-    - warning_rules: settings/warning_rules.md
-    - ignore_rules: settings/ignore_rules.md
+    - select: settings/select.md
+    - warn: settings/warn.md
+    - ignore: settings/ignore.md
     - show_information: settings/show_information.md
     - show_best_practice: settings/show_best_practice.md
     - distinct_threshold: settings/distinct_threshold.md
