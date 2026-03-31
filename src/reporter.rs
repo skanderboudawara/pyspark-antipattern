@@ -125,6 +125,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "S013" => "Avoid reduceByKey(); use DataFrame groupBy().agg() instead",
         "PERF001" => "Avoid .rdd.collect(); use .toPandas() for driver-side consumption",
         "PERF002" => "Too many getOrCreate() calls; use getActiveSession() everywhere else",
+        "PERF003" => "Too many shuffle operations without a checkpoint",
         "U001" => "Avoid UDFs that return StringType; use built-in string functions",
         "U002" => "Avoid UDFs that return ArrayType; use built-in array functions",
         "U003" => "Avoid UDFs; use Spark built-in functions instead",

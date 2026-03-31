@@ -106,6 +106,9 @@ show_information = false
 # Show best-practice guidance for each rule that fired (default: false)
 show_best_practice = false
 
+# PERF003: fire when more than N shuffle ops occur without a checkpoint (default: 9)
+max_shuffle_operations = 9
+
 # S004: flag when the weighted count of .distinct() calls exceeds this (default: 5)
 distinct_threshold = 5
 

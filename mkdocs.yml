@@ -70,6 +70,7 @@ nav:
     - explode_threshold: settings/explode_threshold.md
     - loop_threshold: settings/loop_threshold.md
     - exclude_dirs: settings/exclude_dirs.md
+    - max_shuffle_operations: settings/max_shuffle_operations.md
   - Rules:
     - rules/index.md
     - ARR — Array:
@@ -117,6 +118,7 @@ nav:
       - rules/performance/index.md
       - PERF001: rules/performance/PERF001.md
       - PERF002: rules/performance/PERF002.md
+      - PERF003: rules/performance/PERF003.md
     - S — Shuffle:
       - rules/shuffle/index.md
       - S001: rules/shuffle/S001.md

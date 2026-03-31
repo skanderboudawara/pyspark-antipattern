@@ -37,6 +37,9 @@ explode_threshold = 3
 #                 while-loops always assume 99 iterations (default: 10)
 loop_threshold = 10
 
+# PERF003: fire when more than N shuffle ops occur without a checkpoint (default: 9)
+max_shuffle_operations = 9
+
 # Directories to skip during recursive scanning.
 # These are merged with the built-in default list below.
 # Default: [".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",

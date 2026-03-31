@@ -13,3 +13,4 @@ All settings live under `[tool.pyspark-antipattern]` in your `pyproject.toml`.
 | [`explode_threshold`](explode_threshold.md) | `int` | `3` | Max `explode()` calls before S008 fires |
 | [`loop_threshold`](loop_threshold.md) | `int` | `10` | Max loop iterations before L001/L002/L003 fire |
 | [`exclude_dirs`](exclude_dirs.md) | `list[str]` | built-in list | Directories skipped during recursive scan |
+| [`max_shuffle_operations`](max_shuffle_operations.md) | `int` | `9` | Max shuffle ops between checkpoints before PERF003 fires |

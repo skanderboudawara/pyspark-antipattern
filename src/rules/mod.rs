@@ -64,4 +64,5 @@ pub static ALL_RULES: &[RuleFn] = &[
     u_rules::u003::check,
     perf_rules::perf001::check,
     perf_rules::perf002::check,
+    perf_rules::perf003::check,
 ];

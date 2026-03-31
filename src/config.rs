@@ -22,7 +22,8 @@ pub struct Config {
     pub distinct_threshold: usize,
     pub explode_threshold:  usize,
     pub loop_threshold:     usize,
-    pub exclude_dirs:       Vec<String>,
+    pub exclude_dirs:            Vec<String>,
+    pub max_shuffle_operations:  usize,
 }
 
 pub fn default_exclude_dirs() -> Vec<String> {
@@ -48,7 +49,8 @@ impl Default for Config {
             distinct_threshold: 5,
             explode_threshold:  3,
             loop_threshold:     10,
-            exclude_dirs:       default_exclude_dirs(),
+            exclude_dirs:            default_exclude_dirs(),
+            max_shuffle_operations:  9,
         }
     }
 }
