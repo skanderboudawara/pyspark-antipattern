@@ -1,13 +1,15 @@
 name: Docs
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
 
 jobs:
   deploy:
     name: Deploy documentation
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: write
     steps:
