@@ -1,0 +1,128 @@
+site_name: pyspark-antipattern
+site_description: A fast, opinionated PySpark linter written in Rust
+site_author: Skander Boudawara
+site_url: https://skanderboudawara.github.io/pyspark-antipattern
+repo_url: https://github.com/skanderboudawara/pyspark-antipattern
+repo_name: skanderboudawara/pyspark-antipattern
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.indexes
+    - navigation.top
+    - navigation.instant
+    - content.code.copy
+    - content.code.annotate
+    - search.highlight
+    - search.suggest
+  logo: icon.jpg
+  favicon: icon.jpg
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Rules:
+    - rules/index.md
+    - ARR — Array:
+      - rules/arr/index.md
+      - ARR001: rules/arr/ARR001.md
+      - ARR002: rules/arr/ARR002.md
+    - D — Driver:
+      - rules/driver/index.md
+      - D001: rules/driver/D001.md
+      - D002: rules/driver/D002.md
+      - D003: rules/driver/D003.md
+      - D004: rules/driver/D004.md
+      - D005: rules/driver/D005.md
+      - D006: rules/driver/D006.md
+      - D007: rules/driver/D007.md
+      - D008: rules/driver/D008.md
+    - F — Format:
+      - rules/format/index.md
+      - F001: rules/format/F001.md
+      - F002: rules/format/F002.md
+      - F003: rules/format/F003.md
+      - F004: rules/format/F004.md
+      - F005: rules/format/F005.md
+      - F006: rules/format/F006.md
+      - F007: rules/format/F007.md
+      - F008: rules/format/F008.md
+      - F009: rules/format/F009.md
+      - F010: rules/format/F010.md
+      - F011: rules/format/F011.md
+      - F012: rules/format/F012.md
+      - F013: rules/format/F013.md
+      - F014: rules/format/F014.md
+      - F015: rules/format/F015.md
+      - F016: rules/format/F016.md
+      - F017: rules/format/F017.md
+    - L — Looping:
+      - rules/looping/index.md
+      - L001: rules/looping/L001.md
+      - L002: rules/looping/L002.md
+      - L003: rules/looping/L003.md
+    - P — Pandas:
+      - rules/pandas/index.md
+      - P001: rules/pandas/P001.md
+    - PERF — Performance:
+      - rules/performance/index.md
+      - PERF001: rules/performance/PERF001.md
+      - PERF002: rules/performance/PERF002.md
+    - S — Shuffle:
+      - rules/shuffle/index.md
+      - S001: rules/shuffle/S001.md
+      - S002: rules/shuffle/S002.md
+      - S003: rules/shuffle/S003.md
+      - S004: rules/shuffle/S004.md
+      - S005: rules/shuffle/S005.md
+      - S006: rules/shuffle/S006.md
+      - S007: rules/shuffle/S007.md
+      - S008: rules/shuffle/S008.md
+      - S009: rules/shuffle/S009.md
+      - S010: rules/shuffle/S010.md
+      - S011: rules/shuffle/S011.md
+      - S012: rules/shuffle/S012.md
+      - S013: rules/shuffle/S013.md
+    - U — UDF:
+      - rules/udf/index.md
+      - U001: rules/udf/U001.md
+      - U002: rules/udf/U002.md
+      - U003: rules/udf/U003.md

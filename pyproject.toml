@@ -9,10 +9,26 @@ description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Skander Boudawara", email = "skander.education@proton.me" }]
+# https://pypi.org/classifiers/
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Database :: Database Engines/Servers",
 ]
 
 [tool.maturin]

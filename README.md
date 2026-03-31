@@ -1,3 +1,8 @@
+[![PyPI - Version](https://img.shields.io/pypi/v/pyspark-antipattern)](https://pypi.org/project/pyspark-antipattern/)
+[![Release](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg)](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyspark-antipattern)](https://pypi.org/project/pyspark-antipattern/)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern)](https://github.com/skanderboudawara/pyspark-antipattern/issues)
+
 # pyspark-antipattern
 
 A fast, opinionated PySpark linter that challenges your code against antipattern rules — written in Rust, installable as a Python package, and designed to run in CI/CD pipelines.
@@ -61,18 +66,18 @@ With `show_best_practice = true` — best-practice guidance for each rule:
 
 ## Rules
 
-Rules are organized by category in the [`rules/`](rules/) folder. Each rule has its own markdown file with a full explanation and best-practice guidance.
+Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each rule has its own markdown file with a full explanation and best-practice guidance.
 
 | Category | Folder | Focus |
 |---|---|---|
-| **ARR** — Array | [`rules/arr/`](rules/arr/) | Array function antipatterns |
-| **D** — Driver | [`rules/driver/`](rules/driver/) | Actions that pull data to the driver node |
-| **F** — Format | [`rules/format/`](rules/format/) | Code style and DataFrame API misuse |
-| **L** — Looping | [`rules/looping/`](rules/looping/) | DataFrame operations inside loops |
-| **P** — Pandas | [`rules/pandas/`](rules/pandas/) | Pandas interop pitfalls |
-| **PERF** — Performance | [`rules/performance/`](rules/performance/) | Runtime performance antipatterns |
-| **S** — Shuffle | [`rules/shuffle/`](rules/shuffle/) | Joins, partitioning, and data movement |
-| **U** — UDF | [`rules/udf/`](rules/udf/) | User-defined functions and their alternatives |
+| **ARR** — Array | [`docs/rules/arr/`](docs/rules/arr/) | Array function antipatterns |
+| **D** — Driver | [`docs/rules/driver/`](docs/rules/driver/) | Actions that pull data to the driver node |
+| **F** — Format | [`docs/rules/format/`](docs/rules/format/) | Code style and DataFrame API misuse |
+| **L** — Looping | [`docs/rules/looping/`](docs/rules/looping/) | DataFrame operations inside loops |
+| **P** — Pandas | [`docs/rules/pandas/`](docs/rules/pandas/) | Pandas interop pitfalls |
+| **PERF** — Performance | [`docs/rules/performance/`](docs/rules/performance/) | Runtime performance antipatterns |
+| **S** — Shuffle | [`docs/rules/shuffle/`](docs/rules/shuffle/) | Joins, partitioning, and data movement |
+| **U** — UDF | [`docs/rules/udf/`](docs/rules/udf/) | User-defined functions and their alternatives |
 
 ---
 
