@@ -106,6 +106,20 @@ use pyspark_antipattern::rules::f_rules::*;
     let src = "df_active = df.filter(col('active') == True)\ndf_joined = df_active.join(ref_df, 'id')";
     assert_no_violation(&check(f016::check, src), "F016");
 }
+#[test] fn f016_no_dict_get_chain() {
+    // dict.get() / str / list chains must never trigger F016
+    let src = "a = tokens.get('token_infos', [])\nb = a.get('sub', [])\ntoken_infos = b.get('x', [])";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
+#[test] fn f016_no_str_method_chain() {
+    let src = "a = raw.strip()\nb = a.lower()\nc = b.replace(' ', '_')";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
+#[test] fn f016_no_os_path_chain() {
+    // path manipulation via os.path should not be flagged
+    let src = "a = os.path.join(base, 'sub')\nb = a.split('/')\nc = b.pop()";
+    assert_no_violation(&check(f016::check, src), "F016");
+}
 
 // ── F017: Avoid expr() ────────────────────────────────────────────────────────
 #[test] fn f017_fires_free_fn()         { assert_violation(&check(f017::check, "df.withColumn('total', expr('price * quantity'))"), "F017", 1); }

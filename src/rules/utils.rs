@@ -120,6 +120,33 @@ pub fn consecutive_method_depth(expr: &Expr, method: &str) -> usize {
     0
 }
 
+/// Return `true` when `expr` is the receiver of a method call that belongs to a
+/// known stdlib/utility namespace rather than a Spark DataFrame.
+///
+/// Walks the attribute chain to its root `Name` and checks against a deny-list.
+/// Examples that return `true`: `os.path`, `sys`, `pathlib`, `str`, `bytes`.
+/// Examples that return `false`: `df`, `self.df`, any `Call` result.
+pub fn is_non_dataframe_receiver(expr: &Expr) -> bool {
+    if matches!(expr, Expr::Constant(c) if matches!(c.value, rustpython_parser::ast::Constant::Str(_))) {
+        return true; // string literal receiver: `",".join(...)`
+    }
+    let mut current = expr;
+    loop {
+        match current {
+            Expr::Attribute(a) => current = a.value.as_ref(),
+            Expr::Name(n) => {
+                return matches!(
+                    n.id.as_str(),
+                    "os" | "sys" | "pathlib" | "str" | "bytes"
+                    | "urllib" | "posixpath" | "ntpath" | "shutil"
+                    | "Path" | "PurePath" | "PosixPath" | "WindowsPath"
+                );
+            }
+            _ => return false,
+        }
+    }
+}
+
 /// Check whether a method name appears anywhere in the call chain.
 pub fn chain_has_method(expr: &Expr, method: &str) -> bool {
     if let Expr::Call(c) = expr {

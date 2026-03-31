@@ -1,10 +1,15 @@
 // F016: Avoid long DataFrame renaming chains — more than 2 consecutive renames.
 // Fires when: a = x.m(), b = a.m(), c = b.m()  (third rename and beyond)
+//
+// Only DataFrames are tracked: a chain is started only when the RHS contains at
+// least one known Spark DataFrame method.  Plain dict/str/list calls (e.g.
+// `tokens.get(...)`, `path.split(...)`) are never counted.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
     config::Config,
     line_index::LineIndex,
+    rules::utils::is_non_dataframe_receiver,
     violation::{RuleId, Severity, Violation},
 };
 
@@ -24,6 +29,41 @@ fn root_name(expr: &Expr) -> Option<&str> {
         }
         Expr::Attribute(a) => root_name(a.value.as_ref()),
         _ => None,
+    }
+}
+
+/// Return true if `name` is a method that only exists on Spark DataFrames /
+/// related objects (never on str, dict, list, etc.).
+fn is_spark_method(name: &str) -> bool {
+    matches!(
+        name,
+        "select" | "filter" | "where" | "withColumn" | "withColumnRenamed"
+        | "drop" | "dropDuplicates" | "distinct" | "groupBy" | "agg"
+        | "join" | "union" | "unionAll" | "unionByName" | "sort" | "orderBy"
+        | "limit" | "cache" | "persist" | "unpersist" | "repartition" | "coalesce"
+        | "show" | "collect" | "toPandas" | "toDF" | "alias" | "hint"
+        | "crossJoin" | "fillna" | "dropna" | "replace" | "sample" | "sampleBy"
+        | "randomSplit" | "checkpoint" | "selectExpr" | "toLocalIterator"
+        | "createOrReplaceTempView" | "createTempView" | "registerTempTable"
+        | "write" | "writeStream"
+    )
+}
+
+/// Return true if `expr` (an assignment RHS) contains at least one Spark method
+/// anywhere in its method-call chain, called on a non-stdlib receiver.
+fn has_spark_method(expr: &Expr) -> bool {
+    match expr {
+        Expr::Call(c) => {
+            if let Expr::Attribute(a) = c.func.as_ref() {
+                if is_spark_method(a.attr.as_str()) && !is_non_dataframe_receiver(a.value.as_ref()) {
+                    return true;
+                }
+                return has_spark_method(a.value.as_ref());
+            }
+            false
+        }
+        Expr::Attribute(a) => has_spark_method(a.value.as_ref()),
+        _ => false,
     }
 }
 
@@ -49,7 +89,13 @@ fn scan_stmts(
                     if let Some(src) = root_name(&a.value) {
                         // Only count as a rename when target != source
                         if src != target_name {
-                            let depth = chain_depth.get(src).copied().unwrap_or(0) + 1;
+                            let src_depth = chain_depth.get(src).copied().unwrap_or(0);
+                            // Only start a new chain when the RHS has a Spark method;
+                            // continue an existing DataFrame chain unconditionally.
+                            if src_depth == 0 && !has_spark_method(&a.value) {
+                                continue;
+                            }
+                            let depth = src_depth + 1;
                             chain_depth.insert(target_name.to_string(), depth);
                             renamed_from.insert(target_name.to_string(), src.to_string());
 
