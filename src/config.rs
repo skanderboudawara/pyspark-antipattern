@@ -91,6 +91,12 @@ impl Config {
     }
 
     pub fn is_ignored(&self, id: &str) -> bool {
+        // failing_rules acts as a selector: when non-empty, only listed rules are shown
+        if !self.failing_rules.is_empty() {
+            if !self.failing_rules.iter().any(|r| Self::matches(r, id)) {
+                return true;
+            }
+        }
         self.ignore_rules.iter().any(|r| Self::matches(r, id))
     }
 
