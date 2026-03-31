@@ -59,6 +59,7 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Configuration: configuration.md
+  - CLI Reference: cli.md
   - Settings:
     - settings/index.md
     - failing_rules: settings/failing_rules.md
@@ -139,3 +140,4 @@ nav:
       - U001: rules/udf/U001.md
       - U002: rules/udf/U002.md
       - U003: rules/udf/U003.md
+      - U004: rules/udf/U004.md
