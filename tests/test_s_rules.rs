@@ -21,6 +21,14 @@ fn s002_no_fire_hint()       { assert_no_violation(&check(s002::check, "df.hint(
 fn s002_no_str_join()        { assert_no_violation(&check(s002::check, "' '.join(cols)"), "S002"); }
 #[test]
 fn s002_no_comma_join()      { assert_no_violation(&check(s002::check, "','.join(str(x) for x in items)"), "S002"); }
+#[test]
+fn s002_no_os_path_join()    { assert_no_violation(&check(s002::check, "os.path.join(os.getcwd(), '../..')"), "S002"); }
+#[test]
+fn s002_no_sys_path_join()   { assert_no_violation(&check(s002::check, "sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '../../../../..')))"), "S002"); }
+#[test]
+fn s002_no_pathlib_join()    { assert_no_violation(&check(s002::check, "p = pathlib.Path('/tmp').joinpath('data')"), "S002"); }
+#[test]
+fn s002_self_df_fires()      { assert_violation(&check(s002::check, "self.df.join(other, 'id')"), "S002", 1); }
 
 // ── S003: groupBy() followed by distinct() ───────────────────────────────────
 #[test]
