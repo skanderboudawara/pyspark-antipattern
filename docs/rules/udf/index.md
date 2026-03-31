@@ -7,3 +7,4 @@ Rules that flag user-defined functions where native PySpark equivalents exist. U
 | [U001](U001.md) | Avoid UDFs that return `StringType` — use built-in string functions |
 | [U002](U002.md) | Avoid UDFs that return `ArrayType` — use built-in array functions |
 | [U003](U003.md) | Avoid UDFs — use Spark built-in functions instead |
+| [U004](U004.md) | Avoid nested UDF calls — merge logic or use plain Python helpers |

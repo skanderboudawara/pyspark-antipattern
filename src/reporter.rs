@@ -129,6 +129,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "U001" => "Avoid UDFs that return StringType; use built-in string functions",
         "U002" => "Avoid UDFs that return ArrayType; use built-in array functions",
         "U003" => "Avoid UDFs; use Spark built-in functions instead",
+        "U004" => "Avoid nested UDF calls; merge logic or use plain Python helpers",
         _ => "Unknown rule",
     }
 }

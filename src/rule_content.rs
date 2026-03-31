@@ -52,6 +52,7 @@ static RULE_MARKDOWN: &[(&str, &str)] = &[
     ("U001", include_str!("../docs/rules/udf/U001.md")),
     ("U002", include_str!("../docs/rules/udf/U002.md")),
     ("U003", include_str!("../docs/rules/udf/U003.md")),
+    ("U004", include_str!("../docs/rules/udf/U004.md")),
 ];
 
 pub struct RuleContent {

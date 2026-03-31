@@ -42,3 +42,37 @@ fn u003_no_false_positive() {
     let src = "def f(x): return x * 2";
     assert_no_violation(&check(u003::check, src), "U003");
 }
+
+// ── U004: nested UDF calls ────────────────────────────────────────────────────
+#[test]
+fn u004_fires_nested_call() {
+    // normalize is defined on lines 1-3, process on lines 5-7.
+    // The nested call `normalize(x)` is on line 7.
+    let src = "@udf(returnType=StringType())\ndef normalize(x):\n    return x.strip().lower()\n\n@udf(returnType=StringType())\ndef process(x):\n    return normalize(x) + '_ok'\n";
+    assert_violation(&check(u004::check, src), "U004", 7);
+}
+#[test]
+fn u004_fires_multiple_nested() {
+    // clean on lines 1-3, tag on lines 5-7, process on lines 9-11.
+    // clean(x) and tag(x) are both on line 11.
+    let src = "@udf(returnType=StringType())\ndef clean(x):\n    return x.strip()\n\n@udf(returnType=StringType())\ndef tag(x):\n    return x + '_tag'\n\n@udf(returnType=StringType())\ndef process(x):\n    return clean(x) + tag(x)\n";
+    assert_violation(&check(u004::check, src), "U004", 11);
+}
+#[test]
+fn u004_no_self_recursion() {
+    // A UDF calling itself should not be flagged by U004
+    let src = "@udf(returnType=StringType())\ndef recursive(x):\n    return recursive(x)\n";
+    assert_no_violation(&check(u004::check, src), "U004");
+}
+#[test]
+fn u004_no_plain_helper() {
+    // Calling a plain (non-UDF) function from inside a UDF is fine
+    let src = "def helper(x):\n    return x.strip()\n\n@udf(returnType=StringType())\ndef process(x):\n    return helper(x)\n";
+    assert_no_violation(&check(u004::check, src), "U004");
+}
+#[test]
+fn u004_no_single_udf() {
+    // Only one UDF — nesting is impossible
+    let src = "@udf(returnType=StringType())\ndef process(x):\n    return x.strip()\n";
+    assert_no_violation(&check(u004::check, src), "U004");
+}

@@ -76,6 +76,7 @@ All rules are organized by category. Each rule page explains what is flagged, wh
 |---|---|
 | [PERF001](performance/PERF001.md) | Avoid `.rdd.collect()` — use `.toPandas()` for driver-side consumption |
 | [PERF002](performance/PERF002.md) | Too many `getOrCreate()` calls — use `getActiveSession()` everywhere else |
+| [PERF003](performance/PERF003.md) | Too many shuffle operations without a checkpoint |
 
 ---
 
@@ -106,3 +107,4 @@ All rules are organized by category. Each rule page explains what is flagged, wh
 | [U001](udf/U001.md) | Avoid UDFs that return `StringType` — use built-in string functions |
 | [U002](udf/U002.md) | Avoid UDFs that return `ArrayType` — use built-in array functions |
 | [U003](udf/U003.md) | Avoid UDFs — use Spark built-in functions instead |
+| [U004](udf/U004.md) | Avoid nested UDF calls — merge logic or use plain Python helpers |
