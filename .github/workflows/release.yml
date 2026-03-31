@@ -110,49 +110,27 @@ jobs:
       - name: List wheels
         run: ls -lh dist/
 
+
+      - name: Build release notes
+        id: notes
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..HEAD"
+          else
+            RANGE="HEAD"
+          fi
+          BULLETS=$(git log $RANGE --pretty=format:"- %s" --no-merges)
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BULLETS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
-        uses: actions/github-script@v8
+        uses: softprops/action-gh-release@v2
         with:
-          script: |
-            const { execSync } = require('child_process');
-            const fs   = require('fs');
-            const path = require('path');
-
-            const tag = context.ref.replace('refs/tags/', '');
-
-            // Build release notes from commits since the previous tag
-            let prevTag = '';
-            try {
-              prevTag = execSync('git describe --tags --abbrev=0 HEAD^').toString().trim();
-            } catch (_) {}
-            const range = prevTag ? `${prevTag}..HEAD` : 'HEAD';
-            const body  = execSync(
-              `git log ${range} --pretty=format:"- %s" --no-merges`
-            ).toString().trim();
-
-            // Create the release
-            const { data: release } = await github.rest.repos.createRelease({
-              owner:    context.repo.owner,
-              repo:     context.repo.repo,
-              tag_name: tag,
-              name:     tag,
-              body,
-            });
-
-            // Upload every wheel as a release asset
-            const wheels = fs.readdirSync('dist').filter(f => f.endsWith('.whl'));
-            if (wheels.length === 0) core.setFailed('No wheels found in dist/');
-            for (const file of wheels) {
-              const data = fs.readFileSync(path.join('dist', file));
-              await github.rest.repos.uploadReleaseAsset({
-                owner:      context.repo.owner,
-                repo:       context.repo.repo,
-                release_id: release.id,
-                name:       file,
-                data,
-                headers: { 'content-type': 'application/zip' },
-              });
-            }
+          files: dist/*.whl
+          body: ${{ steps.notes.outputs.body }}
+          fail_on_unmatched_files: true
 
   # ── 4. Publish all wheels to PyPI ──────────────────────────────────────────
   publish:
