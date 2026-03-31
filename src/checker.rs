@@ -154,16 +154,15 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
 
 /// Lint a file or recursively scan a directory for .py files.
 ///
-/// `on_file` is called once per file (from a rayon worker thread) as soon as
-/// that file's violations are ready.  Use it to stream output to the terminal
-/// rather than waiting for all files to finish.  The callback must be `Sync`
-/// because rayon may call it from multiple threads concurrently.
+/// Files are processed in sorted order.  `on_file` is called immediately after
+/// each file finishes so results stream to the terminal file by file.
 pub fn check_path(
     root: &str,
     config: &Config,
-    on_file: &(dyn Fn(Vec<Violation>) + Sync),
+    on_file: &mut dyn FnMut(Vec<Violation>),
 ) -> usize {
-    let paths = collect_paths(root, config);
+    let mut paths = collect_paths(root, config);
+    paths.sort();                       // deterministic, alphabetical order
     let file_count = paths.len();
 
     eprintln!("Scanning {} file(s) — building cross-file cost maps…", file_count);
@@ -189,18 +188,16 @@ pub fn check_path(
     config_with_global.global_fn_distinct_costs = gdistinct;
     config_with_global.global_fn_explode_costs  = gexplode;
 
-    let config_ref = &config_with_global;
-
     eprintln!("Linting {} file(s)…", file_count);
 
-    // Main pass: lint all files in parallel, streaming results via on_file.
-    paths.par_iter().for_each(|path| {
-        let violations = match check_file(path, config_ref) {
+    // Main pass: sequential, file by file in sorted order.
+    for path in &paths {
+        let violations = match check_file(path, &config_with_global) {
             Ok(v)    => v,
             Err(msg) => { eprintln!("warning: {msg}"); vec![] }
         };
         on_file(violations);
-    });
+    }
 
     file_count
 }

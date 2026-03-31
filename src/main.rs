@@ -1,6 +1,4 @@
 use std::process;
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Mutex;
 
 use clap::{Parser, Subcommand};
 
@@ -41,35 +39,27 @@ fn main() {
                     config::Config::default()
                 });
 
-            let error_count   = AtomicUsize::new(0);
-            let warning_count = AtomicUsize::new(0);
+            let mut error_count   = 0usize;
+            let mut warning_count = 0usize;
 
-            // Mutex ensures violation blocks from different files don't interleave
-            // on stdout when multiple rayon threads finish simultaneously.
-            let stdout_lock = Mutex::new(());
-
-            let file_count = checker::check_path(&path, &config, &|violations| {
-                if violations.is_empty() { return; }
-
+            let file_count = checker::check_path(&path, &config, &mut |violations| {
                 for v in &violations {
                     match v.severity {
-                        violation::Severity::Error   => { error_count.fetch_add(1, Ordering::Relaxed); }
-                        violation::Severity::Warning => { warning_count.fetch_add(1, Ordering::Relaxed); }
+                        violation::Severity::Error   => error_count   += 1,
+                        violation::Severity::Warning => warning_count += 1,
                     }
                 }
-
-                let _guard = stdout_lock.lock().unwrap();
-                reporter::print_violations(&violations, &config);
+                if !violations.is_empty() {
+                    reporter::print_violations(&violations, &config);
+                }
             });
 
             eprintln!(
                 "Checked {} file(s). Found {} error(s), {} warning(s).",
-                file_count,
-                error_count.load(Ordering::Relaxed),
-                warning_count.load(Ordering::Relaxed),
+                file_count, error_count, warning_count,
             );
 
-            if error_count.load(Ordering::Relaxed) > 0 {
+            if error_count > 0 {
                 process::exit(1);
             }
         }
