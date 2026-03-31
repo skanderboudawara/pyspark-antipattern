@@ -5,11 +5,19 @@
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/cli/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/configuration/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/installation/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/versioning/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
@@ -137,6 +145,10 @@
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F018/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/looping/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
@@ -170,6 +182,10 @@
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF002/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF003/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
@@ -245,6 +261,10 @@
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U004/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
@@ -261,15 +281,19 @@
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
-         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/failing_rules/</loc>
-         <lastmod>2026-03-31</lastmod>
-    </url>
-    <url>
-         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/ignore_rules/</loc>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/ignore/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/loop_threshold/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/max_shuffle_operations/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/select/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
@@ -281,7 +305,7 @@
          <lastmod>2026-03-31</lastmod>
     </url>
     <url>
-         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/warning_rules/</loc>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/warn/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
 </urlset>
