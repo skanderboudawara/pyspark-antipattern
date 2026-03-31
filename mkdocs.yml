@@ -59,6 +59,17 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Configuration: configuration.md
+  - Settings:
+    - settings/index.md
+    - failing_rules: settings/failing_rules.md
+    - warning_rules: settings/warning_rules.md
+    - ignore_rules: settings/ignore_rules.md
+    - show_information: settings/show_information.md
+    - show_best_practice: settings/show_best_practice.md
+    - distinct_threshold: settings/distinct_threshold.md
+    - explode_threshold: settings/explode_threshold.md
+    - loop_threshold: settings/loop_threshold.md
+    - exclude_dirs: settings/exclude_dirs.md
   - Rules:
     - rules/index.md
     - ARR — Array:

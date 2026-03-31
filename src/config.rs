@@ -22,6 +22,19 @@ pub struct Config {
     pub distinct_threshold: usize,
     pub explode_threshold:  usize,
     pub loop_threshold:     usize,
+    pub exclude_dirs:       Vec<String>,
+}
+
+pub fn default_exclude_dirs() -> Vec<String> {
+    [
+        ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
+        ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
+        ".svn", ".tox", ".venv", "__pypackages__", "_build",
+        "buck-out", "dist", "node_modules", "venv",
+    ]
+    .iter()
+    .map(|s| s.to_string())
+    .collect()
 }
 
 impl Default for Config {
@@ -35,11 +48,16 @@ impl Default for Config {
             distinct_threshold: 5,
             explode_threshold:  3,
             loop_threshold:     10,
+            exclude_dirs:       default_exclude_dirs(),
         }
     }
 }
 
 impl Config {
+    pub fn is_excluded_dir(&self, dir_name: &str) -> bool {
+        self.exclude_dirs.iter().any(|d| d == dir_name)
+    }
+
     pub fn load(path: &std::path::Path) -> Result<Self, String> {
         let raw = std::fs::read_to_string(path)
             .map_err(|e| format!("Cannot read {}: {e}", path.display()))?;

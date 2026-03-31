@@ -44,6 +44,15 @@ pub fn check_path(root: &str, config: &Config) -> (Vec<Violation>, usize) {
     } else {
         WalkDir::new(root)
             .into_iter()
+            .filter_entry(|e| {
+                // Always allow the root entry itself; skip excluded directories.
+                if e.depth() == 0 { return true; }
+                if e.file_type().is_dir() {
+                    let dir_name = e.file_name().to_string_lossy();
+                    return !config.is_excluded_dir(&dir_name);
+                }
+                true
+            })
             .filter_map(|e| e.ok())
             .filter(|e| e.path().extension().map_or(false, |ext| ext == "py"))
             .map(|e| e.path().to_string_lossy().into_owned())

@@ -49,3 +49,4 @@ bindings = "bin"
 # explode_threshold = 3       # S008: flag when explode() count exceeds this
 # loop_threshold = 10         # L001/L002/L003: flag for-loops where range(N) > threshold;
 #                             #   while-loops always assume 99 iterations
+# exclude_dirs = ["my_generated_code", "vendor"]

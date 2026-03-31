@@ -36,6 +36,14 @@ explode_threshold = 3
 # L001/L002/L003: flag for-loops where range(N) > threshold;
 #                 while-loops always assume 99 iterations (default: 10)
 loop_threshold = 10
+
+# Directories to skip during recursive scanning.
+# These are merged with the built-in default list below.
+# Default: [".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
+#            ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
+#            ".svn", ".tox", ".venv", "__pypackages__", "_build",
+#            "buck-out", "dist", "node_modules", "venv"]
+# exclude_dirs = ["my_generated_code", "vendor"]
 ```
 
 ---

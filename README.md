@@ -115,6 +115,9 @@ explode_threshold = 3
 # L001/L002/L003: flag for-loops where range(N) > threshold;
 #                 while-loops always assume 99 iterations (default: 10)
 loop_threshold = 10
+
+# Directories to skip during recursive scanning (default: common build/venv dirs)
+# exclude_dirs = ["my_generated_code", "vendor"]
 ```
 
 ### Suppressing a specific line
