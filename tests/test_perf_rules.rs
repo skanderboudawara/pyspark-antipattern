@@ -9,39 +9,51 @@ use pyspark_antipattern::rules::perf_rules::*;
 #[test] fn perf001_no_topandas()           { assert_no_violation(&check(perf001::check, "pdf = df.toPandas()"), "PERF001"); }
 
 // ── PERF003: too many shuffles without checkpoint ─────────────────────────────
+// groupBy().agg() counts as ONE shuffle stage (not two) — Spark executes it as
+// a single Exchange node in the physical plan.
 #[test] fn perf003_fires_over_threshold() {
-    // 10 shuffles, no checkpoint → fires
-    let src = "df=df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100).join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct()";
+    // groupBy+agg=1, distinct=2, sort=3, repartition=4, join=5,
+    // dropDuplicates=6, orderBy=7, agg=8, distinct=9, sort=10 → fires
+    let src = "df=df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100).join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct().sort('x')";
     assert_violation(&check(perf003::check, src), "PERF003", 1);
 }
 #[test] fn perf003_no_violation_under_threshold() {
-    // 3 shuffles, no checkpoint → silent (default threshold = 9)
+    // groupBy+agg=1, distinct=2 → 2 shuffles, silent
     let src = "df=df.groupBy('a').agg(f.sum('b')).distinct()";
     assert_no_violation(&check(perf003::check, src), "PERF003");
 }
 #[test] fn perf003_checkpoint_resets_counter() {
-    // 5 shuffles, checkpoint, 5 more → never exceeds 9
+    // before checkpoint: groupBy+agg=1, distinct=2, sort=3, repartition=4
+    // after checkpoint:  join=1, dropDuplicates=2, orderBy=3, agg=4, distinct=5
+    // neither segment exceeds 9
     let src = "df=df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100)\ndf=df.localCheckpoint()\ndf=df.join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct()";
     assert_no_violation(&check(perf003::check, src), "PERF003");
 }
 #[test] fn perf003_fn_cost_propagated() {
-    // helper has 5 shuffles; calling it twice = 10 → fires on line 4 (second call)
+    // helper export cost = 4 (groupBy+agg=1, distinct=2, sort=3, repartition=4)
+    // 3 calls × 4 = 12 → fires on line 5 (third call)
     let src = "\
 def helper(df):\n    return df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100)\n\
-df = helper(df)\ndf = helper(df)\n";
-    assert_violation(&check(perf003::check, src), "PERF003", 4);
+df = helper(df)\ndf = helper(df)\ndf = helper(df)\n";
+    assert_violation(&check(perf003::check, src), "PERF003", 5);
 }
 #[test] fn perf003_fn_cost_no_violation_single_call() {
-    // helper has 5 shuffles; calling it once = 5 → no fire (threshold=9)
+    // helper export cost = 4; one call = 4 ≤ 9, no fire
     let src = "\
 def helper(df):\n    return df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100)\n\
 df = helper(df)\n";
     assert_no_violation(&check(perf003::check, src), "PERF003");
 }
 #[test] fn perf003_fn_body_checked_independently() {
-    // function body itself has 10 shuffles → fires on line 2 (the body statement)
-    let src = "def heavy(df):\n    df=df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100).join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct()\n    return df";
+    // groupBy+agg=1, distinct=2, sort=3, repartition=4, join=5,
+    // dropDuplicates=6, orderBy=7, agg=8, distinct=9, sort=10 → fires on line 2
+    let src = "def heavy(df):\n    df=df.groupBy('a').agg(f.sum('b')).distinct().sort('c').repartition(100).join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct().sort('x')\n    return df";
     assert_violation(&check(perf003::check, src), "PERF003", 2);
+}
+#[test] fn perf003_standalone_agg_counts() {
+    // agg NOT preceded by groupBy still counts as a shuffle
+    let src = "df=df.distinct().sort('a').repartition(100).join(d,'x').dropDuplicates(['a']).orderBy('b').agg(f.count('*')).distinct().sort('x').join(d,'y')";
+    assert_violation(&check(perf003::check, src), "PERF003", 1);
 }
 
 // ── PERF002: multiple getOrCreate() calls ─────────────────────────────────────

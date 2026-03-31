@@ -83,6 +83,17 @@ impl Collector {
     }
 }
 
+/// Returns true when `expr` is a method call whose method name matches `method`.
+/// Used to detect `groupBy().agg()` chains so we don't double-count the stage.
+fn receiver_is_method(expr: &Expr, method: &str) -> bool {
+    if let Expr::Call(c) = expr {
+        if let Expr::Attribute(a) = c.func.as_ref() {
+            return a.attr.as_str() == method;
+        }
+    }
+    false
+}
+
 impl Visitor for Collector {
     /// Stop at nested function / async-function definitions — those scopes are
     /// analysed independently by `scan`.
@@ -104,10 +115,16 @@ impl Visitor for Collector {
                     let pos = end.saturating_sub(name.len() as u32);
 
                     if SHUFFLE_OPS.contains(&name) {
-                        self.events.push(Event {
-                            pos,
-                            kind: EventKind::Shuffle { op_len: name.len() },
-                        });
+                        // `groupBy().agg()` is one Spark stage, not two.
+                        // Skip the `agg` event when its receiver is a `groupBy` call
+                        // so the pair counts as a single shuffle operation.
+                        let skip = name == "agg" && receiver_is_method(&attr.value, "groupBy");
+                        if !skip {
+                            self.events.push(Event {
+                                pos,
+                                kind: EventKind::Shuffle { op_len: name.len() },
+                            });
+                        }
                     } else if CHECKPOINT_OPS.contains(&name) {
                         self.events.push(Event { pos, kind: EventKind::Checkpoint });
                     }
@@ -152,7 +169,9 @@ fn body_export_cost(body: &[Stmt], fn_costs: &HashMap<String, usize>) -> usize {
 /// Build a `function_name → export_shuffle_cost` map for all top-level
 /// function definitions in `stmts`.  Uses iterative convergence (up to 10
 /// rounds) to handle transitive / mutually-recursive calls.
-fn build_fn_costs(stmts: &[Stmt]) -> HashMap<String, usize> {
+///
+/// `pub(crate)` so `checker.rs` can call this during the global pre-pass.
+pub(crate) fn build_fn_costs(stmts: &[Stmt]) -> HashMap<String, usize> {
     let mut fn_bodies: Vec<(String, &[Stmt])> = vec![];
     for stmt in stmts {
         match stmt {
@@ -287,7 +306,12 @@ pub fn check(
     index: &LineIndex,
 ) -> Vec<Violation> {
     let threshold = config.max_shuffle_operations;
-    let fn_costs = build_fn_costs(stmts);
+
+    // Start with the project-wide costs (functions defined in other files),
+    // then overlay with this file's own definitions (local wins on collision).
+    let mut fn_costs = config.global_fn_costs.clone();
+    fn_costs.extend(build_fn_costs(stmts));
+
     let mut violations = vec![];
     scan(stmts, &fn_costs, threshold, source, file, index, config.severity_of(ID), &mut violations);
     violations

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Default)]
@@ -11,7 +13,7 @@ pub struct ToolSection {
     pub pyspark_antipattern: Option<Config>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
 pub struct Config {
     pub failing_rules:      Vec<String>,
@@ -24,6 +26,9 @@ pub struct Config {
     pub loop_threshold:     usize,
     pub exclude_dirs:            Vec<String>,
     pub max_shuffle_operations:  usize,
+    /// Populated at check time by the pre-pass in checker.rs — not read from pyproject.toml.
+    #[serde(skip)]
+    pub global_fn_costs: HashMap<String, usize>,
 }
 
 pub fn default_exclude_dirs() -> Vec<String> {
@@ -51,6 +56,7 @@ impl Default for Config {
             loop_threshold:     10,
             exclude_dirs:            default_exclude_dirs(),
             max_shuffle_operations:  9,
+            global_fn_costs:         HashMap::new(),
         }
     }
 }
