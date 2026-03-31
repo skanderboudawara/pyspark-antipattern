@@ -2,6 +2,7 @@
 [![Release](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyspark-antipattern?cacheSeconds=0)](https://pypi.org/project/pyspark-antipattern/)
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/issues)
+[![Documentation](https://img.shields.io/badge/docs-online-blue)](https://skanderboudawara.github.io/pyspark-antipattern/)
 
 # pyspark-antipattern
 
@@ -65,6 +66,8 @@ With `show_best_practice = true` — best-practice guidance for each rule:
 ---
 
 ## Rules
+
+Full documentation is available at **https://skanderboudawara.github.io/pyspark-antipattern/**.
 
 Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each rule has its own markdown file with a full explanation and best-practice guidance.
 
