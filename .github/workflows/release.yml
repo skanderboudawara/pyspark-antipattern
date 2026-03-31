@@ -6,9 +6,37 @@ on:
       - "v*"
 
 jobs:
+  # ── 0. Verify tag matches versions in pyproject.toml and Cargo.toml ────────
+  check-version:
+    name: Check version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Verify tag matches pyproject.toml and Cargo.toml
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PYPROJECT=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          CARGO=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+
+          echo "Tag version   : $TAG"
+          echo "pyproject.toml: $PYPROJECT"
+          echo "Cargo.toml    : $CARGO"
+
+          if [ "$TAG" != "$PYPROJECT" ]; then
+            echo "ERROR: tag v$TAG does not match pyproject.toml version $PYPROJECT"
+            exit 1
+          fi
+          if [ "$TAG" != "$CARGO" ]; then
+            echo "ERROR: tag v$TAG does not match Cargo.toml version $CARGO"
+            exit 1
+          fi
+          echo "All versions match: $TAG"
+
   # ── 1. Run tests on all platforms ──────────────────────────────────────────
   test:
     name: Test (${{ matrix.os }})
+    needs: check-version
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
