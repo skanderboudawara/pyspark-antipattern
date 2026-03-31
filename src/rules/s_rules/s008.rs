@@ -15,6 +15,7 @@ use crate::{
     config::Config,
     line_index::LineIndex,
     rules::utils::{for_loop_iters, method_violation},
+    spark_ops::EXPLODE_OPS,
     violation::{RuleId, Severity, Violation},
     visitor::{walk_expr, Visitor},
 };
@@ -23,7 +24,7 @@ const ID: &str = "S008";
 const WHILE_ASSUMED_ITERS: i64 = 99;
 
 fn is_explode(name: &str) -> bool {
-    matches!(name, "explode" | "explode_outer")
+    EXPLODE_OPS.contains(&name)
 }
 
 // ── Expression-level counter ──────────────────────────────────────────────────

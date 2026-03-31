@@ -12,36 +12,12 @@ use rustpython_parser::ast::{Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
+    spark_ops::{CHECKPOINT_OPS, SHUFFLE_OPS},
     violation::{RuleId, Severity, Violation},
     visitor::{walk_expr, walk_stmt, Visitor},
 };
 
 const ID: &str = "PERF003";
-
-static SHUFFLE_OPS: &[&str] = &[
-    "groupBy",
-    "agg",
-    "join",
-    "repartition",
-    "distinct",
-    "dropDuplicates",
-    "orderBy",
-    "sort",
-    "sortWithinPartitions",
-    "reduceByKey",
-    "groupByKey",
-    "aggregateByKey",
-    "combineByKey",
-    "cogroup",
-    "cartesian",
-    "intersection",
-    "subtractByKey",
-    "leftOuterJoin",
-    "rightOuterJoin",
-    "fullOuterJoin",
-];
-
-static CHECKPOINT_OPS: &[&str] = &["checkpoint", "localCheckpoint"];
 
 // ── Event model ──────────────────────────────────────────────────────────────
 

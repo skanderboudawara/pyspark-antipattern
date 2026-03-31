@@ -10,6 +10,7 @@ use crate::{
     config::Config,
     line_index::LineIndex,
     rules::utils::is_non_dataframe_receiver,
+    spark_ops::DATAFRAME_METHODS,
     violation::{RuleId, Severity, Violation},
 };
 
@@ -32,30 +33,15 @@ fn root_name(expr: &Expr) -> Option<&str> {
     }
 }
 
-/// Return true if `name` is a method that only exists on Spark DataFrames /
-/// related objects (never on str, dict, list, etc.).
-fn is_spark_method(name: &str) -> bool {
-    matches!(
-        name,
-        "select" | "filter" | "where" | "withColumn" | "withColumnRenamed"
-        | "drop" | "dropDuplicates" | "distinct" | "groupBy" | "agg"
-        | "join" | "union" | "unionAll" | "unionByName" | "sort" | "orderBy"
-        | "limit" | "cache" | "persist" | "unpersist" | "repartition" | "coalesce"
-        | "show" | "collect" | "toPandas" | "toDF" | "alias" | "hint"
-        | "crossJoin" | "fillna" | "dropna" | "replace" | "sample" | "sampleBy"
-        | "randomSplit" | "checkpoint" | "selectExpr" | "toLocalIterator"
-        | "createOrReplaceTempView" | "createTempView" | "registerTempTable"
-        | "write" | "writeStream"
-    )
-}
-
-/// Return true if `expr` (an assignment RHS) contains at least one Spark method
-/// anywhere in its method-call chain, called on a non-stdlib receiver.
+/// Return true if `expr` (an assignment RHS) contains at least one Spark
+/// DataFrame method anywhere in its method-call chain, on a non-stdlib receiver.
 fn has_spark_method(expr: &Expr) -> bool {
     match expr {
         Expr::Call(c) => {
             if let Expr::Attribute(a) = c.func.as_ref() {
-                if is_spark_method(a.attr.as_str()) && !is_non_dataframe_receiver(a.value.as_ref()) {
+                if DATAFRAME_METHODS.contains(&a.attr.as_str())
+                    && !is_non_dataframe_receiver(a.value.as_ref())
+                {
                     return true;
                 }
                 return has_spark_method(a.value.as_ref());

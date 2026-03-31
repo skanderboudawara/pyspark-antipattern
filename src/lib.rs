@@ -1,4 +1,5 @@
 pub mod config;
+pub mod spark_ops;
 pub mod violation;
 pub mod line_index;
 pub mod rule_content;

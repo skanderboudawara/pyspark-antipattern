@@ -2,6 +2,7 @@ use rustpython_parser::ast::Expr;
 
 use crate::{
     line_index::LineIndex,
+    spark_ops::NON_DATAFRAME_ROOTS,
     violation::{RuleId, Severity, Violation},
 };
 
@@ -135,12 +136,7 @@ pub fn is_non_dataframe_receiver(expr: &Expr) -> bool {
         match current {
             Expr::Attribute(a) => current = a.value.as_ref(),
             Expr::Name(n) => {
-                return matches!(
-                    n.id.as_str(),
-                    "os" | "sys" | "pathlib" | "str" | "bytes"
-                    | "urllib" | "posixpath" | "ntpath" | "shutil"
-                    | "Path" | "PurePath" | "PosixPath" | "WindowsPath"
-                );
+                return NON_DATAFRAME_ROOTS.contains(&n.id.as_str());
             }
             _ => return false,
         }
