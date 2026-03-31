@@ -244,4 +244,44 @@
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U003/</loc>
          <lastmod>2026-03-31</lastmod>
     </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/distinct_threshold/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/exclude_dirs/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/explode_threshold/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/failing_rules/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/ignore_rules/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/loop_threshold/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/show_best_practice/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/show_information/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/warning_rules/</loc>
+         <lastmod>2026-03-31</lastmod>
+    </url>
 </urlset>
