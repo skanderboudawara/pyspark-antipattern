@@ -8,7 +8,7 @@ use crate::{
     config::Config,
     line_index::LineIndex,
     noqa,
-    rules::{perf_rules::perf003, s_rules::s004, ALL_RULES},
+    rules::{perf_rules::perf003, s_rules::{s004, s008}, ALL_RULES},
     violation::Violation,
 };
 
@@ -80,6 +80,32 @@ fn build_global_fn_distinct_costs(paths: &[String]) -> HashMap<String, i64> {
     }
 
     // Import alias resolution.
+    let mut alias_entries: Vec<(String, i64)> = vec![];
+    for path in paths {
+        if let Some(stmts) = parse_stmts(path) {
+            for (alias, original) in collect_import_aliases(&stmts) {
+                if let Some(&cost) = global.get(&original) {
+                    alias_entries.push((alias, cost));
+                }
+            }
+        }
+    }
+    global.extend(alias_entries);
+    global
+}
+
+/// Build a project-wide `function_name → weighted_explode_cost` map from all
+/// `paths`.
+fn build_global_fn_explode_costs(paths: &[String]) -> HashMap<String, i64> {
+    let empty: HashMap<String, i64> = HashMap::new();
+    let mut global: HashMap<String, i64> = HashMap::new();
+
+    for path in paths {
+        if let Some(stmts) = parse_stmts(path) {
+            global.extend(s008::build_fn_explode_costs(&stmts, &empty));
+        }
+    }
+
     let mut alias_entries: Vec<(String, i64)> = vec![];
     for path in paths {
         if let Some(stmts) = parse_stmts(path) {
@@ -178,6 +204,7 @@ pub fn check_path(root: &str, config: &Config) -> (Vec<Violation>, usize) {
     let mut config_with_global = config.clone();
     config_with_global.global_fn_costs = build_global_fn_costs(&scan_paths);
     config_with_global.global_fn_distinct_costs = build_global_fn_distinct_costs(&scan_paths);
+    config_with_global.global_fn_explode_costs  = build_global_fn_explode_costs(&scan_paths);
 
     let config_ref = &config_with_global;
 

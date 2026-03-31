@@ -32,6 +32,9 @@ pub struct Config {
     /// Per-function weighted distinct() cost — populated by the pre-pass.
     #[serde(skip)]
     pub global_fn_distinct_costs: HashMap<String, i64>,
+    /// Per-function weighted explode() cost — populated by the pre-pass.
+    #[serde(skip)]
+    pub global_fn_explode_costs: HashMap<String, i64>,
 }
 
 pub fn default_exclude_dirs() -> Vec<String> {
@@ -61,6 +64,7 @@ impl Default for Config {
             max_shuffle_operations:  9,
             global_fn_costs:         HashMap::new(),
             global_fn_distinct_costs: HashMap::new(),
+            global_fn_explode_costs:  HashMap::new(),
         }
     }
 }
