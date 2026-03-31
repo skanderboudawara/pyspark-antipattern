@@ -1,7 +1,7 @@
-[![PyPI - Version](https://img.shields.io/pypi/v/pyspark-antipattern)](https://pypi.org/project/pyspark-antipattern/)
-[![Release](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg)](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyspark-antipattern)](https://pypi.org/project/pyspark-antipattern/)
-[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern)](https://github.com/skanderboudawara/pyspark-antipattern/issues)
+[![PyPI - Version](https://img.shields.io/pypi/v/pyspark-antipattern?cacheSeconds=0)](https://pypi.org/project/pyspark-antipattern/)
+[![Release](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyspark-antipattern?cacheSeconds=0)](https://pypi.org/project/pyspark-antipattern/)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/issues)
 
 # pyspark-antipattern
 
