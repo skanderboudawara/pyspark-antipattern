@@ -107,37 +107,39 @@ fn weighted_count(stmts: &[Stmt], multiplier: i64, fn_costs: &HashMap<String, i6
     for stmt in stmts {
         match stmt {
             Stmt::For(f) => {
-                let iters = for_loop_iters(&f.iter).unwrap_or(i64::MAX / multiplier);
+                let iters = for_loop_iters(&f.iter).unwrap_or(i64::MAX / multiplier.max(1));
                 let m = multiplier.saturating_mul(iters);
-                total += weighted_count(&f.body, m, fn_costs);
-                total += weighted_count(&f.orelse, multiplier, fn_costs);
+                total = total.saturating_add(weighted_count(&f.body, m, fn_costs));
+                total = total.saturating_add(weighted_count(&f.orelse, multiplier, fn_costs));
             }
             Stmt::While(w) => {
                 let m = multiplier.saturating_mul(WHILE_ASSUMED_ITERS);
-                total += weighted_count(&w.body, m, fn_costs);
-                total += weighted_count(&w.orelse, multiplier, fn_costs);
+                total = total.saturating_add(weighted_count(&w.body, m, fn_costs));
+                total = total.saturating_add(weighted_count(&w.orelse, multiplier, fn_costs));
             }
             Stmt::If(i) => {
-                total += weighted_count(&i.body, multiplier, fn_costs);
-                total += weighted_count(&i.orelse, multiplier, fn_costs);
+                total = total.saturating_add(weighted_count(&i.body, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&i.orelse, multiplier, fn_costs));
             }
-            Stmt::With(w) => total += weighted_count(&w.body, multiplier, fn_costs),
+            Stmt::With(w) => {
+                total = total.saturating_add(weighted_count(&w.body, multiplier, fn_costs));
+            }
             Stmt::Try(t) => {
-                total += weighted_count(&t.body, multiplier, fn_costs);
-                total += weighted_count(&t.orelse, multiplier, fn_costs);
-                total += weighted_count(&t.finalbody, multiplier, fn_costs);
+                total = total.saturating_add(weighted_count(&t.body, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&t.orelse, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&t.finalbody, multiplier, fn_costs));
             }
             // Function definitions are NOT recursed — costs come from fn_costs.
             Stmt::FunctionDef(_) | Stmt::AsyncFunctionDef(_) => {}
             Stmt::Expr(e) => {
                 let mut counter = ExprCounter { count: 0, fn_costs };
                 counter.visit_expr(&e.value);
-                total += counter.count * multiplier;
+                total = total.saturating_add(counter.count.saturating_mul(multiplier));
             }
             Stmt::Assign(a) => {
                 let mut counter = ExprCounter { count: 0, fn_costs };
                 counter.visit_expr(&a.value);
-                total += counter.count * multiplier;
+                total = total.saturating_add(counter.count.saturating_mul(multiplier));
             }
             _ => {}
         }

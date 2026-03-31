@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use rayon::prelude::*;
-use rustpython_parser::{ast::{Mod, Stmt}, parse, Mode};
+use rustpython_parser::{ast::Mod, parse, Mode};
 use walkdir::WalkDir;
 
 use crate::{
@@ -11,6 +11,15 @@ use crate::{
     rules::{perf_rules::perf003, s_rules::{s004, s008}, ALL_RULES},
     violation::Violation,
 };
+
+/// All costs extracted from a single file in one parse.
+struct FileCosts {
+    fn_costs:         HashMap<String, usize>,
+    fn_distinct_costs: HashMap<String, i64>,
+    fn_explode_costs:  HashMap<String, i64>,
+    /// `local_alias → original_name` from `from X import Y as Z`
+    import_aliases:   HashMap<String, String>,
+}
 
 /// Lint a single .py file and return violations (noqa-filtered and sorted).
 pub fn check_file(path: &str, config: &Config) -> Result<Vec<Violation>, String> {
@@ -41,120 +50,82 @@ pub fn check_file(path: &str, config: &Config) -> Result<Vec<Violation>, String>
 
 // ── Global function-cost pre-pass ────────────────────────────────────────────
 
-/// Parse a file and return its top-level statements, silently skipping on error.
-fn parse_stmts(path: &str) -> Option<Vec<Stmt>> {
+/// Parse one file and extract all cost information in a single pass.
+/// Returns `None` if the file cannot be read or parsed.
+fn extract_file_costs(path: &str) -> Option<FileCosts> {
     let source = std::fs::read_to_string(path).ok()?;
     let parsed = parse(&source, Mode::Module, path).ok()?;
-    match parsed {
-        Mod::Module(m) => Some(m.body),
-        _ => None,
-    }
-}
+    let stmts = match parsed {
+        Mod::Module(m) => m.body,
+        _ => return None,
+    };
 
-/// Collect `from X import Y as Z` aliases from a file's statements.
-/// Returns a map of `local_alias → original_name`.
-fn collect_import_aliases(stmts: &[Stmt]) -> HashMap<String, String> {
-    let mut aliases = HashMap::new();
-    for stmt in stmts {
+    let empty_i64: HashMap<String, i64> = HashMap::new();
+
+    // Collect import aliases: `from X import Y as Z` → Z → Y
+    let mut import_aliases = HashMap::new();
+    for stmt in &stmts {
         if let rustpython_parser::ast::Stmt::ImportFrom(imp) = stmt {
             for alias in &imp.names {
                 if let Some(asname) = &alias.asname {
-                    aliases.insert(asname.to_string(), alias.name.to_string());
+                    import_aliases.insert(asname.to_string(), alias.name.to_string());
                 }
             }
         }
     }
-    aliases
+
+    Some(FileCosts {
+        fn_costs:          perf003::build_fn_costs(&stmts),
+        fn_distinct_costs: s004::build_fn_distinct_costs(&stmts, &empty_i64),
+        fn_explode_costs:  s008::build_fn_explode_costs(&stmts, &empty_i64),
+        import_aliases,
+    })
 }
 
-/// Build a project-wide `function_name → weighted_distinct_cost` map from all
-/// `paths`.  Phase 1 collects raw costs; phase 2 resolves import aliases.
-fn build_global_fn_distinct_costs(paths: &[String]) -> HashMap<String, i64> {
-    let empty: HashMap<String, i64> = HashMap::new();
-    let mut global: HashMap<String, i64> = HashMap::new();
-
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            global.extend(s004::build_fn_distinct_costs(&stmts, &empty));
-        }
-    }
-
-    // Import alias resolution.
-    let mut alias_entries: Vec<(String, i64)> = vec![];
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            for (alias, original) in collect_import_aliases(&stmts) {
-                if let Some(&cost) = global.get(&original) {
-                    alias_entries.push((alias, cost));
-                }
-            }
-        }
-    }
-    global.extend(alias_entries);
-    global
-}
-
-/// Build a project-wide `function_name → weighted_explode_cost` map from all
-/// `paths`.
-fn build_global_fn_explode_costs(paths: &[String]) -> HashMap<String, i64> {
-    let empty: HashMap<String, i64> = HashMap::new();
-    let mut global: HashMap<String, i64> = HashMap::new();
-
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            global.extend(s008::build_fn_explode_costs(&stmts, &empty));
-        }
-    }
-
-    let mut alias_entries: Vec<(String, i64)> = vec![];
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            for (alias, original) in collect_import_aliases(&stmts) {
-                if let Some(&cost) = global.get(&original) {
-                    alias_entries.push((alias, cost));
-                }
-            }
-        }
-    }
-    global.extend(alias_entries);
-    global
-}
-
-/// Build a project-wide `function_name → shuffle_export_cost` map from all
-/// `paths`.
+/// Build all three project-wide function-cost maps from `paths` in parallel.
 ///
-/// **Phase 1** — collect each file's local function costs (direct shuffles
-/// only, intra-file transitive calls resolved via the existing convergence
-/// loop inside `build_fn_costs`).
-///
-/// **Phase 2** — resolve import aliases: if file B has
-/// `from lib import helper as h` and `helper` has a known cost, add
-/// `h → cost` so that calls to `h(df)` in B are priced correctly.
-fn build_global_fn_costs(paths: &[String]) -> HashMap<String, usize> {
-    // Phase 1: merge all per-file costs into one map (last-writer wins on
-    // collisions — good enough for a linter that doesn't track modules).
-    let mut global: HashMap<String, usize> = HashMap::new();
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            global.extend(perf003::build_fn_costs(&stmts));
+/// Each file is parsed **once** (in parallel via rayon).  After merging, a
+/// single alias-resolution pass propagates costs through `from X import Y as Z`
+/// imports.
+fn build_all_global_costs(
+    paths: &[String],
+) -> (HashMap<String, usize>, HashMap<String, i64>, HashMap<String, i64>) {
+    // Phase 1 — parse all files in parallel.
+    let all_costs: Vec<FileCosts> = paths
+        .par_iter()
+        .filter_map(|p| extract_file_costs(p))
+        .collect();
+
+    // Phase 2 — sequential merge (last-writer wins on name collisions).
+    let mut global_fn:       HashMap<String, usize> = HashMap::new();
+    let mut global_distinct: HashMap<String, i64>   = HashMap::new();
+    let mut global_explode:  HashMap<String, i64>   = HashMap::new();
+
+    for fc in &all_costs {
+        global_fn.extend(fc.fn_costs.iter().map(|(k, v)| (k.clone(), *v)));
+        global_distinct.extend(fc.fn_distinct_costs.iter().map(|(k, v)| (k.clone(), *v)));
+        global_explode.extend(fc.fn_explode_costs.iter().map(|(k, v)| (k.clone(), *v)));
+    }
+
+    // Phase 3 — alias resolution: `from lib import helper as h` → h gets
+    // the same cost as helper, for every cost map.
+    let mut fn_aliases:       Vec<(String, usize)> = vec![];
+    let mut distinct_aliases: Vec<(String, i64)>   = vec![];
+    let mut explode_aliases:  Vec<(String, i64)>   = vec![];
+
+    for fc in &all_costs {
+        for (alias, original) in &fc.import_aliases {
+            if let Some(&c) = global_fn.get(original.as_str())       { fn_aliases.push((alias.clone(), c)); }
+            if let Some(&c) = global_distinct.get(original.as_str()) { distinct_aliases.push((alias.clone(), c)); }
+            if let Some(&c) = global_explode.get(original.as_str())  { explode_aliases.push((alias.clone(), c)); }
         }
     }
 
-    // Phase 2: alias expansion — only needs one pass because aliases point
-    // directly to function names already in `global`.
-    let mut alias_entries: Vec<(String, usize)> = vec![];
-    for path in paths {
-        if let Some(stmts) = parse_stmts(path) {
-            for (alias, original) in collect_import_aliases(&stmts) {
-                if let Some(&cost) = global.get(&original) {
-                    alias_entries.push((alias, cost));
-                }
-            }
-        }
-    }
-    global.extend(alias_entries);
+    global_fn.extend(fn_aliases);
+    global_distinct.extend(distinct_aliases);
+    global_explode.extend(explode_aliases);
 
-    global
+    (global_fn, global_distinct, global_explode)
 }
 
 // ── Path collection ───────────────────────────────────────────────────────────
@@ -201,10 +172,11 @@ pub fn check_path(root: &str, config: &Config) -> (Vec<Violation>, usize) {
         paths.clone()
     };
 
+    let (gfn, gdistinct, gexplode) = build_all_global_costs(&scan_paths);
     let mut config_with_global = config.clone();
-    config_with_global.global_fn_costs = build_global_fn_costs(&scan_paths);
-    config_with_global.global_fn_distinct_costs = build_global_fn_distinct_costs(&scan_paths);
-    config_with_global.global_fn_explode_costs  = build_global_fn_explode_costs(&scan_paths);
+    config_with_global.global_fn_costs          = gfn;
+    config_with_global.global_fn_distinct_costs = gdistinct;
+    config_with_global.global_fn_explode_costs  = gexplode;
 
     let config_ref = &config_with_global;
 
