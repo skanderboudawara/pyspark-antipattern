@@ -29,6 +29,9 @@ pub struct Config {
     /// Populated at check time by the pre-pass in checker.rs — not read from pyproject.toml.
     #[serde(skip)]
     pub global_fn_costs: HashMap<String, usize>,
+    /// Per-function weighted distinct() cost — populated by the pre-pass.
+    #[serde(skip)]
+    pub global_fn_distinct_costs: HashMap<String, i64>,
 }
 
 pub fn default_exclude_dirs() -> Vec<String> {
@@ -57,6 +60,7 @@ impl Default for Config {
             exclude_dirs:            default_exclude_dirs(),
             max_shuffle_operations:  9,
             global_fn_costs:         HashMap::new(),
+            global_fn_distinct_costs: HashMap::new(),
         }
     }
 }
