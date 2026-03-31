@@ -1,5 +1,8 @@
-use clap::{Parser, Subcommand};
 use std::process;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Mutex;
+
+use clap::{Parser, Subcommand};
 
 use pyspark_antipattern::{checker, config, reporter, violation};
 
@@ -38,25 +41,35 @@ fn main() {
                     config::Config::default()
                 });
 
-            let (violations, file_count) = checker::check_path(&path, &config);
+            let error_count   = AtomicUsize::new(0);
+            let warning_count = AtomicUsize::new(0);
 
-            let error_count = violations
-                .iter()
-                .filter(|v| v.severity == violation::Severity::Error)
-                .count();
-            let warning_count = violations
-                .iter()
-                .filter(|v| v.severity == violation::Severity::Warning)
-                .count();
+            // Mutex ensures violation blocks from different files don't interleave
+            // on stdout when multiple rayon threads finish simultaneously.
+            let stdout_lock = Mutex::new(());
 
-            reporter::print_violations(&violations, &config);
+            let file_count = checker::check_path(&path, &config, &|violations| {
+                if violations.is_empty() { return; }
+
+                for v in &violations {
+                    match v.severity {
+                        violation::Severity::Error   => { error_count.fetch_add(1, Ordering::Relaxed); }
+                        violation::Severity::Warning => { warning_count.fetch_add(1, Ordering::Relaxed); }
+                    }
+                }
+
+                let _guard = stdout_lock.lock().unwrap();
+                reporter::print_violations(&violations, &config);
+            });
 
             eprintln!(
                 "Checked {} file(s). Found {} error(s), {} warning(s).",
-                file_count, error_count, warning_count
+                file_count,
+                error_count.load(Ordering::Relaxed),
+                warning_count.load(Ordering::Relaxed),
             );
 
-            if error_count > 0 {
+            if error_count.load(Ordering::Relaxed) > 0 {
                 process::exit(1);
             }
         }

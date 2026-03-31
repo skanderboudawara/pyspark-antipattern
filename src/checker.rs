@@ -153,9 +153,20 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
 // ── Public entry point ────────────────────────────────────────────────────────
 
 /// Lint a file or recursively scan a directory for .py files.
-pub fn check_path(root: &str, config: &Config) -> (Vec<Violation>, usize) {
+///
+/// `on_file` is called once per file (from a rayon worker thread) as soon as
+/// that file's violations are ready.  Use it to stream output to the terminal
+/// rather than waiting for all files to finish.  The callback must be `Sync`
+/// because rayon may call it from multiple threads concurrently.
+pub fn check_path(
+    root: &str,
+    config: &Config,
+    on_file: &(dyn Fn(Vec<Violation>) + Sync),
+) -> usize {
     let paths = collect_paths(root, config);
     let file_count = paths.len();
+
+    eprintln!("Scanning {} file(s) — building cross-file cost maps…", file_count);
 
     // Pre-pass: build a project-wide function cost map so PERF003 can price
     // calls to helpers defined in other files.
@@ -180,17 +191,16 @@ pub fn check_path(root: &str, config: &Config) -> (Vec<Violation>, usize) {
 
     let config_ref = &config_with_global;
 
-    // Main pass: lint all files in parallel.
-    let all_violations: Vec<Violation> = paths
-        .par_iter()
-        .flat_map(|path| match check_file(path, config_ref) {
-            Ok(v) => v,
-            Err(msg) => {
-                eprintln!("warning: {msg}");
-                vec![]
-            }
-        })
-        .collect();
+    eprintln!("Linting {} file(s)…", file_count);
 
-    (all_violations, file_count)
+    // Main pass: lint all files in parallel, streaming results via on_file.
+    paths.par_iter().for_each(|path| {
+        let violations = match check_file(path, config_ref) {
+            Ok(v)    => v,
+            Err(msg) => { eprintln!("warning: {msg}"); vec![] }
+        };
+        on_file(violations);
+    });
+
+    file_count
 }
