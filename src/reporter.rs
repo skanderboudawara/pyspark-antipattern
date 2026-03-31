@@ -106,6 +106,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "F015" => "Avoid multiple consecutive filter() calls; combine conditions into one",
         "F016" => "Avoid long DataFrame renaming chains; overwrite the same variable instead",
         "F017" => "Avoid expr(); use native PySpark functions instead",
+        "F018" => "Use Spark native datetime functions instead of Python datetime objects",
         "L001" => "Avoid looping without .localCheckpoint() or .checkpoint()",
         "L002" => "Avoid while loops with DataFrames",
         "L003" => "Avoid calling withColumn() inside a loop",

@@ -49,6 +49,7 @@ All rules are organized by category. Each rule page explains what is flagged, wh
 | [F015](format/F015.md) | Avoid multiple consecutive `filter()` calls — combine conditions |
 | [F016](format/F016.md) | Avoid long DataFrame renaming chains — overwrite the same variable |
 | [F017](format/F017.md) | Avoid `expr()` — use native PySpark functions instead |
+| [F018](format/F018.md) | Use Spark native datetime functions instead of Python datetime objects |
 
 ---
 

@@ -129,3 +129,48 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f017_fires_in_select()       { assert_violation(&check(f017::check, "df.select(expr('a + b').alias('sum'))"), "F017", 1); }
 #[test] fn f017_no_col()                { assert_no_violation(&check(f017::check, "df.withColumn('total', col('price') * col('quantity'))"), "F017"); }
 #[test] fn f017_no_when()               { assert_no_violation(&check(f017::check, "df.withColumn('f', when(col('a') > 0, 1).otherwise(0))"), "F017"); }
+
+// ── F018: Python datetime objects inside Spark expressions ────────────────────
+#[test] fn f018_fires_lit_datetime_now() {
+    let src = "from datetime import datetime\ndf.withColumn('ts', lit(datetime.now()))";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_lit_date_today() {
+    let src = "from datetime import date\ndf.filter(col('d') > lit(date.today()))";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_lit_constructor() {
+    let src = "from datetime import datetime\ndf.withColumn('cutoff', lit(datetime(2024, 6, 1)))";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_withcolumn_direct() {
+    let src = "from datetime import date\ndf.withColumn('d', date.today())";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_filter_compare() {
+    let src = "from datetime import datetime\ndf.filter(col('ts') > datetime.now())";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_when_value() {
+    let src = "from datetime import date\ndf.withColumn('x', when(col('a'), date.today()))";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_fires_module_import() {
+    // import datetime (module), then datetime.datetime.now()
+    let src = "import datetime\ndf.withColumn('ts', lit(datetime.datetime.now()))";
+    assert_violation(&check(f018::check, src), "F018", 2);
+}
+#[test] fn f018_no_fire_without_import() {
+    // datetime used as a variable name, not imported from the stdlib module
+    let src = "df.withColumn('ts', lit(datetime.now()))";
+    assert_no_violation(&check(f018::check, src), "F018");
+}
+#[test] fn f018_no_fire_spark_functions() {
+    let src = "from datetime import datetime\ndf.withColumn('ts', current_timestamp())";
+    assert_no_violation(&check(f018::check, src), "F018");
+}
+#[test] fn f018_no_fire_plain_python() {
+    // datetime used outside of Spark expressions — not our concern
+    let src = "from datetime import datetime\nlog_time = datetime.now().isoformat()";
+    assert_no_violation(&check(f018::check, src), "F018");
+}

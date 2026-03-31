@@ -107,6 +107,7 @@ nav:
       - F015: rules/format/F015.md
       - F016: rules/format/F016.md
       - F017: rules/format/F017.md
+      - F018: rules/format/F018.md
     - L — Looping:
       - rules/looping/index.md
       - L001: rules/looping/L001.md
