@@ -60,6 +60,7 @@ nav:
   - Installation: installation.md
   - Configuration: configuration.md
   - CLI Reference: cli.md
+  - Versioning: versioning.md
   - Settings:
     - settings/index.md
     - select: settings/select.md
