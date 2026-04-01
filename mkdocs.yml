@@ -82,6 +82,7 @@ nav:
       - rules/arr/index.md
       - ARR001: rules/arr/ARR001.md
       - ARR002: rules/arr/ARR002.md
+      - ARR003: rules/arr/ARR003.md
     - D — Driver:
       - rules/driver/index.md
       - D001: rules/driver/D001.md
@@ -112,6 +113,7 @@ nav:
       - F016: rules/format/F016.md
       - F017: rules/format/F017.md
       - F018: rules/format/F018.md
+      - F019: rules/format/F019.md
     - L — Looping:
       - rules/looping/index.md
       - L001: rules/looping/L001.md
@@ -125,6 +127,10 @@ nav:
       - PERF001: rules/performance/PERF001.md
       - PERF002: rules/performance/PERF002.md
       - PERF003: rules/performance/PERF003.md
+      - PERF004: rules/performance/PERF004.md
+      - PERF005: rules/performance/PERF005.md
+      - PERF006: rules/performance/PERF006.md
+      - PERF007: rules/performance/PERF007.md
     - S — Shuffle:
       - rules/shuffle/index.md
       - S001: rules/shuffle/S001.md
@@ -140,9 +146,13 @@ nav:
       - S011: rules/shuffle/S011.md
       - S012: rules/shuffle/S012.md
       - S013: rules/shuffle/S013.md
+      - S014: rules/shuffle/S014.md
     - U — UDF:
       - rules/udf/index.md
       - U001: rules/udf/U001.md
       - U002: rules/udf/U002.md
       - U003: rules/udf/U003.md
       - U004: rules/udf/U004.md
+      - U005: rules/udf/U005.md
+      - U006: rules/udf/U006.md
+      - U007: rules/udf/U007.md

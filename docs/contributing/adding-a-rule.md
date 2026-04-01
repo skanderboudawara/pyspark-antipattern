@@ -1,6 +1,6 @@
 # Adding a new linting rule
 
-Each rule lives in exactly **7 places**. Follow the steps below in order and
+Each rule lives in exactly **8 places**. Follow the steps below in order and
 nothing will be missed.
 
 ---
@@ -124,7 +124,21 @@ rule title.
 
 ---
 
-## Step 7 — Write tests
+## Step 7 — Add the rule to the MkDocs navigation
+
+Open `mkdocs.yml` and add the new page under the correct category section in
+the `nav` tree:
+
+```yaml
+- RULEXXX: rules/<category>/RULEXXX.md
+```
+
+Without this entry the documentation page is built but unreachable from the
+site navigation.
+
+---
+
+## Step 8 — Write tests
 
 Open `tests/test_<category>_rules.rs` and add at least:
 
@@ -162,4 +176,5 @@ cargo test rulexxx
 | 4 | `src/rules/mod.rs` | Append to `ALL_RULES` |
 | 5 | `src/rule_content.rs` | `include_str!` entry |
 | 6 | `src/reporter.rs` | `rule_title` match arm |
-| 7 | `tests/test_<category>_rules.rs` | Fire + no-fire tests |
+| 7 | `mkdocs.yml` | Add nav entry |
+| 8 | `tests/test_<category>_rules.rs` | Fire + no-fire tests |
