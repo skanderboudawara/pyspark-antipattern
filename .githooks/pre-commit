@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+#
+# pre-commit hook — verify that every linting rule is fully registered in all
+# required locations before allowing the commit.
+#
+# Requires Python 3 to be available on PATH.
+# Activate once per clone:
+#   git config core.hooksPath .githooks
+
+root="$(git rev-parse --show-toplevel)"
+
+python "$root/scripts/check_rule_consistency.py"
+exit $?

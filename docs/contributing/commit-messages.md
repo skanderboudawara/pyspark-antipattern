@@ -3,10 +3,15 @@
 Every commit message must start with one of the four prefixes below.
 A `commit-msg` git hook enforces this automatically.
 
-!!! tip "First-time setup — activate the commit-msg hook"
-    This repository ships a `commit-msg` hook that enforces the commit prefix
-    convention (`feat:`, `fix:`, `enhance:`, `breaking:`, `chore:`).
-    Run this once after cloning:
+!!! tip "First-time setup — activate the git hooks"
+    This repository ships two hooks in `.githooks/`:
+
+    | Hook | When it runs | What it checks |
+    |---|---|---|
+    | `pre-commit` | Before every commit | All rules are registered in all 7 locations |
+    | `commit-msg` | After typing the message | Message starts with a valid prefix |
+
+    Run this once after cloning to activate both:
 
     ```bash
     git config core.hooksPath .githooks
