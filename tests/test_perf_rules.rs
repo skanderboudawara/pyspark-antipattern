@@ -126,3 +126,29 @@ fn perf005_fires_inside_function() {
     let src = "def run():\n    df = df.persist()\n    df2 = df2.persist()\n    df.unpersist()";
     assert_violation(&check(perf005::check, src), "PERF005", 3);
 }
+
+// ── PERF006: checkpoint/localCheckpoint without eager argument ────────────────
+#[test] fn perf006_fires_checkpoint_bare() {
+    assert_violation(&check(perf006::check, "df.checkpoint()"), "PERF006", 1);
+}
+#[test] fn perf006_fires_local_checkpoint_bare() {
+    assert_violation(&check(perf006::check, "df.localCheckpoint()"), "PERF006", 1);
+}
+#[test] fn perf006_no_fire_checkpoint_eager_true() {
+    assert_no_violation(&check(perf006::check, "df.checkpoint(eager=True)"), "PERF006");
+}
+#[test] fn perf006_no_fire_checkpoint_eager_false() {
+    assert_no_violation(&check(perf006::check, "df.checkpoint(eager=False)"), "PERF006");
+}
+#[test] fn perf006_no_fire_checkpoint_positional_true() {
+    assert_no_violation(&check(perf006::check, "df.checkpoint(True)"), "PERF006");
+}
+#[test] fn perf006_no_fire_checkpoint_positional_false() {
+    assert_no_violation(&check(perf006::check, "df.checkpoint(False)"), "PERF006");
+}
+#[test] fn perf006_no_fire_local_checkpoint_eager_true() {
+    assert_no_violation(&check(perf006::check, "df.localCheckpoint(eager=True)"), "PERF006");
+}
+#[test] fn perf006_no_fire_local_checkpoint_positional_false() {
+    assert_no_violation(&check(perf006::check, "df.localCheckpoint(False)"), "PERF006");
+}
