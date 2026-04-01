@@ -174,3 +174,32 @@ use pyspark_antipattern::rules::f_rules::*;
     let src = "from datetime import datetime\nlog_time = datetime.now().isoformat()";
     assert_no_violation(&check(f018::check, src), "F018");
 }
+
+// ── F019: inferSchema / mergeSchema in read options ──────────────────────────
+#[test] fn f019_fires_infer_schema_string() {
+    assert_violation(&check(f019::check, "spark.read.option(\"inferSchema\", \"true\").csv(\"s3://bucket/\")"), "F019", 1);
+}
+#[test] fn f019_fires_infer_schema_bool() {
+    assert_violation(&check(f019::check, "spark.read.option(\"inferSchema\", True).csv(\"s3://bucket/\")"), "F019", 1);
+}
+#[test] fn f019_fires_merge_schema_string() {
+    assert_violation(&check(f019::check, "spark.read.option(\"mergeSchema\", \"true\").parquet(\"s3://bucket/\")"), "F019", 1);
+}
+#[test] fn f019_fires_merge_schema_bool() {
+    assert_violation(&check(f019::check, "spark.read.option(\"mergeSchema\", True).parquet(\"s3://bucket/\")"), "F019", 1);
+}
+#[test] fn f019_fires_infer_schema_kwarg() {
+    assert_violation(&check(f019::check, "spark.read.csv(\"s3://bucket/\", inferSchema=True)"), "F019", 1);
+}
+#[test] fn f019_fires_merge_schema_kwarg() {
+    assert_violation(&check(f019::check, "spark.read.parquet(\"s3://bucket/\", mergeSchema=True)"), "F019", 1);
+}
+#[test] fn f019_no_fire_infer_schema_false() {
+    assert_no_violation(&check(f019::check, "spark.read.option(\"inferSchema\", False).csv(\"s3://bucket/\")"), "F019");
+}
+#[test] fn f019_no_fire_explicit_schema() {
+    assert_no_violation(&check(f019::check, "spark.read.schema(schema).csv(\"s3://bucket/\")"), "F019");
+}
+#[test] fn f019_no_fire_other_option() {
+    assert_no_violation(&check(f019::check, "spark.read.option(\"header\", \"true\").csv(\"s3://bucket/\")"), "F019");
+}

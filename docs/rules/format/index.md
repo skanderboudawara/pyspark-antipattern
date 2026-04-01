@@ -22,3 +22,4 @@ Rules that enforce idiomatic use of the PySpark DataFrame API — covering code 
 | [F016](F016.md) | Avoid long DataFrame renaming chains — overwrite the same variable |
 | [F017](F017.md) | Avoid `expr()` — use native PySpark functions instead |
 | [F018](F018.md) | Use Spark native datetime functions instead of Python datetime objects |
+| [F019](F019.md) | Avoid `inferSchema=True` and `mergeSchema=True` in Spark read options |
