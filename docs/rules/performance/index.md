@@ -10,3 +10,4 @@ Rules that catch runtime performance antipatterns not covered by other categorie
 | [PERF004](PERF004.md) | Avoid bare `.persist()` — always pass an explicit `StorageLevel` |
 | [PERF005](PERF005.md) | DataFrame persisted but never unpersisted |
 | [PERF006](PERF006.md) | Avoid bare `.checkpoint()` / `.localCheckpoint()` — always pass an explicit `eager` argument |
+| [PERF007](PERF007.md) | DataFrame used 2 or more times without caching |

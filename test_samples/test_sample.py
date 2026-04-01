@@ -9,7 +9,7 @@ df = spark.read.parquet("data/")
 result = df.collect()
 
 # D003 - show
-df.show()
+result.show()
 
 # D004 - count
 n = df.count()

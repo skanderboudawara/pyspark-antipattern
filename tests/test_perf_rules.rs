@@ -152,3 +152,80 @@ fn perf005_fires_inside_function() {
 #[test] fn perf006_no_fire_local_checkpoint_positional_false() {
     assert_no_violation(&check(perf006::check, "df.localCheckpoint(False)"), "PERF006");
 }
+
+// ── PERF007: same DataFrame used 2+ times without caching ────────────────────
+#[test]
+fn perf007_fires_used_twice_as_receiver() {
+    // df used as method receiver on lines 2 and 3
+    let src = "df = df.filter(col('x') > 0)\ndf2 = df.join(other, 'id')\ndf3 = df.union(other2)";
+    assert_violation(&check(perf007::check, src), "PERF007", 3);
+}
+#[test]
+fn perf007_fires_used_twice_as_argument() {
+    // df is first seen as a DataFrame receiver (filter), then passed as argument
+    // twice — both uses count because df is identified as a DataFrame variable
+    let src = "df = df.filter(col('x') > 0)\ndf2 = left.join(df, 'id')\ndf3 = right.union(df)";
+    assert_violation(&check(perf007::check, src), "PERF007", 3);
+}
+#[test]
+fn perf007_no_fire_cache_before_second_use() {
+    let src = "df = df.filter(col('x') > 0)\ndf = df.cache()\ndf2 = df.join(other, 'id')\ndf3 = df.union(other2)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_persist_before_second_use() {
+    let src = "df = df.filter(col('x') > 0)\ndf = df.persist(StorageLevel.MEMORY_AND_DISK)\ndf2 = df.join(other, 'id')\ndf3 = df.union(other2)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_single_use() {
+    let src = "df2 = df.join(other, 'id')\ndf3 = df2.filter(col('x') > 0)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_reassignment_resets() {
+    // df is used once, then reassigned — the second use is of the new df
+    let src = "df2 = df.join(other, 'id')\ndf = df.filter(col('y') > 0)\ndf3 = df.union(other2)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_fires_inside_function() {
+    let src = "def run():\n    df2 = df.join(other, 'id')\n    df3 = df.union(other2)";
+    assert_violation(&check(perf007::check, src), "PERF007", 3);
+}
+#[test]
+fn perf007_no_fire_three_uses_after_cache() {
+    let src = "df = df.filter(col('x') > 0)\ndf = df.cache()\ndf2 = df.join(a, 'id')\ndf3 = df.union(b)\ndf4 = df.groupBy('c').count()";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_logger() {
+    // logger is not a DataFrame — should never be flagged even if used many times
+    let src = "logger.info('start')\nlogger.info('processing')\nlogger.info('done')";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_spark_session() {
+    // SparkSession used multiple times should not trigger — it is not a DataFrame
+    let src = "df1 = spark.read.parquet('a')\ndf2 = spark.read.parquet('b')";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_show_collect_not_join_union() {
+    // df used via show/collect but NOT in any join or union — should not fire
+    let src = "result = df.collect()\ndf.show()\nn = df.count()";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_os_path_join() {
+    // os.path.join shares the name "join" with Spark — must never be flagged
+    let src = "archive_dir = os.path.join(target_dir, 'history')\nout = os.path.join(target_dir, 'out')";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_chained_union_join() {
+    // df1.union(df2).join(df3) — df1 is in both union and join but as a single
+    // pipeline expression (not two separate statements) — must not double-count
+    let src = "result = df1.union(df2).join(df3, 'id')";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
