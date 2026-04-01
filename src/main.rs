@@ -97,8 +97,16 @@ fn main() {
                 });
 
             // CLI flags override pyproject.toml values.
-            if let Some(v) = select   { config.select  = v; }
-            if let Some(v) = warn     { config.warn     = v; }
+            // When --warn is given without --select, implicitly restrict to only
+            // the warned rules — the caller wants to see those rules exclusively.
+            let warn_without_select = warn.is_some() && select.is_none();
+            if let Some(v) = select { config.select = v; }
+            if let Some(v) = warn {
+                if warn_without_select && config.select.is_empty() {
+                    config.select = v.clone();
+                }
+                config.warn = v;
+            }
             if let Some(v) = ignore   { config.ignore   = v; }
             if let Some(v) = show_best_practice    { config.show_best_practice    = v; }
             if let Some(v) = show_information      { config.show_information      = v; }
