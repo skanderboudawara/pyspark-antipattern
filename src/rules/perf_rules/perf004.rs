@@ -1,0 +1,71 @@
+// PERF004: .persist() called without an explicit StorageLevel.
+//
+// Calling .persist() with no arguments silently uses the default storage level
+// (MEMORY_AND_DISK), which may not be appropriate for the dataset size or the
+// cluster's memory pressure.  Leaving the storage level implicit means the
+// next developer — or you in six months — has no idea what caching strategy
+// was intended.
+//
+// Always pass an explicit StorageLevel so the intent is visible in code review
+// and can be tuned without guessing what the default is.
+//
+// Available levels:
+//   StorageLevel.DISK_ONLY            StorageLevel.DISK_ONLY_2
+//   StorageLevel.DISK_ONLY_3          StorageLevel.MEMORY_AND_DISK
+//   StorageLevel.MEMORY_AND_DISK_2    StorageLevel.MEMORY_AND_DISK_DESER
+//   StorageLevel.MEMORY_ONLY          StorageLevel.MEMORY_ONLY_2
+//   StorageLevel.NONE                 StorageLevel.OFF_HEAP
+use rustpython_parser::ast::{Expr, Stmt};
+
+use crate::{
+    config::Config,
+    line_index::LineIndex,
+    rules::utils::method_violation,
+    violation::Violation,
+    visitor::{walk_expr, Visitor},
+};
+
+const ID: &str = "PERF004";
+
+struct Check<'a> {
+    source: &'a str,
+    file: &'a str,
+    index: &'a LineIndex,
+    severity: crate::violation::Severity,
+    violations: Vec<Violation>,
+}
+
+impl<'a> Visitor for Check<'a> {
+    fn visit_expr(&mut self, expr: &Expr) {
+        if let Expr::Call(call) = expr {
+            if let Expr::Attribute(attr) = call.func.as_ref() {
+                if attr.attr.as_str() == "persist"
+                    && call.args.is_empty()
+                    && call.keywords.is_empty()
+                {
+                    self.violations.push(method_violation(
+                        attr, "persist", self.source, self.file,
+                        self.index, self.severity, ID,
+                    ));
+                }
+            }
+        }
+        walk_expr(self, expr);
+    }
+}
+
+pub fn check(
+    stmts: &[Stmt],
+    source: &str,
+    file: &str,
+    config: &Config,
+    index: &LineIndex,
+) -> Vec<Violation> {
+    let mut v = Check {
+        source, file, index,
+        severity: config.severity_of(ID),
+        violations: vec![],
+    };
+    for s in stmts { v.visit_stmt(s); }
+    v.violations
+}

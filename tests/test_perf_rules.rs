@@ -72,3 +72,23 @@ df = helper(df)\n";
     let src = "spark = SparkSession.builder.getOrCreate()\nspark2 = SparkSession.getActiveSession()";
     assert_no_violation(&check(perf002::check, src), "PERF002");
 }
+
+// ── PERF004: .persist() without StorageLevel ─────────────────────────────────
+#[test] fn perf004_fires_bare_persist() {
+    assert_violation(&check(perf004::check, "df.persist()"), "PERF004", 1);
+}
+#[test] fn perf004_fires_chained() {
+    assert_violation(&check(perf004::check, "df.filter(col('x') > 0).persist()"), "PERF004", 1);
+}
+#[test] fn perf004_no_fire_memory_only() {
+    assert_no_violation(&check(perf004::check, "df.persist(StorageLevel.MEMORY_ONLY)"), "PERF004");
+}
+#[test] fn perf004_no_fire_memory_and_disk() {
+    assert_no_violation(&check(perf004::check, "df.persist(StorageLevel.MEMORY_AND_DISK)"), "PERF004");
+}
+#[test] fn perf004_no_fire_disk_only() {
+    assert_no_violation(&check(perf004::check, "df.persist(StorageLevel.DISK_ONLY)"), "PERF004");
+}
+#[test] fn perf004_no_fire_off_heap() {
+    assert_no_violation(&check(perf004::check, "df.persist(StorageLevel.OFF_HEAP)"), "PERF004");
+}
