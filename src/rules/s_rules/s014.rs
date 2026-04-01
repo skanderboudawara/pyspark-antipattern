@@ -1,4 +1,4 @@
-// S003: .groupBy() directly followed by .distinct() — redundant
+// S014: .distinct() or .dropDuplicates() called before .groupBy() — redundant shuffle
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -9,7 +9,7 @@ use crate::{
     visitor::{walk_expr, Visitor},
 };
 
-const ID: &str = "S003";
+const ID: &str = "S014";
 
 struct Check<'a> {
     source: &'a str,
@@ -23,12 +23,18 @@ impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr {
             if let Expr::Attribute(attr) = call.func.as_ref() {
-                let method = attr.attr.as_str();
-                if matches!(method, "distinct" | "dropDuplicates") {
-                    if chain_has_method(attr.value.as_ref(), "groupBy") {
+                if attr.attr.as_str() == "groupBy" {
+                    let dedup_before = chain_has_method(attr.value.as_ref(), "distinct")
+                        || chain_has_method(attr.value.as_ref(), "dropDuplicates");
+                    if dedup_before {
                         self.violations.push(method_violation(
-                            attr, method, self.source, self.file, self.index,
-                            self.severity, ID,
+                            attr,
+                            "groupBy",
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
                         ));
                     }
                 }
@@ -46,10 +52,14 @@ pub fn check(
     index: &LineIndex,
 ) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

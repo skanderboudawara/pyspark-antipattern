@@ -30,11 +30,13 @@ fn s002_no_pathlib_join()    { assert_no_violation(&check(s002::check, "p = path
 #[test]
 fn s002_self_df_fires()      { assert_violation(&check(s002::check, "self.df.join(other, 'id')"), "S002", 1); }
 
-// ── S003: groupBy() followed by distinct() ───────────────────────────────────
+// ── S003: groupBy() followed by distinct() or dropDuplicates() ───────────────
 #[test]
-fn s003_fires()            { assert_violation(&check(s003::check, "df.groupBy('x').agg({'y':'sum'}).distinct()"), "S003", 1); }
+fn s003_fires_distinct()          { assert_violation(&check(s003::check, "df.groupBy('x').agg({'y':'sum'}).distinct()"), "S003", 1); }
 #[test]
-fn s003_no_false_positive() { assert_no_violation(&check(s003::check, "df.distinct()"), "S003"); }
+fn s003_fires_drop_duplicates()   { assert_violation(&check(s003::check, "df.groupBy('x').agg({'y':'sum'}).dropDuplicates()"), "S003", 1); }
+#[test]
+fn s003_no_false_positive()       { assert_no_violation(&check(s003::check, "df.distinct()"), "S003"); }
 
 // ── S004: too many distinct() — loop-aware ────────────────────────────────────
 #[test]
@@ -137,3 +139,17 @@ fn s012_no_str_join_filter() { assert_no_violation(&check(s012::check, "' '.join
 fn s013_fires()              { assert_violation(&check(s013::check, "result = df.rdd.reduceByKey(lambda a, b: a + b)"), "S013", 1); }
 #[test]
 fn s013_no_groupby_agg()     { assert_no_violation(&check(s013::check, "result = df.groupBy('key').agg(sum('value'))"), "S013"); }
+
+// ── S014: distinct() or dropDuplicates() before groupBy() ────────────────────
+#[test]
+fn s014_fires_distinct()         { assert_violation(&check(s014::check, "df.distinct().groupBy('country').agg(count('*'))"), "S014", 1); }
+#[test]
+fn s014_fires_drop_duplicates()  { assert_violation(&check(s014::check, "df.dropDuplicates(['country']).groupBy('country').agg(count('*'))"), "S014", 1); }
+#[test]
+fn s014_fires_chained()          { assert_violation(&check(s014::check, "df.filter(col('active')).distinct().groupBy('country').agg(count('*'))"), "S014", 1); }
+#[test]
+fn s014_no_fire_distinct_only()  { assert_no_violation(&check(s014::check, "df.distinct()"), "S014"); }
+#[test]
+fn s014_no_fire_groupby_only()   { assert_no_violation(&check(s014::check, "df.groupBy('country').agg(count('*'))"), "S014"); }
+#[test]
+fn s014_no_fire_distinct_after()  { assert_no_violation(&check(s014::check, "df.groupBy('country').agg(count('*')).distinct()"), "S014"); }
