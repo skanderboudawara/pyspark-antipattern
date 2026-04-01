@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+#
+# commit-msg hook — enforce conventional commit prefix.
+#
+# Allowed prefixes:  feat:  fix:  enhance:  breaking:
+#
+# Activate once per clone:
+#   git config core.hooksPath .githooks
+
+commit_msg_file="$1"
+commit_msg=$(cat "$commit_msg_file")
+
+# Strip leading whitespace and ignore comment lines (git -e, -v, --verbose).
+first_line=$(echo "$commit_msg" | grep -v '^#' | sed '/^[[:space:]]*$/d' | head -1)
+
+case "$first_line" in
+  feat:*|fix:*|enhance:*|breaking:*)
+    exit 0
+    ;;
+  *)
+    echo ""
+    echo "  ✗ Invalid commit message format."
+    echo ""
+    echo "  The commit message must start with one of:"
+    echo "    feat:     a new feature"
+    echo "    fix:      a bug fix"
+    echo "    enhance:  an improvement to an existing feature"
+    echo "    breaking: a breaking change"
+    echo ""
+    echo "  Got: \"$first_line\""
+    echo ""
+    exit 1
+    ;;
+esac

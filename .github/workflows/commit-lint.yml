@@ -1,0 +1,41 @@
+name: Commit lint
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+
+jobs:
+  check-commit-message:
+    name: Check commit message prefix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate commit message(s)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # For pull requests check the PR title (used as the merge commit message).
+            messages="$PR_TITLE"
+          else
+            # For direct pushes check every commit in the push.
+            messages="${{ join(github.event.commits.*.message, '\n') }}"
+          fi
+
+          valid_prefix='^(feat|fix|enhance|breaking):'
+          failed=0
+
+          while IFS= read -r msg; do
+            # Skip empty lines.
+            [ -z "$msg" ] && continue
+            if ! echo "$msg" | grep -qE "$valid_prefix"; then
+              echo "::error::Invalid commit message: \"$msg\""
+              echo "         Must start with one of: feat: | fix: | enhance: | breaking:"
+              failed=1
+            fi
+          done <<EOF
+          $messages
+          EOF
+
+          exit $failed

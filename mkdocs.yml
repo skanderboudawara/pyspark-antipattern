@@ -75,6 +75,7 @@ nav:
     - max_shuffle_operations: settings/max_shuffle_operations.md
   - Contributing:
     - Adding a rule: contributing/adding-a-rule.md
+    - Commit messages: contributing/commit-messages.md
   - Rules:
     - rules/index.md
     - ARR — Array:
