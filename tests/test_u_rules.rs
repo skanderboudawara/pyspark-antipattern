@@ -153,3 +153,35 @@ fn u006_no_fire_nested_helper() {
     let src = "@udf(returnType=BooleanType())\ndef f(items):\n    def check(xs):\n        return all(xs)\n    return check(items)\n";
     assert_no_violation(&check(u006::check, src), "U006");
 }
+
+// ── U007: any() inside a UDF body ─────────────────────────────────────────────
+#[test]
+fn u007_fires_return_any_generator() {
+    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    return any(x < 0 for x in items)\n";
+    assert_violation(&check(u007::check, src), "U007", 3);
+}
+#[test]
+fn u007_fires_return_any_list() {
+    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    return any([x < 0 for x in items])\n";
+    assert_violation(&check(u007::check, src), "U007", 3);
+}
+#[test]
+fn u007_fires_assigned_any() {
+    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    result = any(x < 0 for x in items)\n    return result\n";
+    assert_violation(&check(u007::check, src), "U007", 3);
+}
+#[test]
+fn u007_fires_bare_udf() {
+    let src = "@udf\ndef f(items):\n    return any(items)\n";
+    assert_violation(&check(u007::check, src), "U007", 3);
+}
+#[test]
+fn u007_no_fire_no_udf() {
+    let src = "def f(items):\n    return any(x < 0 for x in items)\n";
+    assert_no_violation(&check(u007::check, src), "U007");
+}
+#[test]
+fn u007_no_fire_nested_helper() {
+    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    def check(xs):\n        return any(xs)\n    return check(items)\n";
+    assert_no_violation(&check(u007::check, src), "U007");
+}

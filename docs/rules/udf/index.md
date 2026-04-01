@@ -10,3 +10,4 @@ Rules that flag user-defined functions where native PySpark equivalents exist. U
 | [U004](U004.md) | Avoid nested UDF calls — merge logic or use plain Python helpers |
 | [U005](U005.md) | Avoid loops inside a UDF body — use `transform` instead |
 | [U006](U006.md) | Avoid `all()` inside a UDF body — use `forall` instead |
+| [U007](U007.md) | Avoid `any()` inside a UDF body — use `exists` instead |
