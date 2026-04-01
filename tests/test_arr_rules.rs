@@ -48,6 +48,27 @@ use pyspark_antipattern::rules::arr_rules::*;
     assert_no_violation(&check(arr002::check, "df.withColumn('a', array_compact(col('items')))"), "ARR002");
 }
 
+// ── ARR003: array_distinct(collect_set()) — redundant dedup ──────────────────
+#[test] fn arr003_fires_inline() {
+    assert_violation(&check(arr003::check, "df.agg(array_distinct(collect_set(col('tag'))))"), "ARR003", 1);
+}
+#[test] fn arr003_fires_qualified() {
+    assert_violation(&check(arr003::check, "df.agg(F.array_distinct(F.collect_set(col('tag'))))"), "ARR003", 1);
+}
+#[test] fn arr003_fires_over_window() {
+    assert_violation(&check(arr003::check, "df.withColumn('tags', array_distinct(collect_set(col('tag')).over(w)))"), "ARR003", 1);
+}
+#[test] fn arr003_no_collect_set_alone() {
+    assert_no_violation(&check(arr003::check, "df.agg(collect_set(col('tag')))"), "ARR003");
+}
+#[test] fn arr003_no_array_distinct_alone() {
+    assert_no_violation(&check(arr003::check, "df.withColumn('a', array_distinct(col('tags')))"), "ARR003");
+}
+#[test] fn arr003_no_collect_list() {
+    // collect_list is ARR001's concern, not ARR003
+    assert_no_violation(&check(arr003::check, "df.agg(array_distinct(collect_list(col('tag'))))"), "ARR003");
+}
+
 // no false positives
 #[test] fn arr001_no_collect_set() {
     assert_no_violation(&check(arr001::check, "df.agg(collect_set(col('item')))"), "ARR001");
