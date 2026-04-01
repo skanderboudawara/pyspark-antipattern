@@ -2,6 +2,7 @@ mod common;
 use common::{assert_no_violation, assert_violation, check};
 use pyspark_antipattern::rules::u_rules::*;
 
+
 // ── U001: @udf returning StringType ──────────────────────────────────────────
 #[test]
 fn u001_fires() {
@@ -75,4 +76,48 @@ fn u004_no_single_udf() {
     // Only one UDF — nesting is impossible
     let src = "@udf(returnType=StringType())\ndef process(x):\n    return x.strip()\n";
     assert_no_violation(&check(u004::check, src), "U004");
+}
+
+// ── U005: loops inside a UDF body ─────────────────────────────────────────────
+#[test]
+fn u005_fires_for_loop() {
+    let src = "@udf(returnType=ArrayType(IntegerType()))\ndef f(items):\n    result = []\n    for x in items:\n        result.append(x * 2)\n    return result\n";
+    assert_violation(&check(u005::check, src), "U005", 4);
+}
+#[test]
+fn u005_fires_list_comp() {
+    let src = "@udf(returnType=ArrayType(StringType()))\ndef f(items):\n    return [x.upper() for x in items]\n";
+    assert_violation(&check(u005::check, src), "U005", 3);
+}
+#[test]
+fn u005_fires_set_comp() {
+    let src = "@udf(returnType=ArrayType(StringType()))\ndef f(items):\n    return {x.upper() for x in items}\n";
+    assert_violation(&check(u005::check, src), "U005", 3);
+}
+#[test]
+fn u005_fires_dict_comp() {
+    let src = "@udf(returnType=StringType())\ndef f(pairs):\n    return {k: v for k, v in pairs}\n";
+    assert_violation(&check(u005::check, src), "U005", 3);
+}
+#[test]
+fn u005_fires_bare_udf_decorator() {
+    let src = "@udf\ndef f(items):\n    return [x for x in items]\n";
+    assert_violation(&check(u005::check, src), "U005", 3);
+}
+#[test]
+fn u005_fires_pandas_udf() {
+    let src = "@pandas_udf(ArrayType(StringType()))\ndef f(s):\n    return [x.upper() for x in s]\n";
+    assert_violation(&check(u005::check, src), "U005", 3);
+}
+#[test]
+fn u005_no_fire_no_udf() {
+    // plain function — not a UDF, should not fire
+    let src = "def f(items):\n    return [x * 2 for x in items]\n";
+    assert_no_violation(&check(u005::check, src), "U005");
+}
+#[test]
+fn u005_no_fire_nested_helper() {
+    // loop is inside a nested plain function defined inside the UDF — not flagged
+    let src = "@udf(returnType=StringType())\ndef f(items):\n    def helper(xs):\n        return [x for x in xs]\n    return helper(items)[0]\n";
+    assert_no_violation(&check(u005::check, src), "U005");
 }
