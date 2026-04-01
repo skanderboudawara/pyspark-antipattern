@@ -92,3 +92,37 @@ df = helper(df)\n";
 #[test] fn perf004_no_fire_off_heap() {
     assert_no_violation(&check(perf004::check, "df.persist(StorageLevel.OFF_HEAP)"), "PERF004");
 }
+
+// ── PERF005: persisted but never unpersisted ──────────────────────────────────
+#[test]
+fn perf005_fires_df2_not_unpersisted() {
+    // df is unpersisted, df2 is not
+    let src = "df = df.persist()\ndf2 = df2.persist()\ndf.unpersist()";
+    assert_violation(&check(perf005::check, src), "PERF005", 2);
+}
+#[test]
+fn perf005_fires_alias_not_unpersisted() {
+    // df2 = df.persist() — df2 never unpersisted even though df is
+    let src = "df = df.persist()\ndf2 = df.persist()\ndf.unpersist()";
+    assert_violation(&check(perf005::check, src), "PERF005", 2);
+}
+#[test]
+fn perf005_fires_both_not_unpersisted() {
+    let src = "df = df.persist()\ndf2 = df2.persist()";
+    assert_violation(&check(perf005::check, src), "PERF005", 1);
+}
+#[test]
+fn perf005_no_fire_both_unpersisted() {
+    let src = "df = df.persist()\ndf2 = df2.persist()\ndf.unpersist()\ndf2.unpersist()";
+    assert_no_violation(&check(perf005::check, src), "PERF005");
+}
+#[test]
+fn perf005_no_fire_single_unpersisted() {
+    let src = "df = df.persist()\ndf.unpersist()";
+    assert_no_violation(&check(perf005::check, src), "PERF005");
+}
+#[test]
+fn perf005_fires_inside_function() {
+    let src = "def run():\n    df = df.persist()\n    df2 = df2.persist()\n    df.unpersist()";
+    assert_violation(&check(perf005::check, src), "PERF005", 3);
+}
