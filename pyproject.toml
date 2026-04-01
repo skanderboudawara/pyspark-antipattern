@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyspark-antipattern"
-version = "0.2.0"
+version = "0.2.1"
 description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }

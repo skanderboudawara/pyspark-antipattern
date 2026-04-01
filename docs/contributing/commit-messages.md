@@ -5,7 +5,7 @@ A `commit-msg` git hook enforces this automatically.
 
 !!! tip "First-time setup — activate the commit-msg hook"
     This repository ships a `commit-msg` hook that enforces the commit prefix
-    convention (`feat:`, `fix:`, `enhance:`, `breaking:`).
+    convention (`feat:`, `fix:`, `enhance:`, `breaking:`, `chore:`).
     Run this once after cloning:
 
     ```bash
@@ -22,6 +22,7 @@ A `commit-msg` git hook enforces this automatically.
 | `fix:` | A bug fix — incorrect detection, false positive, false negative, crash |
 | `enhance:` | An improvement to something that already exists (better error message, performance, refactor) |
 | `breaking:` | A change that alters existing behaviour in a way that requires users to update their configuration or workflows |
+| `chore:` | Maintenance work with no user-visible effect: CI, dependencies, tooling, documentation typos |
 
 ---
 

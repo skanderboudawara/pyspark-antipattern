@@ -23,7 +23,7 @@ jobs:
             messages="${{ join(github.event.commits.*.message, '\n') }}"
           fi
 
-          valid_prefix='^(feat|fix|enhance|breaking):'
+          valid_prefix='^(feat|fix|enhance|breaking|chore):'
           failed=0
 
           while IFS= read -r msg; do

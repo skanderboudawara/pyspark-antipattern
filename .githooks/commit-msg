@@ -14,7 +14,7 @@ commit_msg=$(cat "$commit_msg_file")
 first_line=$(echo "$commit_msg" | grep -v '^#' | sed '/^[[:space:]]*$/d' | head -1)
 
 case "$first_line" in
-  feat:*|fix:*|enhance:*|breaking:*)
+  feat:*|fix:*|enhance:*|breaking:*|chore:*)
     exit 0
     ;;
   *)
@@ -26,6 +26,7 @@ case "$first_line" in
     echo "    fix:      a bug fix"
     echo "    enhance:  an improvement to an existing feature"
     echo "    breaking: a breaking change"
+    echo "    chore:    maintenance, tooling, dependencies, CI"
     echo ""
     echo "  Got: \"$first_line\""
     echo ""
