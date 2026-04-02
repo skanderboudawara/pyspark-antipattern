@@ -9,8 +9,7 @@ description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Skander Boudawara", email = "skander.education@proton.me" }]
-license = "MIT"
-license-files = ["LICENSE"]
+license = {text = "MIT"}
 keywords = [
     "pyspark",
     "antipattern",
@@ -24,6 +23,7 @@ keywords = [
 ]
 # https://pypi.org/classifiers/
 classifiers = [
+    "License :: OSI Approved :: MIT License",
     "Development Status :: 3 - Alpha",
     "Operating System :: OS Independent",
     "Environment :: Console",
