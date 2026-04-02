@@ -32,6 +32,7 @@ static RULE_MARKDOWN: &[(&str, &str)] = &[
     ("F017", include_str!("../docs/rules/format/F017.md")),
     ("F018", include_str!("../docs/rules/format/F018.md")),
     ("F019", include_str!("../docs/rules/format/F019.md")),
+    ("F020", include_str!("../docs/rules/format/F020.md")),
     ("L001", include_str!("../docs/rules/looping/L001.md")),
     ("L002", include_str!("../docs/rules/looping/L002.md")),
     ("L003", include_str!("../docs/rules/looping/L003.md")),

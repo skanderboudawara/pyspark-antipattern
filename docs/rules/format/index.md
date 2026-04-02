@@ -23,3 +23,4 @@ Rules that enforce idiomatic use of the PySpark DataFrame API — covering code 
 | [F017](F017.md) | Avoid `expr()` — use native PySpark functions instead |
 | [F018](F018.md) | Use Spark native datetime functions instead of Python datetime objects |
 | [F019](F019.md) | Avoid `inferSchema=True` and `mergeSchema=True` in Spark read options |
+| [F020](F020.md) | Avoid `select("*")` — use explicit column names |

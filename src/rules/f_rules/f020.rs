@@ -1,0 +1,73 @@
+// F020: Avoid select("*") — use explicit column names.
+//
+// Passing the wildcard string "*" to select() is equivalent to SELECT * in SQL:
+// it silently pulls every column from the DataFrame without any guarantee about
+// which columns will be present at runtime.  This makes the schema implicit and
+// fragile — adding, removing, or reordering a column upstream can break
+// downstream logic without any compile-time or lint-time warning.
+//
+// Detection: flag any .select() call that contains a string-literal argument
+// whose value is exactly "*".  Matches all positions:
+//   df.select("*")
+//   df.select("*", "city")
+//   df.select("id", "*")
+use rustpython_parser::ast::{Constant, Expr, Stmt};
+
+use crate::{
+    config::Config,
+    line_index::LineIndex,
+    rules::utils::method_violation,
+    violation::Violation,
+    visitor::{walk_expr, Visitor},
+};
+
+const ID: &str = "F020";
+
+struct Check<'a> {
+    source: &'a str,
+    file: &'a str,
+    index: &'a LineIndex,
+    severity: crate::violation::Severity,
+    violations: Vec<Violation>,
+}
+
+impl<'a> Visitor for Check<'a> {
+    fn visit_expr(&mut self, expr: &Expr) {
+        if let Expr::Call(call) = expr {
+            if let Expr::Attribute(attr) = call.func.as_ref() {
+                if attr.attr.as_str() == "select" {
+                    let has_star = call.args.iter().any(|arg| {
+                        matches!(
+                            arg,
+                            Expr::Constant(c)
+                                if matches!(&c.value, Constant::Str(s) if s == "*")
+                        )
+                    });
+                    if has_star {
+                        self.violations.push(method_violation(
+                            attr, "select", self.source, self.file,
+                            self.index, self.severity, ID,
+                        ));
+                    }
+                }
+            }
+        }
+        walk_expr(self, expr);
+    }
+}
+
+pub fn check(
+    stmts: &[Stmt],
+    source: &str,
+    file: &str,
+    config: &Config,
+    index: &LineIndex,
+) -> Vec<Violation> {
+    let mut v = Check {
+        source, file, index,
+        severity: config.severity_of(ID),
+        violations: vec![],
+    };
+    for s in stmts { v.visit_stmt(s); }
+    v.violations
+}

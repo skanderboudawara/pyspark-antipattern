@@ -203,3 +203,12 @@ use pyspark_antipattern::rules::f_rules::*;
 #[test] fn f019_no_fire_other_option() {
     assert_no_violation(&check(f019::check, "spark.read.option(\"header\", \"true\").csv(\"s3://bucket/\")"), "F019");
 }
+
+// ── F020: select("*") ─────────────────────────────────────────────────────────
+#[test] fn f020_fires_star_only()       { assert_violation(&check(f020::check, "df.select(\"*\")"), "F020", 1); }
+#[test] fn f020_fires_star_first()      { assert_violation(&check(f020::check, "df.select(\"*\", \"city\")"), "F020", 1); }
+#[test] fn f020_fires_star_last()       { assert_violation(&check(f020::check, "df.select(\"id\", \"*\")"), "F020", 1); }
+#[test] fn f020_fires_star_middle()     { assert_violation(&check(f020::check, "df.select(\"id\", \"*\", \"city\")"), "F020", 1); }
+#[test] fn f020_no_fire_explicit_cols() { assert_no_violation(&check(f020::check, "df.select(\"id\", \"name\", \"country\")"), "F020"); }
+#[test] fn f020_no_fire_col_objects()   { assert_no_violation(&check(f020::check, "df.select(col(\"id\"), col(\"name\"))"), "F020"); }
+#[test] fn f020_no_fire_empty()         { assert_no_violation(&check(f020::check, "df.select()"), "F020"); }
