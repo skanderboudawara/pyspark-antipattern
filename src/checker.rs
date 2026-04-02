@@ -22,11 +22,12 @@ struct FileCosts {
 }
 
 /// Lint a single .py file and return violations (noqa-filtered and sorted).
-pub fn check_file(path: &str, config: &Config) -> Result<Vec<Violation>, String> {
-    let source = std::fs::read_to_string(path)
-        .map_err(|e| format!("Cannot read {path}: {e}"))?;
-
-    let parsed = parse(&source, Mode::Module, path)
+///
+/// `source` must be the UTF-8 contents of `path`; the caller is responsible
+/// for the file read so the same buffer can be reused without a second I/O
+/// call.
+pub fn check_file(path: &str, source: &str, config: &Config) -> Result<Vec<Violation>, String> {
+    let parsed = parse(source, Mode::Module, path)
         .map_err(|e| format!("Parse error in {path}: {e}"))?;
 
     let stmts = match parsed {
@@ -34,12 +35,12 @@ pub fn check_file(path: &str, config: &Config) -> Result<Vec<Violation>, String>
         _ => vec![],
     };
 
-    let index = LineIndex::new(&source);
-    let suppressions = noqa::parse_suppressions(&source);
+    let index = LineIndex::new(source);
+    let suppressions = noqa::parse_suppressions(source);
 
     let mut violations: Vec<Violation> = ALL_RULES
         .iter()
-        .flat_map(|rule_fn| rule_fn(&stmts, &source, path, config, &index))
+        .flat_map(|rule_fn| rule_fn(&stmts, source, path, config, &index))
         .filter(|v| !config.is_ignored(&v.rule_id.0))
         .collect();
 
@@ -190,12 +191,23 @@ pub fn check_path(
 
     eprintln!("Linting {} file(s)…", file_count);
 
-    // Main pass: sequential, file by file in sorted order.
-    for path in &paths {
-        let violations = match check_file(path, &config_with_global) {
-            Ok(v)    => v,
-            Err(msg) => { eprintln!("warning: {msg}"); vec![] }
-        };
+    // Main pass: read each file once, lint in parallel, then deliver results
+    // sequentially (on_file is not Send, so we collect first then dispatch).
+    let results: Vec<Vec<Violation>> = paths
+        .par_iter()
+        .map(|path| {
+            let source = match std::fs::read_to_string(path) {
+                Ok(s)  => s,
+                Err(e) => { eprintln!("warning: Cannot read {path}: {e}"); return vec![]; }
+            };
+            match check_file(path, &source, &config_with_global) {
+                Ok(v)    => v,
+                Err(msg) => { eprintln!("warning: {msg}"); vec![] }
+            }
+        })
+        .collect();
+
+    for violations in results {
         on_file(violations);
     }
 
