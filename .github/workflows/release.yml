@@ -179,9 +179,11 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: false
 
       - name: Publish to PyPI
-        run: uv publish --skip-existing dist/*.whl
+        run: uv publish --check-url https://pypi.org/simple/pyspark-antipattern/ dist/*.whl
         env:
           UV_PUBLISH_USERNAME: ${{ secrets.PYPI_USERNAME }}
           UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
