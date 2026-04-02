@@ -1,5 +1,10 @@
 use std::process;
 
+use mimalloc::MiMalloc;
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 use clap::{Parser, Subcommand};
 
 use pyspark_antipattern::{checker, config, reporter, violation};

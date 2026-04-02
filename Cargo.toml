@@ -1,6 +1,6 @@
 [package]
 name = "pyspark-antipattern"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 description = "PySpark antipattern linter for CI/CD pipelines"
 
@@ -20,6 +20,7 @@ serde       = { version = "1", features = ["derive"] }
 walkdir     = "2"
 termcolor   = "1"
 rayon       = "1"
+mimalloc    = { version = "0.1", default-features = false }
 
 [dev-dependencies]
 pretty_assertions = "1"
