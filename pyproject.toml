@@ -1,5 +1,5 @@
 [build-system]
-requires = ["maturin>=1.0,<2.0"]
+requires = ["maturin>=1.9.3,<2.0"]
 build-backend = "maturin"
 
 [project]
@@ -9,6 +9,19 @@ description = "PySpark antipattern linter for CI/CD pipelines"
 requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [{ name = "Skander Boudawara", email = "skander.education@proton.me" }]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = [
+    "pyspark",
+    "antipattern",
+    "linter",
+    "automation",
+    "flake8",
+    "pycodestyle",
+    "pyflakes",
+    "pylint",
+    "ruff",
+]
 # https://pypi.org/classifiers/
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -30,6 +43,12 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Database :: Database Engines/Servers",
 ]
+
+[project.urls]
+Repository = "https://github.com/skanderboudawara/pyspark-antipattern"
+Documentation = "https://skanderboudawara.github.io/pyspark-antipattern/"
+Changelog = "https://github.com/skanderboudawara/pyspark-antipattern/releases"
+
 
 [tool.maturin]
 bindings = "bin"

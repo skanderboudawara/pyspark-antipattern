@@ -1,8 +1,13 @@
 [package]
 name = "pyspark-antipattern"
 version = "0.2.3"
-edition = "2021"
+edition = "2024"
 description = "PySpark antipattern linter for CI/CD pipelines"
+homepage = "https://skanderboudawara.github.io/pyspark-antipattern/"
+documentation = "https://skanderboudawara.github.io/pyspark-antipattern/"
+repository = "https://github.com/skanderboudawara/pyspark-antipattern"
+authors = ["Skander Boudawara <skander.education@proton.me>"]
+license = "MIT"
 
 [lib]
 name = "pyspark_antipattern"
