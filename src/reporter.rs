@@ -4,7 +4,7 @@ use termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 use crate::{
     config::Config,
     rule_content,
-    violation::{Impact, Severity, Violation},
+    violation::{Impact, PySparkVersion, Severity, Violation},
 };
 
 pub fn print_violations(violations: &[Violation], config: &Config) {
@@ -109,6 +109,27 @@ pub fn rule_impact(id: &str) -> Impact {
         "U001" | "U002" | "U003" | "U004" | "U005" | "U006" | "U007" => Impact::High,
 
         _ => Impact::Low,
+    }
+}
+
+/// Return the minimum PySpark version a rule applies to.
+/// All rules default to 3.0 — update specific entries as rules are reviewed.
+pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
+    match id {
+        // U005/U006/U007 recommend higher-order functions (transform, forall, exists) — added in PySpark 3.1.0
+        "U005" | "U006" | "U007" => PySparkVersion::new(3, 1, 0),
+
+        // D005/D006/D007 recommend .isEmpty() which was added in PySpark 3.3.0
+        "D005" | "D006" | "D007" => PySparkVersion::new(3, 3, 0),
+
+        // ARR002 recommends array_compact() — added in PySpark 3.4.0
+        // F006 recommends withColumnsRenamed() — added in PySpark 3.4.0
+        "ARR002" | "F006" => PySparkVersion::new(3, 4, 0),
+
+        // F005 recommends withColumns() — added in PySpark 3.3.0
+        "F005" => PySparkVersion::new(3, 3, 0),
+
+        _ => PySparkVersion::new(3, 0, 0),
     }
 }
 

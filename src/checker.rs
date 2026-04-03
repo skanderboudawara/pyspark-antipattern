@@ -47,6 +47,7 @@ pub fn check_file(path: &str, source: &str, config: &Config) -> Result<Vec<Viola
             v
         })
         .filter(|v| config.meets_min_severity(v.impact))
+        .filter(|v| config.supports_rule_version(crate::reporter::rule_pyspark_version(&v.rule_id.0)))
         .collect();
 
     violations = noqa::filter_suppressed(violations, &suppressions);

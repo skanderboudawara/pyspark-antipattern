@@ -28,6 +28,8 @@ pub struct Config {
     pub max_shuffle_operations:  usize,
     /// Only report violations with impact >= this level (default: show all).
     pub severity: Option<crate::violation::Impact>,
+    /// Cluster PySpark version — silences rules that require a newer version (default: show all).
+    pub pyspark_version: Option<crate::violation::PySparkVersion>,
     /// Populated at check time by the pre-pass in checker.rs — not read from pyproject.toml.
     #[serde(skip)]
     pub global_fn_costs: HashMap<String, usize>,
@@ -65,6 +67,7 @@ impl Default for Config {
             exclude_dirs:            default_exclude_dirs(),
             max_shuffle_operations:  9,
             severity:                None,
+            pyspark_version:         None,
             global_fn_costs:         HashMap::new(),
             global_fn_distinct_costs: HashMap::new(),
             global_fn_explode_costs:  HashMap::new(),
@@ -117,6 +120,15 @@ impl Config {
         match self.severity {
             None      => true,
             Some(min) => impact >= min,
+        }
+    }
+
+    /// Returns `true` when a rule with the given `since` version should be shown
+    /// (i.e. the rule's minimum version is <= the user's configured cluster version).
+    pub fn supports_rule_version(&self, since: crate::violation::PySparkVersion) -> bool {
+        match self.pyspark_version {
+            None             => true,
+            Some(user_ver)   => since <= user_ver,
         }
     }
 }

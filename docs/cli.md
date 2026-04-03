@@ -230,6 +230,28 @@ error[D001][HIGH]: Avoid using collect()
 
 ---
 
+### `--pyspark-version`
+
+```
+--pyspark-version=<X.Y|X.Y.Z>
+```
+
+Tells the linter which PySpark version your cluster runs. Rules that recommend
+APIs introduced in a newer version are silenced — they are irrelevant if your
+cluster cannot use those APIs yet.
+
+```bash
+# My cluster runs PySpark 3.3 — suppress rules requiring 3.4+
+pyspark-antipattern check src/ --pyspark-version=3.3
+
+# Pin to an exact patch release
+pyspark-antipattern check src/ --pyspark-version=3.5.1
+```
+
+When not set, all rules are shown regardless of their minimum version requirement.
+
+---
+
 ## Combining options
 
 All options can be combined freely:
@@ -237,6 +259,7 @@ All options can be combined freely:
 ```bash
 pyspark-antipattern check src/pipelines/ \
   --config pyproject.toml \
+  --pyspark-version=3.3 \
   --severity=medium \
   --ignore=F008,F011 \
   --warn=S004,S008 \

@@ -5,6 +5,10 @@ DataFrame persisted but never unpersisted
 
 🟡 **MEDIUM** — Moderate performance impact.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 Every `.persist()` call pins the DataFrame's partitions in memory (and/or disk)
 for the rest of the Spark session. Forgetting to call `.unpersist()` causes:

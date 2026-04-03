@@ -1,6 +1,6 @@
 # Adding a new linting rule
 
-Each rule lives in exactly **9 places**. Follow the steps below in order and
+Each rule lives in exactly **10 places**. Follow the steps below in order and
 nothing will be missed.
 
 ---
@@ -8,9 +8,9 @@ nothing will be missed.
 ## Step 1 — Write the documentation
 
 Create `docs/rules/<category>/RULEXXX.md`.
-The file must contain at least a `## Severity` section, an `## Information`
-section, and a `## Best practices` section. The severity section is displayed
-on the documentation site and must match the entry added in Step 6.
+The file must contain a `## Severity` section, a `## PySpark version` section,
+an `## Information` section, and a `## Best practices` section. Both metadata
+sections must match the entries added in Step 6.
 
 ```markdown
 # Rule RULEXXX
@@ -19,6 +19,10 @@ Short one-line description of what the rule catches
 ## Severity
 
 🟢 **LOW** — Minor performance impact.
+
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
 
 ## Information
 Explain *why* the pattern is problematic. Use bullet points, code diagrams,
@@ -140,8 +144,15 @@ correct impact arm:
 "RULEXXX" | … => Impact::High,
 ```
 
-The impact level here must match the `## Severity` badge in the rule's
-markdown documentation.
+**`rule_pyspark_version`** — the minimum PySpark version the rule applies to,
+used by the `--pyspark-version` filter. Add a specific arm if the rule uses
+APIs introduced after 3.0, otherwise the wildcard default (`3.0`) applies:
+```rust
+"RULEXXX" => PySparkVersion::new(3, 4, 0),
+```
+
+Both values must match the corresponding sections in the rule's markdown
+documentation.
 
 ---
 
@@ -196,6 +207,6 @@ cargo test rulexxx
 | 3 | `src/rules/<category>_rules/mod.rs` | `pub mod rulexxx;` |
 | 4 | `src/rules/mod.rs` | Append to `ALL_RULES` |
 | 5 | `src/rule_content.rs` | `include_str!` entry |
-| 6 | `src/reporter.rs` | `rule_title` match arm + `rule_impact` match arm |
+| 6 | `src/reporter.rs` | `rule_title` + `rule_impact` + `rule_pyspark_version` match arms |
 | 8 | `mkdocs.yml` | Add nav entry |
 | 9 | `tests/test_<category>_rules.rs` | Fire + no-fire tests |

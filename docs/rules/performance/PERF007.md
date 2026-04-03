@@ -12,6 +12,10 @@ DataFrame used 2 or more times without caching
     False positives and false negatives are possible; review every
     finding before acting on it.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 Spark uses **lazy evaluation**: every time you trigger an action on a DataFrame,
 Spark walks back up the entire lineage graph and re-executes every transformation

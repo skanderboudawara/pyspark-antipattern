@@ -68,6 +68,22 @@ severity = "medium"
 
 ---
 
+## PySpark version awareness
+
+Each rule knows the minimum PySpark version it applies to. Set `pyspark_version`
+to your cluster version and rules referencing newer APIs are silenced automatically:
+
+```bash
+pyspark-antipattern check src/ --pyspark-version=3.3
+```
+
+```toml
+[tool.pyspark-antipattern]
+pyspark_version = "3.3"   # suppress rules requiring PySpark 3.4+
+```
+
+---
+
 ## Author
 
 **Skander Boudawara** — [skander.education@proton.me](mailto:skander.education@proton.me)

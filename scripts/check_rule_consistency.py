@@ -3,7 +3,7 @@
 check_rule_consistency.py
 =========================
 Verify that every linting rule documented in docs/rules/ is fully registered
-in all 9 required locations (see docs/contributing/adding-a-rule.md).
+in all 10 required locations (see docs/contributing/adding-a-rule.md).
 
 Usage:
     python scripts/check_rule_consistency.py
@@ -63,17 +63,23 @@ def check_rule(rule_id, doc_category):
         except FileNotFoundError:
             return ""
 
-    # 1a ── docs/rules/<category>/RULEXXX.md — ## Severity section ──────────────
+    # 1a ── docs/rules/<category>/RULEXXX.md — ## Severity + ## PySpark version ──
     rule_md = ROOT / "docs" / "rules" / doc_category / f"{rule_id}.md"
-    if "## Severity" not in read(rule_md):
+    rule_md_text = read(rule_md)
+    if "## Severity" not in rule_md_text:
         failures.append(
             f"  docs/rules/{doc_category}/{rule_id}.md"
             f"  — missing `## Severity` section"
         )
+    if "## PySpark version" not in rule_md_text:
+        failures.append(
+            f"  docs/rules/{doc_category}/{rule_id}.md"
+            f"  — missing `## PySpark version` section"
+        )
 
     # 1b ── docs/rules/<category>/index.md ────────────────────────────────────
     index_md = ROOT / "docs" / "rules" / doc_category / "index.md"
-    if rule_id not in read(index_md):
+    if rule_id not in read(index_md):  # noqa: separate file from rule_md above
         failures.append(
             f"  docs/rules/{doc_category}/index.md"
             f"  — missing [{rule_id}] entry"
@@ -153,7 +159,7 @@ def main():
 
     total = len(rules)
     if not all_failures:
-        print(f"OK  All {total} rules are fully registered across all 9 locations.")
+        print(f"OK  All {total} rules are fully registered across all 10 locations.")
         sys.exit(0)
 
     bad = len(all_failures)

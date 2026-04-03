@@ -70,3 +70,4 @@ bindings = "bin"
 #                             #   while-loops always assume 99 iterations
 # exclude_dirs = ["my_generated_code", "vendor"]
 # severity = "medium"         # Only report violations with impact >= this level: "low", "medium", or "high"
+# pyspark_version = "3.4"     # Cluster PySpark version — silences rules requiring a newer version

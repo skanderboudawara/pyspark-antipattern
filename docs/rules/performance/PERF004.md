@@ -5,6 +5,10 @@ Avoid bare `.persist()` — always pass an explicit `StorageLevel`
 
 🟡 **MEDIUM** — Moderate performance impact.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 Calling `.persist()` with no arguments silently applies the default storage
 level (`MEMORY_AND_DISK`). This is an antipattern because:

@@ -9,6 +9,10 @@
 
 🔴 **HIGH** — Major performance impact.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 
 PySpark shuffle operations (joins, groupBy, sort, repartition, distinct, etc.) are expensive: they involve serialisation, network transfer, and disk I/O across all executor nodes. When many shuffles accumulate in a single lineage without a checkpoint, Spark must re-execute the entire chain every time an action is triggered. This makes the DAG fragile, slow, and hard to debug.

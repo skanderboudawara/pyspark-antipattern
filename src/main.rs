@@ -79,6 +79,11 @@ enum Command {
         /// (e.g. --severity=medium shows only MEDIUM and HIGH violations)
         #[arg(long = "severity")]
         severity: Option<String>,
+
+        /// PySpark version of your cluster (e.g. 3.4 or 3.5.1).
+        /// Silences rules that require a newer version than your cluster supports.
+        #[arg(long = "pyspark-version")]
+        pyspark_version: Option<String>,
     },
 }
 
@@ -100,6 +105,7 @@ fn main() {
             max_shuffle_operations,
             exclude_dirs,
             severity,
+            pyspark_version,
         } => {
             let mut config = config::Config::load(std::path::Path::new(&config_path))
                 .unwrap_or_else(|e| {
@@ -126,6 +132,12 @@ fn main() {
             if let Some(v) = loop_threshold        { config.loop_threshold        = v; }
             if let Some(v) = max_shuffle_operations { config.max_shuffle_operations = v; }
             if let Some(v) = exclude_dirs          { config.exclude_dirs          = v; }
+            if let Some(s) = pyspark_version {
+                match s.parse::<violation::PySparkVersion>() {
+                    Ok(v)  => config.pyspark_version = Some(v),
+                    Err(e) => eprintln!("warning: invalid --pyspark-version '{s}': {e}"),
+                }
+            }
             if let Some(s) = severity {
                 match s.to_lowercase().as_str() {
                     "low"    => config.severity = Some(violation::Impact::Low),

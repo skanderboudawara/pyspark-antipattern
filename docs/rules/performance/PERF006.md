@@ -5,6 +5,10 @@ Avoid bare `.checkpoint()` / `.localCheckpoint()` — always pass an explicit `e
 
 🟡 **MEDIUM** — Moderate performance impact.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 Both checkpoint methods accept an `eager` boolean that controls when the
 checkpoint is actually materialised:

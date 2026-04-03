@@ -5,6 +5,10 @@ Avoid multiple `getOrCreate()` calls — use `getActiveSession()` instead
 
 🟡 **MEDIUM** — Moderate performance impact.
 
+## PySpark version
+
+Compatible with **PySpark 3.0** and later.
+
 ## Information
 `SparkSession.builder.getOrCreate()` is expensive: it checks whether a session already exists and, if not, initializes a new one. Calling it multiple times throughout a codebase causes repeated overhead and makes session lifecycle management unclear.
 

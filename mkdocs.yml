@@ -67,6 +67,7 @@ nav:
     - warn: settings/warn.md
     - ignore: settings/ignore.md
     - severity: settings/severity.md
+    - pyspark_version: settings/pyspark_version.md
     - show_information: settings/show_information.md
     - show_best_practice: settings/show_best_practice.md
     - distinct_threshold: settings/distinct_threshold.md

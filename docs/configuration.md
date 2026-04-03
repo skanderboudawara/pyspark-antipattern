@@ -25,6 +25,10 @@ ignore = ["S004"]                # silence one rule
 # severity = "medium"            # show only MEDIUM and HIGH violations
 # severity = "high"              # show only HIGH violations
 
+# Cluster PySpark version — silences rules requiring a newer version (default: all)
+# pyspark_version = "3.3"        # suppress rules that require PySpark 3.4+
+# pyspark_version = "3.5.1"      # pin to an exact patch release
+
 # Show inline explanation for each rule that fired (default: false)
 show_information = false
 
@@ -95,6 +99,26 @@ severity = "medium"   # report only MEDIUM and HIGH violations
 | `"high"` | 🔴 HIGH only |
 
 This is useful in large codebases where you want to tackle the highest-impact issues first, or in CI pipelines where only critical violations should block a merge.
+
+---
+
+## PySpark version filter
+
+Each rule has a minimum PySpark version it applies to. If you set `pyspark_version`
+to your cluster's version, rules that recommend APIs unavailable on that version
+are silenced automatically.
+
+```toml
+[tool.pyspark-antipattern]
+pyspark_version = "3.3"   # suppress rules requiring PySpark 3.4+
+```
+
+```bash
+pyspark-antipattern check src/ --pyspark-version=3.3
+```
+
+When not set, all rules are shown regardless of their minimum version requirement.
+The minimum version of each rule is documented in its `## PySpark version` section.
 
 ---
 

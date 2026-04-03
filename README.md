@@ -62,6 +62,12 @@ error[D001][HIGH]: Avoid using collect()
   --> pipeline.py:42:10
 ```
 
+Filter by your cluster's PySpark version to suppress rules for newer APIs:
+
+```bash
+pyspark-antipattern check src/ --pyspark-version=3.3  # suppress rules requiring 3.4+
+```
+
 Filter by severity directly from the CLI:
 
 ```bash
@@ -115,6 +121,9 @@ Add a `[tool.pyspark-antipattern]` section to your project's `pyproject.toml`:
 
 # Show only these rules — everything else is silenced (default: all active)
 # select = ["D001", "S"]
+
+# Cluster PySpark version — silences rules requiring a newer version (default: all)
+# pyspark_version = "3.3"     # suppress rules that require PySpark 3.4+
 
 # Downgrade these rules from error to warning (exit code stays 0)
 warn = ["F008", "F011"]
