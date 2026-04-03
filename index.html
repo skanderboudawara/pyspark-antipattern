@@ -355,6 +355,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pyspark-version-awareness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version awareness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#author" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -514,6 +525,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -634,6 +649,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -1063,6 +1134,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1183,6 +1260,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rules/arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rules/arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rules/arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2471,6 +2632,8 @@
       
         
       
+        
+      
     
     
     
@@ -2703,6 +2866,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rules/performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3561,6 +3752,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pyspark-version-awareness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version awareness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#author" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3664,6 +3866,46 @@
 </tbody>
 </table>
 <p><a href="rules/">Browse all rules →</a></p>
+<p>Every rule carries a <strong>severity</strong> badge indicating its performance impact:</p>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 <strong>HIGH</strong></td>
+<td>Major performance impact — OOM risk, full scans, shuffle explosion</td>
+</tr>
+<tr>
+<td>🟡 <strong>MEDIUM</strong></td>
+<td>Moderate performance impact — avoidable overhead at scale</td>
+</tr>
+<tr>
+<td>🟢 <strong>LOW</strong></td>
+<td>Minor impact — style, API correctness, small inefficiencies</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>--severity</code> to filter by impact level:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--severity<span class="o">=</span>high<span class="w">    </span><span class="c1"># only HIGH violations</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--severity<span class="o">=</span>medium<span class="w">  </span><span class="c1"># MEDIUM and HIGH</span>
+</span></code></pre></div>
+<p>Or set it permanently in <code>pyproject.toml</code>:</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[tool.pyspark-antipattern]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">severity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="pyspark-version-awareness">PySpark version awareness</h2>
+<p>Each rule knows the minimum PySpark version it applies to. Set <code>pyspark_version</code>
+to your cluster version and rules referencing newer APIs are silenced automatically:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--pyspark-version<span class="o">=</span><span class="m">3</span>.3
+</span></code></pre></div>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[tool.pyspark-antipattern]</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">pyspark_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.3&quot;</span><span class="w">   </span><span class="c1"># suppress rules requiring PySpark 3.4+</span>
+</span></code></pre></div>
 <hr />
 <h2 id="author">Author</h2>
 <p><strong>Skander Boudawara</strong> — <a href="mailto:skander.education@proton.me">skander.education@proton.me</a></p>

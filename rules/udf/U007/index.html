@@ -423,6 +423,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -543,6 +547,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -974,6 +1034,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1094,6 +1160,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2382,6 +2532,8 @@
       
         
       
+        
+      
     
     
     
@@ -2614,6 +2766,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3438,6 +3618,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3527,6 +3729,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3587,6 +3811,10 @@
 
 <h1 id="rule-u007">Rule U007</h1>
 <p>Avoid <code>any()</code> inside a UDF body — use <code>pyspark.sql.functions.exists</code> instead</p>
+<h2 id="severity">Severity</h2>
+<p>🔴 <strong>HIGH</strong> — Major performance impact.</p>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 3.1</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p>Python's built-in <code>any()</code> used inside a UDF iterates over a collection entirely
 in Python, row by row, with no Spark optimisation:</p>

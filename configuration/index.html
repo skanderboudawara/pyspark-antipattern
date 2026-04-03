@@ -400,6 +400,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#performance-impact-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance impact filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#line-suppression" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -483,6 +505,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -625,6 +651,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -1054,6 +1136,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1174,6 +1262,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2462,6 +2634,8 @@
       
         
       
+        
+      
     
     
     
@@ -2694,6 +2868,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3541,6 +3743,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#performance-impact-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance impact filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#line-suppression" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3589,32 +3813,40 @@
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># ignore = [&quot;F&quot;]                 # silence all F rules</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># ignore = [&quot;S&quot;, &quot;L&quot;, &quot;D001&quot;]    # silence all S and L rules, plus D001</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Show inline explanation for each rule that fired (default: false)</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">show_information</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># Show best-practice guidance for each rule that fired (default: false)</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">show_best_practice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># S004: flag when the weighted count of .distinct() calls exceeds this (default: 5)</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">distinct_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># S008: flag when the weighted count of explode() calls exceeds this (default: 3)</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">explode_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># L001/L002/L003: flag for-loops where range(N) &gt; threshold;</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="c1">#                 while-loops always assume 99 iterations (default: 10)</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">loop_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="c1"># PERF003: fire when more than N shuffle ops occur without a checkpoint (default: 9)</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">max_shuffle_operations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1"># Directories to skip during recursive scanning.</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="c1"># These are merged with the built-in default list below.</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="c1"># Default: [&quot;.bzr&quot;, &quot;.direnv&quot;, &quot;.eggs&quot;, &quot;.git&quot;, &quot;.git-rewrite&quot;, &quot;.hg&quot;,</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="c1">#            &quot;.mypy_cache&quot;, &quot;.nox&quot;, &quot;.pants.d&quot;, &quot;.pytype&quot;, &quot;.ruff_cache&quot;,</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="c1">#            &quot;.svn&quot;, &quot;.tox&quot;, &quot;.venv&quot;, &quot;__pypackages__&quot;, &quot;_build&quot;,</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="c1">#            &quot;buck-out&quot;, &quot;dist&quot;, &quot;node_modules&quot;, &quot;venv&quot;]</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="c1"># exclude_dirs = [&quot;my_generated_code&quot;, &quot;vendor&quot;]</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Only report violations at or above this performance-impact level (default: all)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># severity = &quot;medium&quot;            # show only MEDIUM and HIGH violations</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># severity = &quot;high&quot;              # show only HIGH violations</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># Cluster PySpark version — silences rules requiring a newer version (default: all)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># pyspark_version = &quot;3.3&quot;        # suppress rules that require PySpark 3.4+</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># pyspark_version = &quot;3.5.1&quot;      # pin to an exact patch release</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1"># Show inline explanation for each rule that fired (default: false)</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">show_information</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1"># Show best-practice guidance for each rule that fired (default: false)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">show_best_practice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># S004: flag when the weighted count of .distinct() calls exceeds this (default: 5)</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">distinct_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="c1"># S008: flag when the weighted count of explode() calls exceeds this (default: 3)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">explode_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="c1"># L001/L002/L003: flag for-loops where range(N) &gt; threshold;</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="c1">#                 while-loops always assume 99 iterations (default: 10)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="n">loop_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="c1"># PERF003: fire when more than N shuffle ops occur without a checkpoint (default: 9)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="n">max_shuffle_operations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="c1"># Directories to skip during recursive scanning.</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="c1"># These are merged with the built-in default list below.</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="c1"># Default: [&quot;.bzr&quot;, &quot;.direnv&quot;, &quot;.eggs&quot;, &quot;.git&quot;, &quot;.git-rewrite&quot;, &quot;.hg&quot;,</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="c1">#            &quot;.mypy_cache&quot;, &quot;.nox&quot;, &quot;.pants.d&quot;, &quot;.pytype&quot;, &quot;.ruff_cache&quot;,</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="c1">#            &quot;.svn&quot;, &quot;.tox&quot;, &quot;.venv&quot;, &quot;__pypackages__&quot;, &quot;_build&quot;,</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="c1">#            &quot;buck-out&quot;, &quot;dist&quot;, &quot;node_modules&quot;, &quot;venv&quot;]</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="c1"># exclude_dirs = [&quot;my_generated_code&quot;, &quot;vendor&quot;]</span>
 </span></code></pre></div>
 <hr />
 <h2 id="rule-severity">Rule severity</h2>
@@ -3647,11 +3879,56 @@
 <p>Start with the strictest setup (all defaults). Add <code>warn</code> only for rules where your team has a documented reason to tolerate the pattern.</p>
 </div>
 <hr />
+<h2 id="performance-impact-filter">Performance impact filter</h2>
+<p>Each rule has a static <strong>performance impact</strong> level — <code>low</code>, <code>medium</code>, or <code>high</code> — reflecting how severe the antipattern is at scale. The impact badge is shown in the terminal output next to the rule ID:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>error[D001][HIGH]: Avoid using collect()
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>error[F005][LOW]: Avoid stacking multiple withColumn() calls
+</span></code></pre></div>
+<p>Use <code>severity</code> to filter out rules below a given impact level:</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[tool.pyspark-antipattern]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">severity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="w">   </span><span class="c1"># report only MEDIUM and HIGH violations</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Reports</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"low"</code></td>
+<td>🟢 LOW + 🟡 MEDIUM + 🔴 HIGH (same as the default)</td>
+</tr>
+<tr>
+<td><code>"medium"</code></td>
+<td>🟡 MEDIUM + 🔴 HIGH</td>
+</tr>
+<tr>
+<td><code>"high"</code></td>
+<td>🔴 HIGH only</td>
+</tr>
+</tbody>
+</table>
+<p>This is useful in large codebases where you want to tackle the highest-impact issues first, or in CI pipelines where only critical violations should block a merge.</p>
+<hr />
+<h2 id="pyspark-version-filter">PySpark version filter</h2>
+<p>Each rule has a minimum PySpark version it applies to. If you set <code>pyspark_version</code>
+to your cluster's version, rules that recommend APIs unavailable on that version
+are silenced automatically.</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">[tool.pyspark-antipattern]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">pyspark_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.3&quot;</span><span class="w">   </span><span class="c1"># suppress rules requiring PySpark 3.4+</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--pyspark-version<span class="o">=</span><span class="m">3</span>.3
+</span></code></pre></div>
+<p>When not set, all rules are shown regardless of their minimum version requirement.
+The minimum version of each rule is documented in its <code>## PySpark version</code> section.</p>
+<hr />
 <h2 id="line-suppression">Line suppression</h2>
 <p>To suppress a rule on one specific line, add a <code># noqa: pap:</code> comment:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>                  <span class="c1"># noqa: pap: D001</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">bad_join</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>         <span class="c1"># noqa: pap: S010, S002</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">expr</span><span class="p">(</span><span class="s2">&quot;a+b&quot;</span><span class="p">))</span>   <span class="c1"># noqa: pap: F017</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>                  <span class="c1"># noqa: pap: D001</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">bad_join</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>         <span class="c1"># noqa: pap: S010, S002</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">expr</span><span class="p">(</span><span class="s2">&quot;a+b&quot;</span><span class="p">))</span>   <span class="c1"># noqa: pap: F017</span>
 </span></code></pre></div>
 <p>Multiple rules can be suppressed on the same line by comma-separating them.</p>
 

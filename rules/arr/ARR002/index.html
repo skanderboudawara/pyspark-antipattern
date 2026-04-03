@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -978,6 +1038,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1122,6 +1188,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1167,6 +1255,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2455,6 +2627,8 @@
       
         
       
+        
+      
     
     
     
@@ -2687,6 +2861,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3512,6 +3714,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3555,6 +3779,10 @@
 
 <h1 id="rule-arr002">Rule ARR002</h1>
 <p>Avoid <code>array_except(col, None)</code> — use <code>array_compact()</code> instead</p>
+<h2 id="severity">Severity</h2>
+<p>🟢 <strong>LOW</strong> — Minor performance impact.</p>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 3.4</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p><code>array_except(arr, None)</code> and <code>array_except(arr, lit(None))</code> are a roundabout way to remove <code>null</code> values from an array. <code>array_compact()</code> is the purpose-built function for exactly this operation and expresses the intent directly.</p>
 <ul>

@@ -548,6 +548,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --severity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --pyspark-version
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -643,6 +665,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -785,6 +811,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -1214,6 +1296,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1334,6 +1422,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2622,6 +2794,8 @@
       
         
       
+        
+      
     
     
     
@@ -2854,6 +3028,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3822,6 +4024,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --severity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --pyspark-version
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4004,16 +4228,72 @@ the built-in default exclusion list.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--exclude_dirs<span class="o">=</span>vendor,generated,migrations
 </span></code></pre></div>
 <hr />
+<h3 id="-severity"><code>--severity</code></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>--severity=&lt;low|medium|high&gt;
+</span></code></pre></div>
+<p>Only report violations whose performance impact meets or exceeds this level.
+Rules below the threshold are silenced for this run (no output, no exit code
+impact).</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>low</code></td>
+<td>🟢 LOW + 🟡 MEDIUM + 🔴 HIGH (same as default)</td>
+</tr>
+<tr>
+<td><code>medium</code></td>
+<td>🟡 MEDIUM + 🔴 HIGH</td>
+</tr>
+<tr>
+<td><code>high</code></td>
+<td>🔴 HIGH only</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Focus on the most impactful issues only</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--severity<span class="o">=</span>high
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># Include moderate issues too</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--severity<span class="o">=</span>medium
+</span></code></pre></div>
+<p>The severity of each rule is shown as a colored badge in the terminal output
+immediately after the rule ID:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>error[D001][HIGH]: Avoid using collect()
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>  --&gt; pipeline.py:42:10
+</span></code></pre></div>
+<hr />
+<h3 id="-pyspark-version"><code>--pyspark-version</code></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>--pyspark-version=&lt;X.Y|X.Y.Z&gt;
+</span></code></pre></div>
+<p>Tells the linter which PySpark version your cluster runs. Rules that recommend
+APIs introduced in a newer version are silenced — they are irrelevant if your
+cluster cannot use those APIs yet.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># My cluster runs PySpark 3.3 — suppress rules requiring 3.4+</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--pyspark-version<span class="o">=</span><span class="m">3</span>.3
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="c1"># Pin to an exact patch release</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--pyspark-version<span class="o">=</span><span class="m">3</span>.5.1
+</span></code></pre></div>
+<p>When not set, all rules are shown regardless of their minimum version requirement.</p>
+<hr />
 <h2 id="combining-options">Combining options</h2>
 <p>All options can be combined freely:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/pipelines/<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span>--config<span class="w"> </span>pyproject.toml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>--ignore<span class="o">=</span>F008,F011<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span>--warn<span class="o">=</span>S004,S008<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">  </span>--show_best_practice<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">  </span>--max_shuffle_operations<span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">  </span>--distinct_threshold<span class="o">=</span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">  </span>--exclude_dirs<span class="o">=</span>tests,vendor
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/pipelines/<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span>--config<span class="w"> </span>pyproject.toml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span>--pyspark-version<span class="o">=</span><span class="m">3</span>.3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span>--severity<span class="o">=</span>medium<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">  </span>--ignore<span class="o">=</span>F008,F011<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">  </span>--warn<span class="o">=</span>S004,S008<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">  </span>--show_best_practice<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">  </span>--max_shuffle_operations<span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">  </span>--distinct_threshold<span class="o">=</span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">  </span>--exclude_dirs<span class="o">=</span>tests,vendor
 </span></code></pre></div>
 <hr />
 <h2 id="exit-codes">Exit codes</h2>
@@ -4041,14 +4321,14 @@ the built-in default exclusion list.</p>
 <p>When the same option is set in both places, the CLI flag always takes
 precedence.  This makes it easy to tighten or relax rules for a single run
 without editing config files — useful in CI matrix builds or one-off audits.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># pyproject.toml has warn = [&quot;D001&quot;]</span>
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="c1"># but this run shows only F018:</span>
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--select<span class="o">=</span>F018
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># pyproject.toml has warn = [&quot;D001&quot;]</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="c1"># but this run shows only F018:</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>src/<span class="w"> </span>--select<span class="o">=</span>F018
 </span></code></pre></div>
 <hr />
 <h2 id="getting-help">Getting help</h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>pyspark-antipattern<span class="w"> </span>--help
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>--help
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>pyspark-antipattern<span class="w"> </span>--help
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>pyspark-antipattern<span class="w"> </span>check<span class="w"> </span>--help
 </span></code></pre></div>
 
 

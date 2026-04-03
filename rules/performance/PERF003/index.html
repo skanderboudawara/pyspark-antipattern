@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -976,6 +1036,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1096,6 +1162,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2386,6 +2536,8 @@
       
         
       
+        
+      
     
     
     
@@ -2558,6 +2710,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2687,6 +2861,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3512,6 +3714,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3557,6 +3781,10 @@
 <p><strong>Category:</strong> Performance
 <strong>Default severity:</strong> Error</p>
 <hr />
+<h2 id="severity">Severity</h2>
+<p>🔴 <strong>HIGH</strong> — Major performance impact.</p>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 3.0</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p>PySpark shuffle operations (joins, groupBy, sort, repartition, distinct, etc.) are expensive: they involve serialisation, network transfer, and disk I/O across all executor nodes. When many shuffles accumulate in a single lineage without a checkpoint, Spark must re-execute the entire chain every time an action is triggered. This makes the DAG fragile, slow, and hard to debug.</p>
 <p><code>PERF003</code> fires when more than <code>max_shuffle_operations</code> shuffle-inducing calls occur between two <code>checkpoint()</code> / <code>localCheckpoint()</code> calls (or between the start of a scope and the first checkpoint). The counter also tracks <strong>function call costs</strong>: if a helper function internally performs N shuffles, every call to that function adds N to the running total in the caller.</p>

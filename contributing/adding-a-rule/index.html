@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -938,10 +998,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-6-register-the-rule-title-in-the-reporter" class="md-nav__link">
+  <a href="#step-6-register-the-rule-title-and-severity-in-the-reporter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 6 — Register the rule title in the reporter
+        Step 6 — Register the rule title and severity in the reporter
       
     </span>
   </a>
@@ -949,10 +1009,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-7-add-the-rule-to-the-mkdocs-navigation" class="md-nav__link">
+  <a href="#step-8-add-the-rule-to-the-mkdocs-navigation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 7 — Add the rule to the MkDocs navigation
+        Step 8 — Add the rule to the MkDocs navigation
       
     </span>
   </a>
@@ -960,10 +1020,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-8-write-tests" class="md-nav__link">
+  <a href="#step-9-write-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 8 — Write tests
+        Step 9 — Write tests
       
     </span>
   </a>
@@ -1122,6 +1182,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1242,6 +1308,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rules/arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rules/arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rules/arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2530,6 +2680,8 @@
       
         
       
+        
+      
     
     
     
@@ -2762,6 +2914,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rules/performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3642,10 +3822,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-6-register-the-rule-title-in-the-reporter" class="md-nav__link">
+  <a href="#step-6-register-the-rule-title-and-severity-in-the-reporter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 6 — Register the rule title in the reporter
+        Step 6 — Register the rule title and severity in the reporter
       
     </span>
   </a>
@@ -3653,10 +3833,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-7-add-the-rule-to-the-mkdocs-navigation" class="md-nav__link">
+  <a href="#step-8-add-the-rule-to-the-mkdocs-navigation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 7 — Add the rule to the MkDocs navigation
+        Step 8 — Add the rule to the MkDocs navigation
       
     </span>
   </a>
@@ -3664,10 +3844,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-8-write-tests" class="md-nav__link">
+  <a href="#step-9-write-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 8 — Write tests
+        Step 9 — Write tests
       
     </span>
   </a>
@@ -3706,36 +3886,67 @@
 
 
 <h1 id="adding-a-new-linting-rule">Adding a new linting rule</h1>
-<p>Each rule lives in exactly <strong>8 places</strong>. Follow the steps below in order and
+<p>Each rule lives in exactly <strong>10 places</strong>. Follow the steps below in order and
 nothing will be missed.</p>
 <hr />
 <h2 id="step-1-write-the-documentation">Step 1 — Write the documentation</h2>
 <p>Create <code>docs/rules/&lt;category&gt;/RULEXXX.md</code>.
-The file must contain at least an <code>## Information</code> section and a
-<code>## Best practices</code> section — these are parsed at compile-time and shown by the
-<code>--show-information</code> / <code>--show-best-practice</code> CLI flags.</p>
+The file must contain a <code>## Severity</code> section, a <code>## PySpark version</code> section,
+an <code>## Information</code> section, and a <code>## Best practices</code> section. Both metadata
+sections must match the entries added in Step 6.</p>
 <div class="language-markdown highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gh"># Rule RULEXXX</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Short one-line description of what the rule catches
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gu">## Information</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Explain <span class="ge">*why*</span> the pattern is problematic. Use bullet points, code diagrams,
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>and concrete consequences.
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gu">## Severity</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>🟢 <span class="gs">**LOW**</span> — Minor performance impact.
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gu">## Best practices</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>Show a <span class="gs">**Bad**</span> snippet and a <span class="gs">**Good**</span> snippet with <span class="sb">`python`</span> fenced blocks.
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gu">### Example</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>Bad:
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>\```python
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="gh"># the antipattern</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>\```
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>Good:
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>\```python
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="gh"># the fix</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>\```
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gu">## PySpark version</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>Compatible with <span class="gs">**PySpark 3.0**</span> and later.
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gu">## Information</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>Explain <span class="ge">*why*</span> the pattern is problematic. Use bullet points, code diagrams,
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>and concrete consequences.
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gu">## Best practices</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>Show a <span class="gs">**Bad**</span> snippet and a <span class="gs">**Good**</span> snippet with <span class="sb">`python`</span> fenced blocks.
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="gu">### Example</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>Bad:
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>\```python
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="gh"># the antipattern</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>\```
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>Good:
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>\```python
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="gh"># the fix</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>\```
 </span></code></pre></div>
+<p>Use the appropriate badge for the rule's impact level:</p>
+<table>
+<thead>
+<tr>
+<th>Impact</th>
+<th>Badge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Low</td>
+<td><code>🟢 **LOW** — Minor performance impact.</code></td>
+</tr>
+<tr>
+<td>Medium</td>
+<td><code>🟡 **MEDIUM** — Moderate performance impact.</code></td>
+</tr>
+<tr>
+<td>High</td>
+<td><code>🔴 **HIGH** — Major performance impact.</code></td>
+</tr>
+</tbody>
+</table>
 <p>Then add a row to the category index <code>docs/rules/&lt;category&gt;/index.md</code>:</p>
 <div class="language-markdown highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>| [<span class="nt">RULEXXX</span>](<span class="na">RULEXXX.md</span>) | Short description |
 </span></code></pre></div>
@@ -3804,39 +4015,51 @@ method-call check, <code>perf005.rs</code> for a two-pass scope analysis).</p>
 <p>This embeds the markdown at compile-time so the CLI can display it with
 <code>--show-information</code> and <code>--show-best-practice</code>.</p>
 <hr />
-<h2 id="step-6-register-the-rule-title-in-the-reporter">Step 6 — Register the rule title in the reporter</h2>
-<p>Open <code>src/reporter.rs</code> and add a match arm to the <code>rule_title</code> function:</p>
+<h2 id="step-6-register-the-rule-title-and-severity-in-the-reporter">Step 6 — Register the rule title and severity in the reporter</h2>
+<p>Open <code>src/reporter.rs</code> and add a match arm to <strong>both</strong> functions:</p>
+<p><strong><code>rule_title</code></strong> — shown in the terminal next to the rule ID:
 <div class="language-rust highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="s">&quot;RULEXXX&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Short one-line description shown in terminal output&quot;</span><span class="p">,</span>
-</span></code></pre></div>
-<p>Without this entry the terminal output shows <code>Unknown rule</code> instead of the
-rule title.</p>
+</span></code></pre></div></p>
+<p><strong><code>rule_impact</code></strong> — controls the colored <code>[LOW]</code> / <code>[MEDIUM]</code> / <code>[HIGH]</code> badge
+in terminal output and the <code>--severity</code> filter. Add the rule ID to the
+correct impact arm:
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// pick the right arm: Impact::Low, Impact::Medium, or Impact::High</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="s">&quot;RULEXXX&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Impact</span><span class="p">::</span><span class="n">High</span><span class="p">,</span>
+</span></code></pre></div></p>
+<p><strong><code>rule_pyspark_version</code></strong> — the minimum PySpark version the rule applies to,
+used by the <code>--pyspark-version</code> filter. Add a specific arm if the rule uses
+APIs introduced after 3.0, otherwise the wildcard default (<code>3.0</code>) applies:
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="s">&quot;RULEXXX&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">PySparkVersion</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+</span></code></pre></div></p>
+<p>Both values must match the corresponding sections in the rule's markdown
+documentation.</p>
 <hr />
-<h2 id="step-7-add-the-rule-to-the-mkdocs-navigation">Step 7 — Add the rule to the MkDocs navigation</h2>
+<h2 id="step-8-add-the-rule-to-the-mkdocs-navigation">Step 8 — Add the rule to the MkDocs navigation</h2>
 <p>Open <code>mkdocs.yml</code> and add the new page under the correct category section in
 the <code>nav</code> tree:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">RULEXXX</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rules/&lt;category&gt;/RULEXXX.md</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">RULEXXX</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rules/&lt;category&gt;/RULEXXX.md</span>
 </span></code></pre></div>
 <p>Without this entry the documentation page is built but unreachable from the
 site navigation.</p>
 <hr />
-<h2 id="step-8-write-tests">Step 8 — Write tests</h2>
+<h2 id="step-9-write-tests">Step 9 — Write tests</h2>
 <p>Open <code>tests/test_&lt;category&gt;_rules.rs</code> and add at least:</p>
 <ul>
 <li>One test that <strong>fires</strong> on a minimal bad snippet</li>
 <li>One test that <strong>does not fire</strong> on the corrected snippet</li>
 </ul>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// ── RULEXXX: short description ───────────────────────────────────────────────</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="cp">#[test]</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">fn</span><span class="w"> </span><span class="nf">rulexxx_fires</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="n">assert_violation</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check</span><span class="p">(</span><span class="n">rulexxx</span><span class="p">::</span><span class="n">check</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bad_snippet_here&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;RULEXXX&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="cp">#[test]</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">fn</span><span class="w"> </span><span class="nf">rulexxx_no_fire</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="n">assert_no_violation</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check</span><span class="p">(</span><span class="n">rulexxx</span><span class="p">::</span><span class="n">check</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;good_snippet_here&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;RULEXXX&quot;</span><span class="p">);</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// ── RULEXXX: short description ───────────────────────────────────────────────</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="cp">#[test]</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">fn</span><span class="w"> </span><span class="nf">rulexxx_fires</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="n">assert_violation</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check</span><span class="p">(</span><span class="n">rulexxx</span><span class="p">::</span><span class="n">check</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bad_snippet_here&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;RULEXXX&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">}</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="cp">#[test]</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">fn</span><span class="w"> </span><span class="nf">rulexxx_no_fire</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="n">assert_no_violation</span><span class="p">(</span><span class="o">&amp;</span><span class="n">check</span><span class="p">(</span><span class="n">rulexxx</span><span class="p">::</span><span class="n">check</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;good_snippet_here&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;RULEXXX&quot;</span><span class="p">);</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Run the tests to confirm:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>rulexxx
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>rulexxx
 </span></code></pre></div>
 <hr />
 <h2 id="checklist">Checklist</h2>
@@ -3852,7 +4075,7 @@ site navigation.</p>
 <tr>
 <td>1</td>
 <td><code>docs/rules/&lt;category&gt;/RULEXXX.md</code></td>
-<td>Create rule documentation</td>
+<td>Create rule documentation (with <code>## Severity</code> badge)</td>
 </tr>
 <tr>
 <td>1</td>
@@ -3882,15 +4105,15 @@ site navigation.</p>
 <tr>
 <td>6</td>
 <td><code>src/reporter.rs</code></td>
-<td><code>rule_title</code> match arm</td>
+<td><code>rule_title</code> + <code>rule_impact</code> + <code>rule_pyspark_version</code> match arms</td>
 </tr>
 <tr>
-<td>7</td>
+<td>8</td>
 <td><code>mkdocs.yml</code></td>
 <td>Add nav entry</td>
 </tr>
 <tr>
-<td>8</td>
+<td>9</td>
 <td><code>tests/test_&lt;category&gt;_rules.rs</code></td>
 <td>Fire + no-fire tests</td>
 </tr>

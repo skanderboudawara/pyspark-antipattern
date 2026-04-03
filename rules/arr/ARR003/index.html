@@ -18,7 +18,7 @@
         <link rel="prev" href="../ARR002/">
       
       
-        <link rel="next" href="../../driver/">
+        <link rel="next" href="../ARR004/">
       
       
         
@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -978,6 +1038,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1150,6 +1216,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1192,6 +1280,90 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2472,6 +2644,8 @@
       
         
       
+        
+      
     
     
     
@@ -2704,6 +2878,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3529,6 +3731,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3589,6 +3813,10 @@
 
 <h1 id="rule-arr003">Rule ARR003</h1>
 <p>Avoid <code>array_distinct(collect_set(...))</code> — <code>collect_set</code> already returns distinct values</p>
+<h2 id="severity">Severity</h2>
+<p>🟡 <strong>MEDIUM</strong> — Moderate performance impact.</p>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 3.0</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p><code>collect_set()</code> deduplicates values during the aggregation shuffle — the resulting
 array is guaranteed to contain no duplicates. Wrapping it in <code>array_distinct()</code> therefore:</p>

@@ -18,7 +18,7 @@
         <link rel="prev" href="../PERF006/">
       
       
-        <link rel="next" href="../../shuffle/">
+        <link rel="next" href="../PERF008/">
       
       
         
@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -976,6 +1036,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1096,6 +1162,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arr/ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2386,6 +2536,8 @@
       
         
       
+        
+      
     
     
     
@@ -2670,6 +2822,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2695,6 +2869,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3512,6 +3714,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#information" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3555,6 +3779,8 @@
 
 <h1 id="rule-perf007">Rule PERF007</h1>
 <p>DataFrame used 2 or more times without caching</p>
+<h2 id="severity">Severity</h2>
+<p>🟡 <strong>MEDIUM</strong> — Moderate performance impact.</p>
 <div class="admonition warning">
 <p class="admonition-title">Experimental rule</p>
 <p>This rule is <strong>experimental</strong>. Detection is limited to <code>.join()</code>,
@@ -3563,6 +3789,8 @@
 False positives and false negatives are possible; review every
 finding before acting on it.</p>
 </div>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 3.0</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p>Spark uses <strong>lazy evaluation</strong>: every time you trigger an action on a DataFrame,
 Spark walks back up the entire lineage graph and re-executes every transformation

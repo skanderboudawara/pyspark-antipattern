@@ -425,6 +425,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -545,6 +549,62 @@
     
   
     ignore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings/severity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    severity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings/pyspark_version/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pyspark_version
   
 
     
@@ -978,6 +1038,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1098,6 +1164,90 @@
     
   
     ARR003
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ARR004/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR004
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ARR005/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR005
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ARR006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARR006
   
 
     
@@ -2386,6 +2536,8 @@
       
         
       
+        
+      
     
     
     
@@ -2618,6 +2770,34 @@
     
   
     PERF007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance/PERF008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PERF008
   
 
     
@@ -3475,6 +3655,18 @@
 <tr>
 <td><a href="ARR003/">ARR003</a></td>
 <td>Avoid <code>array_distinct(collect_set())</code> — <code>collect_set</code> already returns distinct values</td>
+</tr>
+<tr>
+<td><a href="ARR004/">ARR004</a></td>
+<td>Avoid <code>size(collect_set())</code> inside <code>.agg()</code> — use <code>count_distinct()</code> instead</td>
+</tr>
+<tr>
+<td><a href="ARR005/">ARR005</a></td>
+<td>Avoid <code>size(collect_list())</code> inside <code>.agg()</code> — use <code>count()</code> instead</td>
+</tr>
+<tr>
+<td><a href="ARR006/">ARR006</a></td>
+<td>Avoid <code>size(collect_list().over(w))</code> — use <code>count().over(w)</code> instead</td>
 </tr>
 </tbody>
 </table>

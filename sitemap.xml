@@ -2,362 +2,386 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/cli/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/configuration/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/installation/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/versioning/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/contributing/adding-a-rule/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/contributing/commit-messages/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR004/</loc>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR005/</loc>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/arr/ARR006/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D004/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D005/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D006/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D007/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D008/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F004/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F005/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F006/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F007/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F008/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F009/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F010/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F011/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F012/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F013/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F014/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F015/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F016/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F017/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F018/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F019/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/F020/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/looping/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/looping/L001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/looping/L002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/looping/L003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/pandas/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/pandas/P001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF004/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF005/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF006/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF007/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/performance/PERF008/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S004/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S005/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S006/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S007/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S008/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S009/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S010/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S011/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S012/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S013/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S014/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U001/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U002/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U003/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U004/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U005/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U006/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/udf/U007/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/distinct_threshold/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/exclude_dirs/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/explode_threshold/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/ignore/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/loop_threshold/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/max_shuffle_operations/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/pyspark_version/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/select/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/severity/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/show_best_practice/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/show_information/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/warn/</loc>
-         <lastmod>2026-04-02</lastmod>
+         <lastmod>2026-04-03</lastmod>
     </url>
 </urlset>
