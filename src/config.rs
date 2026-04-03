@@ -26,6 +26,8 @@ pub struct Config {
     pub loop_threshold:     usize,
     pub exclude_dirs:            Vec<String>,
     pub max_shuffle_operations:  usize,
+    /// Only report violations with impact >= this level (default: show all).
+    pub severity: Option<crate::violation::Impact>,
     /// Populated at check time by the pre-pass in checker.rs — not read from pyproject.toml.
     #[serde(skip)]
     pub global_fn_costs: HashMap<String, usize>,
@@ -62,6 +64,7 @@ impl Default for Config {
             loop_threshold:     10,
             exclude_dirs:            default_exclude_dirs(),
             max_shuffle_operations:  9,
+            severity:                None,
             global_fn_costs:         HashMap::new(),
             global_fn_distinct_costs: HashMap::new(),
             global_fn_explode_costs:  HashMap::new(),
@@ -106,5 +109,14 @@ impl Config {
             return Severity::Warning;
         }
         Severity::Error
+    }
+
+    /// Returns `true` when a violation with the given `impact` should be shown
+    /// (i.e. its impact meets or exceeds `min_severity`).
+    pub fn meets_min_severity(&self, impact: crate::violation::Impact) -> bool {
+        match self.severity {
+            None      => true,
+            Some(min) => impact >= min,
+        }
     }
 }

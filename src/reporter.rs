@@ -4,7 +4,7 @@ use termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 use crate::{
     config::Config,
     rule_content,
-    violation::{Severity, Violation},
+    violation::{Impact, Severity, Violation},
 };
 
 pub fn print_violations(violations: &[Violation], config: &Config) {
@@ -17,14 +17,21 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
             Severity::Error => ("error", Color::Red),
             Severity::Warning => ("warning", Color::Yellow),
         };
+        let (impact_label, impact_color) = match v.impact {
+            Impact::Low    => ("LOW",    Color::Green),
+            Impact::Medium => ("MEDIUM", Color::Yellow),
+            Impact::High   => ("HIGH",   Color::Red),
+        };
         let title = rule_title(&v.rule_id.0);
         let gutter = v.line.to_string().len();
 
-        // "error[D001]: Avoid using collect()"
+        // "error[D001][HIGH]: Avoid using collect()"
         out.set_color(ColorSpec::new().set_fg(Some(color)).set_bold(true)).ok();
         write!(out, "{label}").ok();
         out.set_color(ColorSpec::new().set_bold(true)).ok();
         write!(out, "[{}]", v.rule_id).ok();
+        out.set_color(ColorSpec::new().set_fg(Some(impact_color)).set_bold(true)).ok();
+        write!(out, "[{impact_label}]").ok();
         out.reset().ok();
         writeln!(out, ": {title}").ok();
 
@@ -75,6 +82,34 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
 
     // Write everything to stderr in one shot.
     writer.print(&out).ok();
+}
+
+/// Return the static performance impact of a rule.
+pub fn rule_impact(id: &str) -> Impact {
+    match id {
+        // ── LOW ─────────────────────────────────────────────────────────────
+        "ARR002" => Impact::Low,
+        "F001" | "F002" | "F003" | "F005" | "F006" | "F007" | "F008" | "F009" | "F010"
+        | "F011" | "F012" | "F013" | "F015" | "F016" | "F017" | "F018" | "F020" => Impact::Low,
+        "S012" => Impact::Low,
+
+        // ── MEDIUM ───────────────────────────────────────────────────────────
+        "ARR001" | "ARR003" => Impact::Medium,
+        "D003" | "D008" => Impact::Medium,
+        "F004" | "F014" | "F019" => Impact::Medium,
+        "PERF002" | "PERF004" | "PERF005" | "PERF006" | "PERF007" => Impact::Medium,
+        "S001" | "S002" | "S009" => Impact::Medium,
+
+        // ── HIGH ─────────────────────────────────────────────────────────────
+        "D001" | "D002" | "D004" | "D005" | "D006" | "D007" => Impact::High,
+        "L001" | "L002" | "L003" => Impact::High,
+        "P001" => Impact::High,
+        "PERF001" | "PERF003" => Impact::High,
+        "S003" | "S004" | "S005" | "S006" | "S007" | "S008" | "S010" | "S011" | "S013" | "S014" => Impact::High,
+        "U001" | "U002" | "U003" | "U004" | "U005" | "U006" | "U007" => Impact::High,
+
+        _ => Impact::Low,
+    }
 }
 
 pub fn rule_title(id: &str) -> &'static str {

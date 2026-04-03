@@ -196,6 +196,40 @@ pyspark-antipattern check src/ --exclude_dirs=vendor,generated,migrations
 
 ---
 
+### `--severity`
+
+```
+--severity=<low|medium|high>
+```
+
+Only report violations whose performance impact meets or exceeds this level.
+Rules below the threshold are silenced for this run (no output, no exit code
+impact).
+
+| Value | Shows |
+|---|---|
+| `low` | 🟢 LOW + 🟡 MEDIUM + 🔴 HIGH (same as default) |
+| `medium` | 🟡 MEDIUM + 🔴 HIGH |
+| `high` | 🔴 HIGH only |
+
+```bash
+# Focus on the most impactful issues only
+pyspark-antipattern check src/ --severity=high
+
+# Include moderate issues too
+pyspark-antipattern check src/ --severity=medium
+```
+
+The severity of each rule is shown as a colored badge in the terminal output
+immediately after the rule ID:
+
+```
+error[D001][HIGH]: Avoid using collect()
+  --> pipeline.py:42:10
+```
+
+---
+
 ## Combining options
 
 All options can be combined freely:
@@ -203,6 +237,7 @@ All options can be combined freely:
 ```bash
 pyspark-antipattern check src/pipelines/ \
   --config pyproject.toml \
+  --severity=medium \
   --ignore=F008,F011 \
   --warn=S004,S008 \
   --show_best_practice=true \

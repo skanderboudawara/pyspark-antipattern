@@ -165,6 +165,7 @@ fn check_scope(
         .map(|p| Violation {
             rule_id: RuleId(ID.to_string()),
             severity,
+            impact: crate::violation::Impact::Low,
             file: file.to_string(),
             line: p.line,
             col: p.col,

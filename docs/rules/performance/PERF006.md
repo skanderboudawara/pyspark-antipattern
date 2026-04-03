@@ -1,6 +1,10 @@
 # Rule PERF006
 Avoid bare `.checkpoint()` / `.localCheckpoint()` — always pass an explicit `eager` argument
 
+## Severity
+
+🟡 **MEDIUM** — Moderate performance impact.
+
 ## Information
 Both checkpoint methods accept an `eager` boolean that controls when the
 checkpoint is actually materialised:

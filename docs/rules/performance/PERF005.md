@@ -1,6 +1,10 @@
 # Rule PERF005
 DataFrame persisted but never unpersisted
 
+## Severity
+
+🟡 **MEDIUM** — Moderate performance impact.
+
 ## Information
 Every `.persist()` call pins the DataFrame's partitions in memory (and/or disk)
 for the rest of the Spark session. Forgetting to call `.unpersist()` causes:

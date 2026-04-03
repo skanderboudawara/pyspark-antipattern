@@ -1,6 +1,10 @@
 # Rule PERF002
 Avoid multiple `getOrCreate()` calls — use `getActiveSession()` instead
 
+## Severity
+
+🟡 **MEDIUM** — Moderate performance impact.
+
 ## Information
 `SparkSession.builder.getOrCreate()` is expensive: it checks whether a session already exists and, if not, initializes a new one. Calling it multiple times throughout a codebase causes repeated overhead and makes session lifecycle management unclear.
 

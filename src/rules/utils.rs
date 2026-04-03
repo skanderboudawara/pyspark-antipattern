@@ -26,6 +26,7 @@ pub fn method_violation(
     Violation {
         rule_id: RuleId(rule_id.to_string()),
         severity,
+        impact: crate::violation::Impact::Low,
         file: file.to_string(),
         line,
         col,
@@ -50,6 +51,7 @@ pub fn expr_violation(
     Violation {
         rule_id: RuleId(rule_id.to_string()),
         severity,
+        impact: crate::violation::Impact::Low,
         file: file.to_string(),
         line,
         col,

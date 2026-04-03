@@ -55,6 +55,20 @@ Default output — violations only:
 
 ![Default behavior](img/default_behavior.png)
 
+Each violation line includes a colored severity badge — `[HIGH]` in red, `[MEDIUM]` in yellow, `[LOW]` in green — immediately after the rule ID:
+
+```
+error[D001][HIGH]: Avoid using collect()
+  --> pipeline.py:42:10
+```
+
+Filter by severity directly from the CLI:
+
+```bash
+pyspark-antipattern check src/ --severity=high    # only HIGH violations
+pyspark-antipattern check src/ --severity=medium  # MEDIUM and HIGH
+```
+
 With `show_information = true` — inline explanation for each rule:
 
 ![Show information](img/show_info_true.png)
@@ -69,7 +83,7 @@ With `show_best_practice = true` — best-practice guidance for each rule:
 
 Full documentation is available at **https://skanderboudawara.github.io/pyspark-antipattern/**.
 
-Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each rule has its own markdown file with a full explanation and best-practice guidance.
+Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each rule has its own markdown file with a full explanation, best-practice guidance, and a severity badge indicating its performance impact.
 
 | Category | Folder | Focus |
 |---|---|---|
@@ -81,6 +95,14 @@ Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each
 | **PERF** — Performance | [`docs/rules/performance/`](docs/rules/performance/) | Runtime performance antipatterns |
 | **S** — Shuffle | [`docs/rules/shuffle/`](docs/rules/shuffle/) | Joins, partitioning, and data movement |
 | **U** — UDF | [`docs/rules/udf/`](docs/rules/udf/) | User-defined functions and their alternatives |
+
+Each rule carries a **severity** reflecting its performance impact:
+
+| Severity | Meaning |
+|---|---|
+| 🔴 **HIGH** | Major performance impact — OOM risk, full scans, shuffle explosion |
+| 🟡 **MEDIUM** | Moderate performance impact — avoidable overhead at scale |
+| 🟢 **LOW** | Minor impact — style, API correctness, small inefficiencies |
 
 ---
 
@@ -102,6 +124,10 @@ warn = ["F008", "F011"]
 ignore = ["S004"]                # silence one rule
 # ignore = ["F"]                 # silence all F rules
 # ignore = ["S", "L", "D001"]    # silence all S and L rules
+
+# Only report violations at or above this performance-impact level (default: all)
+# severity = "medium"            # show only MEDIUM and HIGH violations
+# severity = "high"              # show only HIGH violations
 
 # Show inline explanation for each rule that fired (default: false)
 show_information = false

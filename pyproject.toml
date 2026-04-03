@@ -69,3 +69,4 @@ bindings = "bin"
 # loop_threshold = 10         # L001/L002/L003: flag for-loops where range(N) > threshold;
 #                             #   while-loops always assume 99 iterations
 # exclude_dirs = ["my_generated_code", "vendor"]
+# severity = "medium"         # Only report violations with impact >= this level: "low", "medium", or "high"

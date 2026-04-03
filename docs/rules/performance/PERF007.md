@@ -1,6 +1,10 @@
 # Rule PERF007
 DataFrame used 2 or more times without caching
 
+## Severity
+
+🟡 **MEDIUM** — Moderate performance impact.
+
 !!! warning "Experimental rule"
     This rule is **experimental**. Detection is limited to `.join()`,
     `.union()`, and `.unionByName()` calls — other DataFrame operations

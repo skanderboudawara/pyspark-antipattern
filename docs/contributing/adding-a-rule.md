@@ -1,6 +1,6 @@
 # Adding a new linting rule
 
-Each rule lives in exactly **8 places**. Follow the steps below in order and
+Each rule lives in exactly **9 places**. Follow the steps below in order and
 nothing will be missed.
 
 ---
@@ -8,13 +8,17 @@ nothing will be missed.
 ## Step 1 — Write the documentation
 
 Create `docs/rules/<category>/RULEXXX.md`.
-The file must contain at least an `## Information` section and a
-`## Best practices` section — these are parsed at compile-time and shown by the
-`--show-information` / `--show-best-practice` CLI flags.
+The file must contain at least a `## Severity` section, an `## Information`
+section, and a `## Best practices` section. The severity section is displayed
+on the documentation site and must match the entry added in Step 6.
 
 ```markdown
 # Rule RULEXXX
 Short one-line description of what the rule catches
+
+## Severity
+
+🟢 **LOW** — Minor performance impact.
 
 ## Information
 Explain *why* the pattern is problematic. Use bullet points, code diagrams,
@@ -35,6 +39,14 @@ Good:
 # the fix
 \```
 ```
+
+Use the appropriate badge for the rule's impact level:
+
+| Impact | Badge |
+|---|---|
+| Low | `🟢 **LOW** — Minor performance impact.` |
+| Medium | `🟡 **MEDIUM** — Moderate performance impact.` |
+| High | `🔴 **HIGH** — Major performance impact.` |
 
 Then add a row to the category index `docs/rules/<category>/index.md`:
 
@@ -111,20 +123,29 @@ This embeds the markdown at compile-time so the CLI can display it with
 
 ---
 
-## Step 6 — Register the rule title in the reporter
+## Step 6 — Register the rule title and severity in the reporter
 
-Open `src/reporter.rs` and add a match arm to the `rule_title` function:
+Open `src/reporter.rs` and add a match arm to **both** functions:
 
+**`rule_title`** — shown in the terminal next to the rule ID:
 ```rust
 "RULEXXX" => "Short one-line description shown in terminal output",
 ```
 
-Without this entry the terminal output shows `Unknown rule` instead of the
-rule title.
+**`rule_impact`** — controls the colored `[LOW]` / `[MEDIUM]` / `[HIGH]` badge
+in terminal output and the `--severity` filter. Add the rule ID to the
+correct impact arm:
+```rust
+// pick the right arm: Impact::Low, Impact::Medium, or Impact::High
+"RULEXXX" | … => Impact::High,
+```
+
+The impact level here must match the `## Severity` badge in the rule's
+markdown documentation.
 
 ---
 
-## Step 7 — Add the rule to the MkDocs navigation
+## Step 8 — Add the rule to the MkDocs navigation
 
 Open `mkdocs.yml` and add the new page under the correct category section in
 the `nav` tree:
@@ -138,7 +159,7 @@ site navigation.
 
 ---
 
-## Step 8 — Write tests
+## Step 9 — Write tests
 
 Open `tests/test_<category>_rules.rs` and add at least:
 
@@ -169,12 +190,12 @@ cargo test rulexxx
 
 | # | File | Action |
 |---|---|---|
-| 1 | `docs/rules/<category>/RULEXXX.md` | Create rule documentation |
+| 1 | `docs/rules/<category>/RULEXXX.md` | Create rule documentation (with `## Severity` badge) |
 | 1 | `docs/rules/<category>/index.md` | Add table row |
 | 2 | `src/rules/<category>_rules/rulexxx.rs` | Implement `check()` |
 | 3 | `src/rules/<category>_rules/mod.rs` | `pub mod rulexxx;` |
 | 4 | `src/rules/mod.rs` | Append to `ALL_RULES` |
 | 5 | `src/rule_content.rs` | `include_str!` entry |
-| 6 | `src/reporter.rs` | `rule_title` match arm |
-| 7 | `mkdocs.yml` | Add nav entry |
-| 8 | `tests/test_<category>_rules.rs` | Fire + no-fire tests |
+| 6 | `src/reporter.rs` | `rule_title` match arm + `rule_impact` match arm |
+| 8 | `mkdocs.yml` | Add nav entry |
+| 9 | `tests/test_<category>_rules.rs` | Fire + no-fire tests |

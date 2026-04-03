@@ -1,6 +1,10 @@
 # Rule PERF004
 Avoid bare `.persist()` — always pass an explicit `StorageLevel`
 
+## Severity
+
+🟡 **MEDIUM** — Moderate performance impact.
+
 ## Information
 Calling `.persist()` with no arguments silently applies the default storage
 level (`MEMORY_AND_DISK`). This is an antipattern because:

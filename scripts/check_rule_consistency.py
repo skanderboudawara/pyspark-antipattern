@@ -3,7 +3,7 @@
 check_rule_consistency.py
 =========================
 Verify that every linting rule documented in docs/rules/ is fully registered
-in all 8 required locations (see docs/contributing/adding-a-rule.md).
+in all 9 required locations (see docs/contributing/adding-a-rule.md).
 
 Usage:
     python scripts/check_rule_consistency.py
@@ -63,7 +63,15 @@ def check_rule(rule_id, doc_category):
         except FileNotFoundError:
             return ""
 
-    # 1 ── docs/rules/<category>/index.md ─────────────────────────────────────
+    # 1a ── docs/rules/<category>/RULEXXX.md — ## Severity section ──────────────
+    rule_md = ROOT / "docs" / "rules" / doc_category / f"{rule_id}.md"
+    if "## Severity" not in read(rule_md):
+        failures.append(
+            f"  docs/rules/{doc_category}/{rule_id}.md"
+            f"  — missing `## Severity` section"
+        )
+
+    # 1b ── docs/rules/<category>/index.md ────────────────────────────────────
     index_md = ROOT / "docs" / "rules" / doc_category / "index.md"
     if rule_id not in read(index_md):
         failures.append(
@@ -104,12 +112,18 @@ def check_rule(rule_id, doc_category):
             f"  — missing (\"{rule_id}\", include_str!(...))"
         )
 
-    # 6 ── src/reporter.rs ────────────────────────────────────────────────────
+    # 6 ── src/reporter.rs — rule_title() and rule_impact() ──────────────────
     reporter = ROOT / "src" / "reporter.rs"
-    if f'"{rule_id}" =>' not in read(reporter):
+    reporter_text = read(reporter)
+    if f'"{rule_id}" =>' not in reporter_text:
         failures.append(
             f"  src/reporter.rs"
             f"  — missing \"{rule_id}\" => ... in rule_title()"
+        )
+    if reporter_text.count(f'"{rule_id}"') < 2:
+        failures.append(
+            f"  src/reporter.rs"
+            f"  — missing \"{rule_id}\" in rule_impact()"
         )
 
     # 7 ── mkdocs.yml ──────────────────────────────────────────────────────────
@@ -139,7 +153,7 @@ def main():
 
     total = len(rules)
     if not all_failures:
-        print(f"OK  All {total} rules are fully registered across all 7 locations.")
+        print(f"OK  All {total} rules are fully registered across all 9 locations.")
         sys.exit(0)
 
     bad = len(all_failures)

@@ -44,6 +44,28 @@ PySpark is easy to misuse. `.collect()` on a 10 GB DataFrame, `.withColumn()` ca
 
 [Browse all rules →](rules/index.md)
 
+Every rule carries a **severity** badge indicating its performance impact:
+
+| Severity | Meaning |
+|---|---|
+| 🔴 **HIGH** | Major performance impact — OOM risk, full scans, shuffle explosion |
+| 🟡 **MEDIUM** | Moderate performance impact — avoidable overhead at scale |
+| 🟢 **LOW** | Minor impact — style, API correctness, small inefficiencies |
+
+Use `--severity` to filter by impact level:
+
+```bash
+pyspark-antipattern check src/ --severity=high    # only HIGH violations
+pyspark-antipattern check src/ --severity=medium  # MEDIUM and HIGH
+```
+
+Or set it permanently in `pyproject.toml`:
+
+```toml
+[tool.pyspark-antipattern]
+severity = "medium"
+```
+
 ---
 
 ## Author

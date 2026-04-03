@@ -54,6 +54,7 @@ impl<'a> Visitor for Check<'a> {
                 self.violations.push(Violation {
                     rule_id: RuleId(ID.to_string()),
                     severity: self.severity,
+                    impact: crate::violation::Impact::Low,
                     file: self.file.to_string(),
                     line, col,
                     source_line,

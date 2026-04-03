@@ -21,6 +21,10 @@ ignore = ["S004"]                # silence one rule
 # ignore = ["F"]                 # silence all F rules
 # ignore = ["S", "L", "D001"]    # silence all S and L rules, plus D001
 
+# Only report violations at or above this performance-impact level (default: all)
+# severity = "medium"            # show only MEDIUM and HIGH violations
+# severity = "high"              # show only HIGH violations
+
 # Show inline explanation for each rule that fired (default: false)
 show_information = false
 
@@ -65,6 +69,32 @@ All options accept exact IDs (`"D001"`) or single-letter group prefixes (`"F"` t
 
 !!! tip "Recommended starting point"
     Start with the strictest setup (all defaults). Add `warn` only for rules where your team has a documented reason to tolerate the pattern.
+
+---
+
+## Performance impact filter
+
+Each rule has a static **performance impact** level — `low`, `medium`, or `high` — reflecting how severe the antipattern is at scale. The impact badge is shown in the terminal output next to the rule ID:
+
+```
+error[D001][HIGH]: Avoid using collect()
+error[F005][LOW]: Avoid stacking multiple withColumn() calls
+```
+
+Use `severity` to filter out rules below a given impact level:
+
+```toml
+[tool.pyspark-antipattern]
+severity = "medium"   # report only MEDIUM and HIGH violations
+```
+
+| Value | Reports |
+|---|---|
+| `"low"` | 🟢 LOW + 🟡 MEDIUM + 🔴 HIGH (same as the default) |
+| `"medium"` | 🟡 MEDIUM + 🔴 HIGH |
+| `"high"` | 🔴 HIGH only |
+
+This is useful in large codebases where you want to tackle the highest-impact issues first, or in CI pipelines where only critical violations should block a merge.
 
 ---
 

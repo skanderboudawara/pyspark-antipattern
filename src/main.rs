@@ -74,6 +74,11 @@ enum Command {
         /// (e.g. --exclude_dirs=vendor,generated)
         #[arg(long = "exclude_dirs", value_delimiter = ',')]
         exclude_dirs: Option<Vec<String>>,
+
+        /// Minimum performance-impact level to report: low, medium, or high
+        /// (e.g. --severity=medium shows only MEDIUM and HIGH violations)
+        #[arg(long = "severity")]
+        severity: Option<String>,
     },
 }
 
@@ -94,6 +99,7 @@ fn main() {
             loop_threshold,
             max_shuffle_operations,
             exclude_dirs,
+            severity,
         } => {
             let mut config = config::Config::load(std::path::Path::new(&config_path))
                 .unwrap_or_else(|e| {
@@ -120,6 +126,14 @@ fn main() {
             if let Some(v) = loop_threshold        { config.loop_threshold        = v; }
             if let Some(v) = max_shuffle_operations { config.max_shuffle_operations = v; }
             if let Some(v) = exclude_dirs          { config.exclude_dirs          = v; }
+            if let Some(s) = severity {
+                match s.to_lowercase().as_str() {
+                    "low"    => config.severity = Some(violation::Impact::Low),
+                    "medium" => config.severity = Some(violation::Impact::Medium),
+                    "high"   => config.severity = Some(violation::Impact::High),
+                    other    => eprintln!("warning: unknown --severity value '{other}'; expected low, medium, or high"),
+                }
+            }
 
             let mut error_count   = 0usize;
             let mut warning_count = 0usize;

@@ -42,6 +42,11 @@ pub fn check_file(path: &str, source: &str, config: &Config) -> Result<Vec<Viola
         .iter()
         .flat_map(|rule_fn| rule_fn(&stmts, source, path, config, &index))
         .filter(|v| !config.is_ignored(&v.rule_id.0))
+        .map(|mut v| {
+            v.impact = crate::reporter::rule_impact(&v.rule_id.0);
+            v
+        })
+        .filter(|v| config.meets_min_severity(v.impact))
         .collect();
 
     violations = noqa::filter_suppressed(violations, &suppressions);
