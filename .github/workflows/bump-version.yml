@@ -80,3 +80,9 @@ jobs:
           git commit -m "chore: bump version to ${{ steps.version.outputs.new }}"
           git tag "v${{ steps.version.outputs.new }}"
           git push origin HEAD --tags
+
+      - name: Trigger release workflow
+        run: |
+          gh workflow run release.yml --ref "v${{ steps.version.outputs.new }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
