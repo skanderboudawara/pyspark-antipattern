@@ -11,3 +11,4 @@ Rules that catch runtime performance antipatterns not covered by other categorie
 | [PERF005](PERF005.md) | DataFrame persisted but never unpersisted |
 | [PERF006](PERF006.md) | Avoid bare `.checkpoint()` / `.localCheckpoint()` — always pass an explicit `eager` argument |
 | [PERF007](PERF007.md) | DataFrame used 2 or more times without caching |
+| [PERF008](PERF008.md) | Avoid `spark.read.csv(parallelize())` — use `spark.createDataFrame(pd.read_csv())` instead |

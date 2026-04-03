@@ -97,7 +97,7 @@ pub fn rule_impact(id: &str) -> Impact {
         "ARR001" | "ARR003" => Impact::Medium,
         "D003" | "D008" => Impact::Medium,
         "F004" | "F014" | "F019" => Impact::Medium,
-        "PERF002" | "PERF004" | "PERF005" | "PERF006" | "PERF007" => Impact::Medium,
+        "PERF002" | "PERF004" | "PERF005" | "PERF006" | "PERF007" | "PERF008" => Impact::Medium,
         "S001" | "S002" | "S009" => Impact::Medium,
 
         // ── HIGH ─────────────────────────────────────────────────────────────
@@ -197,6 +197,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "PERF005" => "DataFrame persisted but never unpersisted",
         "PERF006" => "Avoid bare .checkpoint() / .localCheckpoint(); always pass an explicit eager argument",
         "PERF007" => "DataFrame used 2 or more times without caching",
+        "PERF008" => "Avoid spark.read.csv(parallelize()); use spark.createDataFrame(pd.read_csv()) instead",
         "U001" => "Avoid UDFs that return StringType; use built-in string functions",
         "U002" => "Avoid UDFs that return ArrayType; use built-in array functions",
         "U003" => "Avoid UDFs; use Spark built-in functions instead",

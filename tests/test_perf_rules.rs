@@ -229,3 +229,26 @@ fn perf007_no_fire_chained_union_join() {
     let src = "result = df1.union(df2).join(df3, 'id')";
     assert_no_violation(&check(perf007::check, src), "PERF007");
 }
+
+// ── PERF008: spark.read.csv(parallelize()) → spark.createDataFrame(pd.read_csv()) ──
+
+#[test] fn perf008_fires_split_form() {
+    let src = "rdd = spark.sparkContext.parallelize(data)\ndf = spark.read.csv(rdd, header=True, sep=';')";
+    assert_violation(&check(perf008::check, src), "PERF008", 2);
+}
+#[test] fn perf008_fires_inline_form() {
+    assert_violation(&check(perf008::check, "df = spark.read.csv(spark.sparkContext.parallelize(data), header=True, sep=';')"), "PERF008", 1);
+}
+#[test] fn perf008_fires_sc_alias() {
+    let src = "rdd = sc.parallelize(lines)\ndf = spark.read.csv(rdd, header=True)";
+    assert_violation(&check(perf008::check, src), "PERF008", 2);
+}
+#[test] fn perf008_no_csv_from_path() {
+    assert_no_violation(&check(perf008::check, "df = spark.read.csv('/data/file.csv', header=True)"), "PERF008");
+}
+#[test] fn perf008_no_create_dataframe() {
+    assert_no_violation(&check(perf008::check, "df = spark.createDataFrame(pd.read_csv(StringIO(data), sep=';'))"), "PERF008");
+}
+#[test] fn perf008_no_parallelize_alone() {
+    assert_no_violation(&check(perf008::check, "rdd = spark.sparkContext.parallelize(data)"), "PERF008");
+}

@@ -137,6 +137,7 @@ nav:
       - PERF005: rules/performance/PERF005.md
       - PERF006: rules/performance/PERF006.md
       - PERF007: rules/performance/PERF007.md
+      - PERF008: rules/performance/PERF008.md
     - S — Shuffle:
       - rules/shuffle/index.md
       - S001: rules/shuffle/S001.md
