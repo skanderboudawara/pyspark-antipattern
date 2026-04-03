@@ -88,7 +88,7 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
 pub fn rule_impact(id: &str) -> Impact {
     match id {
         // ── LOW ─────────────────────────────────────────────────────────────
-        "ARR002" => Impact::Low,
+        "ARR002" | "ARR004" => Impact::Low,
         "F001" | "F002" | "F003" | "F005" | "F006" | "F007" | "F008" | "F009" | "F010"
         | "F011" | "F012" | "F013" | "F015" | "F016" | "F017" | "F018" | "F020" => Impact::Low,
         "S012" => Impact::Low,
@@ -129,6 +129,9 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
         // F005 recommends withColumns() — added in PySpark 3.3.0
         "F005" => PySparkVersion::new(3, 3, 0),
 
+        // ARR004 recommends count_distinct() — added in PySpark 3.2.0
+        "ARR004" => PySparkVersion::new(3, 2, 0),
+
         _ => PySparkVersion::new(3, 0, 0),
     }
 }
@@ -138,6 +141,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "ARR001" => "Avoid array_distinct(collect_list()); use collect_set() instead",
         "ARR002" => "Avoid array_except(col, None/lit(None)); use array_compact() instead",
         "ARR003" => "Avoid array_distinct(collect_set()); collect_set() already returns distinct values",
+        "ARR004" => "Avoid size(collect_set()) inside .agg(); use count_distinct() instead",
         "D001" => "Avoid using collect()",
         "D002" => "Avoid accessing .rdd",
         "D003" => "Avoid .show() in production",

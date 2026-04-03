@@ -69,6 +69,34 @@ use pyspark_antipattern::rules::arr_rules::*;
     assert_no_violation(&check(arr003::check, "df.agg(array_distinct(collect_list(col('tag'))))"), "ARR003");
 }
 
+// ── ARR004: size(collect_set()) inside .agg() → countDistinct() ──────────────
+
+#[test] fn arr004_fires_direct() {
+    assert_violation(&check(arr004::check, "df.agg(size(collect_set(col('x'))))"), "ARR004", 1);
+}
+#[test] fn arr004_fires_with_alias() {
+    assert_violation(&check(arr004::check, "df.agg(size(collect_set(col('x'))).alias('cnt'))"), "ARR004", 1);
+}
+#[test] fn arr004_fires_qualified() {
+    assert_violation(&check(arr004::check, "df.agg(F.size(F.collect_set(col('x'))))"), "ARR004", 1);
+}
+#[test] fn arr004_fires_string_col() {
+    assert_violation(&check(arr004::check, "df.agg(size(collect_set('user_id')).alias('n'))"), "ARR004", 1);
+}
+#[test] fn arr004_no_collect_set_alone() {
+    assert_no_violation(&check(arr004::check, "df.agg(collect_set(col('x')))"), "ARR004");
+}
+#[test] fn arr004_no_size_alone() {
+    assert_no_violation(&check(arr004::check, "df.agg(size(col('arr')))"), "ARR004");
+}
+#[test] fn arr004_no_count_distinct() {
+    assert_no_violation(&check(arr004::check, "df.agg(countDistinct(col('x')))"), "ARR004");
+}
+#[test] fn arr004_no_outside_agg() {
+    // size(collect_set()) outside .agg() is not flagged by this rule
+    assert_no_violation(&check(arr004::check, "df.withColumn('n', size(collect_set(col('x'))))"), "ARR004");
+}
+
 // no false positives
 #[test] fn arr001_no_collect_set() {
     assert_no_violation(&check(arr001::check, "df.agg(collect_set(col('item')))"), "ARR001");
