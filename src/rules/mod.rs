@@ -19,6 +19,7 @@ pub static ALL_RULES: &[RuleFn] = &[
     arr_rules::arr002::check,
     arr_rules::arr003::check,
     arr_rules::arr004::check,
+    arr_rules::arr005::check,
     d_rules::d001::check,
     d_rules::d002::check,
     d_rules::d003::check,
