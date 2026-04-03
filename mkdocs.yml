@@ -87,6 +87,7 @@ nav:
       - ARR003: rules/arr/ARR003.md
       - ARR004: rules/arr/ARR004.md
       - ARR005: rules/arr/ARR005.md
+      - ARR006: rules/arr/ARR006.md
     - D — Driver:
       - rules/driver/index.md
       - D001: rules/driver/D001.md

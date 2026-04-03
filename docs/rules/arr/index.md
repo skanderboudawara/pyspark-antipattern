@@ -9,3 +9,4 @@ Rules that catch inefficient or incorrect use of PySpark array functions.
 | [ARR003](ARR003.md) | Avoid `array_distinct(collect_set())` — `collect_set` already returns distinct values |
 | [ARR004](ARR004.md) | Avoid `size(collect_set())` inside `.agg()` — use `count_distinct()` instead |
 | [ARR005](ARR005.md) | Avoid `size(collect_list())` inside `.agg()` — use `count()` instead |
+| [ARR006](ARR006.md) | Avoid `size(collect_list().over(w))` — use `count().over(w)` instead |

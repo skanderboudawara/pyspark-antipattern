@@ -128,6 +128,29 @@ use pyspark_antipattern::rules::arr_rules::*;
     assert_no_violation(&check(arr005::check, "df.agg(size(collect_set(col('x'))))"), "ARR005");
 }
 
+// ── ARR006: size(collect_list().over(w)) → count().over(w) ───────────────────
+
+#[test] fn arr006_fires_withcolumn() {
+    assert_violation(&check(arr006::check, "df.withColumn('n', size(collect_list(col('x')).over(w)))"), "ARR006", 1);
+}
+#[test] fn arr006_fires_select() {
+    assert_violation(&check(arr006::check, "df.select(size(collect_list(col('x')).over(w)).alias('n'))"), "ARR006", 1);
+}
+#[test] fn arr006_fires_qualified() {
+    assert_violation(&check(arr006::check, "df.withColumn('n', F.size(F.collect_list(col('x')).over(w)))"), "ARR006", 1);
+}
+#[test] fn arr006_no_without_over() {
+    // size(collect_list()) without .over() is ARR005's concern
+    assert_no_violation(&check(arr006::check, "df.agg(size(collect_list(col('x'))))"), "ARR006");
+}
+#[test] fn arr006_no_count_over() {
+    assert_no_violation(&check(arr006::check, "df.withColumn('n', count(col('x')).over(w))"), "ARR006");
+}
+#[test] fn arr006_no_collect_set_over() {
+    // collect_set variant is not this rule
+    assert_no_violation(&check(arr006::check, "df.withColumn('n', size(collect_set(col('x')).over(w)))"), "ARR006");
+}
+
 // no false positives
 #[test] fn arr001_no_collect_set() {
     assert_no_violation(&check(arr001::check, "df.agg(collect_set(col('item')))"), "ARR001");
