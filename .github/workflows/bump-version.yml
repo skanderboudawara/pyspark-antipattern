@@ -1,0 +1,82 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version bump type"
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  bump:
+    name: Bump version and update Cargo.lock
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Compute new version
+        id: version
+        run: |
+          CURRENT=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT" | cut -d. -f3)
+
+          case "${{ inputs.bump }}" in
+            major) MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR+1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH+1)) ;;
+          esac
+
+          NEW="$MAJOR.$MINOR.$PATCH"
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "new=$NEW"         >> $GITHUB_OUTPUT
+
+      - name: Update pyproject.toml
+        run: |
+          sed -i 's/^version = "${{ steps.version.outputs.current }}"/version = "${{ steps.version.outputs.new }}"/' pyproject.toml
+
+      - name: Update Cargo.toml
+        run: |
+          sed -i 's/^version = "${{ steps.version.outputs.current }}"/version = "${{ steps.version.outputs.new }}"/' Cargo.toml
+
+      - name: Build to refresh Cargo.lock
+        run: cargo build --release
+
+      - name: Verify versions are consistent
+        run: |
+          PYPROJECT=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          CARGO=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          NEW="${{ steps.version.outputs.new }}"
+
+          echo "pyproject.toml : $PYPROJECT"
+          echo "Cargo.toml     : $CARGO"
+          echo "Expected       : $NEW"
+
+          [ "$PYPROJECT" = "$NEW" ] || { echo "pyproject.toml mismatch"; exit 1; }
+          [ "$CARGO"     = "$NEW" ] || { echo "Cargo.toml mismatch";     exit 1; }
+
+      - name: Commit and tag
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml Cargo.toml Cargo.lock
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new }}"
+          git tag "v${{ steps.version.outputs.new }}"
+          git push origin HEAD --tags
