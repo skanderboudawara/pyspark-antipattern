@@ -195,7 +195,9 @@ fn main() {
                 "Checked {} file(s). Found {} error(s), {} warning(s).",
                 file_count, error_count, warning_count,
             );
-            reporter::print_impact_summary(high_count, medium_count, low_count);
+            if error_count > 0 || warning_count > 0 {
+                reporter::print_impact_summary(high_count, medium_count, low_count);
+            }
 
             if read_failures > 0 {
                 eprintln!("error: {read_failures} file(s) could not be read or parsed.");

@@ -301,6 +301,70 @@ fn d001_in_with_context_expr() {
     assert_violation(&check(d001::check, src), "D001", 1);
 }
 
+// ── Fix 7: visitor — function default args, class bases/decorators, match guards ─
+
+#[test]
+fn d001_in_function_default_arg() {
+    let src = "def process(df, rows=df.collect()):\n    pass";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_class_base() {
+    let src = "class Foo(df.collect()):\n    pass";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_class_decorator() {
+    let src = "@some_decorator(df.collect())\nclass Foo:\n    pass";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_match_guard() {
+    let src = "match x:\n    case _ if df.collect():\n        pass";
+    assert_violation(&check(d001::check, src), "D001", 2);
+}
+
+// ── Fix 8: noqa case-insensitive ─────────────────────────────────────────────
+
+#[test]
+fn noqa_uppercase_pap_suppresses() {
+    use pyspark_antipattern::{config::Config, line_index::LineIndex, noqa, rules::RuleFn};
+    use rustpython_parser::{Mode, ast::Mod, parse};
+
+    fn check_with_noqa(rule_fn: RuleFn, source: &str) -> Vec<pyspark_antipattern::violation::Violation> {
+        let parsed = parse(source, Mode::Module, "<test>").unwrap();
+        let stmts = match parsed {
+            Mod::Module(m) => m.body,
+            _ => vec![],
+        };
+        let index = LineIndex::new(source);
+        let suppressions = noqa::parse_suppressions(source);
+        let violations = rule_fn(&stmts, source, "<test>", &Config::default(), &index);
+        noqa::filter_suppressed(violations, &suppressions)
+    }
+
+    let src = "result = df.collect()  # NOQA: PAP: D001";
+    assert!(
+        check_with_noqa(d001::check, src).is_empty(),
+        "uppercase NOQA: PAP should suppress"
+    );
+
+    let src2 = "result = df.collect()  # noqa: PAP: D001";
+    assert!(
+        check_with_noqa(d001::check, src2).is_empty(),
+        "mixed-case PAP should suppress"
+    );
+
+    let src3 = "result = df.collect()  # NOQA: pap";
+    assert!(
+        check_with_noqa(d001::check, src3).is_empty(),
+        "uppercase NOQA bare form should suppress"
+    );
+}
+
 // ── Fix 1: Config hard error on malformed TOML ────────────────────────────────
 
 #[test]

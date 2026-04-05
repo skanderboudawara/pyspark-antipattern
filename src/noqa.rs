@@ -23,7 +23,8 @@ pub fn parse_suppressions(source: &str) -> Suppressions {
 
     for (idx, line) in source.lines().enumerate() {
         let line_no = idx + 1;
-        if let Some(pos) = line.find("# noqa: pap:") {
+        let lower = line.to_lowercase();
+        if let Some(pos) = lower.find("# noqa: pap:") {
             let after = &line[pos + "# noqa: pap:".len()..];
             let ids: HashSet<String> = after
                 .split(',')
@@ -36,7 +37,7 @@ pub fn parse_suppressions(source: &str) -> Suppressions {
             } else {
                 lines.insert(line_no, ids);
             }
-        } else if line.contains("# noqa: pap") {
+        } else if lower.contains("# noqa: pap") {
             // Bare `# noqa: pap` — suppress every pap rule on this line.
             lines.insert(line_no, HashSet::from(["*".to_string()]));
         }

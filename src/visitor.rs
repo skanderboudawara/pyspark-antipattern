@@ -15,6 +15,11 @@ pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
             for d in &f.decorator_list {
                 v.visit_expr(d);
             }
+            for arg in f.args.posonlyargs.iter().chain(&f.args.args).chain(&f.args.kwonlyargs) {
+                if let Some(default) = &arg.default {
+                    v.visit_expr(default);
+                }
+            }
             for s in &f.body {
                 v.visit_stmt(s);
             }
@@ -23,11 +28,22 @@ pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
             for d in &f.decorator_list {
                 v.visit_expr(d);
             }
+            for arg in f.args.posonlyargs.iter().chain(&f.args.args).chain(&f.args.kwonlyargs) {
+                if let Some(default) = &arg.default {
+                    v.visit_expr(default);
+                }
+            }
             for s in &f.body {
                 v.visit_stmt(s);
             }
         }
         Stmt::ClassDef(c) => {
+            for d in &c.decorator_list {
+                v.visit_expr(d);
+            }
+            for base in &c.bases {
+                v.visit_expr(base);
+            }
             for s in &c.body {
                 v.visit_stmt(s);
             }
@@ -136,6 +152,9 @@ pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
         }
         Stmt::Match(m) => {
             for case in &m.cases {
+                if let Some(guard) = &case.guard {
+                    v.visit_expr(guard);
+                }
                 for s in &case.body {
                     v.visit_stmt(s);
                 }
