@@ -14,10 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Verify tag matches pyproject.toml and Cargo.toml
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
+          # When triggered by a tag push GITHUB_REF_NAME is the tag (e.g. v1.2.3).
+          # When called via workflow_call it is the branch name, so fall back to
+          # the tag that points at HEAD (set by bump-version before invoking us).
+          REF="${GITHUB_REF_NAME}"
+          if [[ "$REF" != v* ]]; then
+            REF=$(git tag --points-at HEAD | grep '^v' | sort -V | tail -1)
+          fi
+          TAG="${REF#v}"
           PYPROJECT=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
           CARGO=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
 
