@@ -8,8 +8,6 @@
 
 A fast, opinionated PySpark linter that challenges your code against antipattern rules — written in Rust, installable as a Python package, and designed to run in CI/CD pipelines.
 
-> **This linter is intentionally strict.** It will flag patterns that are technically valid Python but known to cause performance, scalability, or maintainability problems in PySpark. Every violation is a conversation starter, not necessarily a hard blocker — it is up to you to decide whether to fix it, downgrade it to a warning, or suppress it for a specific line. The goal is to make the trade-offs visible before they become production incidents.
-
 ---
 
 ## Why this exists
