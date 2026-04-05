@@ -26,7 +26,10 @@ fn arr001_fires_qualified() {
 #[test]
 fn arr001_fires_split() {
     let src = "df = df.withColumn('items', collect_list(col('item')))\ndf = df.withColumn('items', array_distinct(col('items')))";
-    assert_violation(&check(arr001::check, src), "ARR001", 2);
+    let v = check(arr001::check, src);
+    assert_violation(&v, "ARR001", 2);
+    // Caret must point at `array_distinct`, not at `df` (col 20 = "df = df.withColumn('items', " + 1)
+    assert_eq!(v[0].col, 29, "violation col should point to array_distinct, not df");
 }
 
 // pattern 3: collect_list wrapped in .over(window)

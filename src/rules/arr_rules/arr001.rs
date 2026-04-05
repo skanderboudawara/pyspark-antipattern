@@ -118,7 +118,10 @@ fn collect_list_col_name(expr: &Expr) -> Option<&str> {
     None
 }
 
-fn is_array_distinct_of(expr: &Expr, col_name: &str) -> bool {
+/// Returns the `array_distinct(...)` expression if `expr` contains a
+/// `withColumn(col_name, array_distinct(col(col_name)))` call, else `None`.
+/// Recursively searches the receiver chain so chained calls are handled.
+fn find_array_distinct_of<'a>(expr: &'a Expr, col_name: &str) -> Option<&'a Expr> {
     if let Expr::Call(c) = expr
         && let Expr::Attribute(a) = c.func.as_ref()
     {
@@ -130,12 +133,13 @@ fn is_array_distinct_of(expr: &Expr, col_name: &str) -> bool {
             && is_named(&inner.func, "array_distinct")
             && let Some(arg) = inner.args.first()
             && let Some(ref_name) = col_ref_name(arg)
+            && ref_name == col_name
         {
-            return ref_name == col_name;
+            return Some(&c.args[1]);
         }
-        return is_array_distinct_of(a.value.as_ref(), col_name);
+        return find_array_distinct_of(a.value.as_ref(), col_name);
     }
-    false
+    None
 }
 
 fn scan_split_pattern(
@@ -164,10 +168,10 @@ fn scan_split_pattern(
             // Check if this statement's expression contains the second pattern
             // given the previous statement set up a collect_list column.
             if let Some((prev_col, _)) = prev
-                && is_array_distinct_of(e, prev_col)
+                && let Some(ad_expr) = find_array_distinct_of(e, prev_col)
             {
                 violations.push(expr_violation(
-                    e,
+                    ad_expr,
                     "array_distinct".len(),
                     source,
                     file,
