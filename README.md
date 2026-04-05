@@ -12,7 +12,7 @@
 
 Written in Rust, installable as a Python package, and designed to run in CI/CD pipelines. +60 rules across 8 categories covering driver actions, shuffle explosions, UDFs, loops, and more.
 
-![demo](img/demo.gif)
+![demo.gif](https://raw.githubusercontent.com/skanderboudawara/pyspark-antipattern/main/img/demo.gif)
 
 ---
 
@@ -72,7 +72,7 @@ pyspark-antipattern check src/ --config path/to/pyproject.toml
 
 Default output — violations only:
 
-![Default behavior](img/default_behavior.png)
+![Default behavior](https://raw.githubusercontent.com/skanderboudawara/pyspark-antipattern/main/img/default_behavior.png)
 
 Each violation line includes a colored severity badge — `[HIGH]` in red, `[MEDIUM]` in yellow, `[LOW]` in green — immediately after the rule ID:
 
@@ -96,11 +96,11 @@ pyspark-antipattern check src/ --severity=medium  # MEDIUM and HIGH
 
 With `show_information = true` — inline explanation for each rule:
 
-![Show information](img/show_info_true.png)
+![Show information](https://raw.githubusercontent.com/skanderboudawara/pyspark-antipattern/main/img/show_info_true.png)
 
 With `show_best_practice = true` — best-practice guidance for each rule:
 
-![Show best practice](img/show_best_practice_true.png)
+![Show best practice](https://raw.githubusercontent.com/skanderboudawara/pyspark-antipattern/main/img/show_best_practice_true.png)
 
 ---
 
