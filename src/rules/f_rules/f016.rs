@@ -1,6 +1,10 @@
 //! F016: Avoid long DataFrame renaming chains — more than 2 consecutive variable
 //! reassignments (`a = x.m()`, `b = a.m()`, `c = b.m()`). Only DataFrame method
 //! chains are tracked; plain Python calls are never flagged.
+//!
+//! **Experimental**: detection relies on static variable-name tracking and cannot
+//! follow aliasing through function calls, conditional branches, or dynamic
+//! attribute access. False positives and false negatives are possible.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
