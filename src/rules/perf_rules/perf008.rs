@@ -14,7 +14,7 @@ use rustpython_parser::ast::{Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
-    rules::utils::expr_violation,
+    rules::utils::method_violation,
     violation::Violation,
     visitor::{Visitor, walk_expr},
 };
@@ -80,9 +80,9 @@ impl<'a> Visitor for Check<'a> {
                 || matches!(first_arg, Expr::Name(n)
                                 if self.parallelize_vars.contains(n.id.as_str()));
             if fires {
-                self.violations.push(expr_violation(
-                    expr,
-                    "csv".len(),
+                self.violations.push(method_violation(
+                    a,
+                    "csv",
                     self.source,
                     self.file,
                     self.index,

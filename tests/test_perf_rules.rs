@@ -1,6 +1,9 @@
 mod common;
 use common::{assert_no_violation, assert_violation, check};
+use pyspark_antipattern::config::Config;
+use pyspark_antipattern::line_index::LineIndex;
 use pyspark_antipattern::rules::perf_rules::*;
+use rustpython_parser::{Mode, ast::Mod, parse};
 
 // ── PERF001: .rdd.collect() instead of .toPandas() ───────────────────────────
 #[test]
@@ -16,12 +19,32 @@ fn perf001_fires_chain() {
     );
 }
 #[test]
+fn perf001_fires_deep_chain() {
+    // deeper chain: multiple transforms before .rdd still fires
+    assert_violation(
+        &check(
+            perf001::check,
+            "rows = df.filter(col('x') > 1).select('a').rdd.collect()",
+        ),
+        "PERF001",
+        1,
+    );
+}
+#[test]
 fn perf001_no_collect_only() {
     assert_no_violation(&check(perf001::check, "rows = df.collect()"), "PERF001");
 }
 #[test]
 fn perf001_no_topandas() {
     assert_no_violation(&check(perf001::check, "pdf = df.toPandas()"), "PERF001");
+}
+#[test]
+fn perf001_no_fire_rdd_method_not_collect() {
+    // .rdd.filter() is not .rdd.collect() — should not fire PERF001
+    assert_no_violation(
+        &check(perf001::check, "rdd2 = df.rdd.filter(lambda r: r.x > 0)"),
+        "PERF001",
+    );
 }
 
 // ── PERF003: too many shuffles without checkpoint ─────────────────────────────
@@ -172,6 +195,23 @@ fn perf005_fires_inside_function() {
     let src = "def run():\n    df = df.persist()\n    df2 = df2.persist()\n    df.unpersist()";
     assert_violation(&check(perf005::check, src), "PERF005", 3);
 }
+#[test]
+fn perf005_fires_bare_persist_no_assignment() {
+    // df.persist() without capturing the return value — still tracked by receiver name
+    let src = "df.persist()\ndf2 = df.select('x')";
+    assert_violation(&check(perf005::check, src), "PERF005", 1);
+}
+#[test]
+fn perf005_fires_bare_chained_persist_no_assignment() {
+    // df.filter(...).persist() without assignment — root receiver df tracked
+    let src = "df.filter(col('x') > 0).persist()\ndf2 = df.select('x')";
+    assert_violation(&check(perf005::check, src), "PERF005", 1);
+}
+#[test]
+fn perf005_no_fire_bare_persist_then_unpersist() {
+    let src = "df.persist()\ndf.unpersist()";
+    assert_no_violation(&check(perf005::check, src), "PERF005");
+}
 
 // ── PERF006: checkpoint/localCheckpoint without eager argument ────────────────
 #[test]
@@ -271,6 +311,23 @@ fn perf007_no_fire_show_collect_not_join_union() {
     assert_no_violation(&check(perf007::check, src), "PERF007");
 }
 #[test]
+fn perf007_no_fire_column_expr_as_join_condition() {
+    // F.col("x").alias("y") is a Column, not a DataFrame.
+    // When used as the join condition (arg[1]) across multiple joins it must
+    // NOT be identified as a DataFrame variable and must never fire PERF007.
+    // Each DataFrame receiver (left1/left2) and first arg (right1/right2) is
+    // used exactly once, so no legitimate PERF007 fire either.
+    let src =
+        "col_expr = F.col('x').alias('y')\ndf1 = left1.join(right1, col_expr)\ndf2 = left2.join(right2, col_expr)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
+fn perf007_no_fire_cast_column_as_join_condition() {
+    // F.col("x").cast("int") is a Column — same guard as above
+    let src = "cond = F.col('x').cast('int')\ndf1 = left1.join(right1, cond)\ndf2 = left2.join(right2, cond)";
+    assert_no_violation(&check(perf007::check, src), "PERF007");
+}
+#[test]
 fn perf007_no_fire_os_path_join() {
     // os.path.join shares the name "join" with Spark — must never be flagged
     let src = "archive_dir = os.path.join(target_dir, 'history')\nout = os.path.join(target_dir, 'out')";
@@ -329,5 +386,28 @@ fn perf008_no_parallelize_alone() {
     assert_no_violation(
         &check(perf008::check, "rdd = spark.sparkContext.parallelize(data)"),
         "PERF008",
+    );
+}
+#[test]
+fn perf008_violation_caret_at_csv_not_spark() {
+    // The caret must point at the `csv` method name, not at the start of `spark`.
+    let src = "rdd = sc.parallelize(data)\ndf = spark.read.csv(rdd, header=True)";
+    let parsed = parse(src, Mode::Module, "<test>").unwrap();
+    let stmts = match parsed {
+        Mod::Module(m) => m.body,
+        _ => vec![],
+    };
+    let index = LineIndex::new(src);
+    let violations = perf008::check(&stmts, src, "<test>", &Config::default(), &index);
+    let v = violations
+        .iter()
+        .find(|v| v.rule_id.0 == "PERF008")
+        .expect("expected PERF008 violation");
+    let second_line = src.lines().nth(1).unwrap();
+    let expected_col = second_line.find("csv").unwrap() + 1; // 1-indexed
+    assert_eq!(
+        v.col, expected_col,
+        "caret should be at 'csv' (col {expected_col}), got col {}",
+        v.col
     );
 }

@@ -38,6 +38,18 @@ fn root_name(expr: &Expr) -> Option<&str> {
     }
 }
 
+/// Return the `(line, col)` of the `persist` method name within a `.persist(...)` call expression.
+fn persist_position(expr: &Expr, source: &str, index: &LineIndex) -> (usize, usize) {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(attr) = c.func.as_ref()
+    {
+        let end: u32 = attr.range.end().into();
+        let s = end.saturating_sub("persist".len() as u32);
+        return index.line_col(s, source);
+    }
+    index.line_col(expr_start(expr), source)
+}
+
 /// True if `expr` is a `.persist(...)` call (any arguments).
 fn is_persist_call(expr: &Expr) -> bool {
     if let Expr::Call(c) = expr
@@ -92,23 +104,32 @@ impl<'a> Visitor for ScopeCollector<'a> {
             && let Some(target) = a.targets.first()
             && let Expr::Name(n) = target
         {
-            // Point violation at the `persist` method name.
-            let (line, col) = if let Expr::Call(c) = a.value.as_ref() {
-                if let Expr::Attribute(attr) = c.func.as_ref() {
-                    let end: u32 = attr.range.end().into();
-                    let s = end.saturating_sub("persist".len() as u32);
-                    self.index.line_col(s, self.source)
-                } else {
-                    self.index.line_col(expr_start(&a.value), self.source)
-                }
-            } else {
-                self.index.line_col(expr_start(&a.value), self.source)
-            };
+            let (line, col) = persist_position(&a.value, self.source, self.index);
             let source_line = self.index.line_text(self.source, line).to_string();
             self.persisted.insert(
                 n.id.to_string(),
                 PersistInfo {
                     var_name: n.id.to_string(),
+                    line,
+                    col,
+                    source_line,
+                },
+            );
+        }
+
+        // Detect bare:  df.persist(...)  (no assignment — receiver name is the tracked var)
+        if let Stmt::Expr(e) = stmt
+            && is_persist_call(&e.value)
+            && let Expr::Call(c) = e.value.as_ref()
+            && let Expr::Attribute(attr) = c.func.as_ref()
+            && let Some(var_name) = root_name(attr.value.as_ref())
+        {
+            let (line, col) = persist_position(&e.value, self.source, self.index);
+            let source_line = self.index.line_text(self.source, line).to_string();
+            self.persisted.insert(
+                var_name.to_string(),
+                PersistInfo {
+                    var_name: var_name.to_string(),
                     line,
                     col,
                     source_line,

@@ -22,15 +22,16 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        // Detect .collect() whose receiver chain contains .rdd
+        // Detect .collect() whose immediate receiver is the `.rdd` attribute.
+        // `rdd` is a property (not a method call), so we match it as an
+        // Attribute node: df.rdd.collect()  or  df.filter(...).rdd.collect()
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
             && attr.attr.as_str() == "collect"
-            && (crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
-                || matches!(
-                    attr.value.as_ref(),
-                    Expr::Attribute(a) if a.attr.as_str() == "rdd"
-                ))
+            && matches!(
+                attr.value.as_ref(),
+                Expr::Attribute(a) if a.attr.as_str() == "rdd"
+            )
         {
             self.violations.push(method_violation(
                 attr,

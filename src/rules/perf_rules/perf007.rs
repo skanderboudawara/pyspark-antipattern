@@ -33,7 +33,7 @@ use rustpython_parser::ast::{Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
-    spark_ops::{DATAFRAME_METHODS, NON_DATAFRAME_ROOTS},
+    spark_ops::{COLUMN_METHODS, DATAFRAME_METHODS, NON_DATAFRAME_ROOTS},
     violation::{RuleId, Severity, Violation},
 };
 
@@ -77,7 +77,8 @@ fn has_dataframe_method(expr: &Expr) -> bool {
     match expr {
         Expr::Call(c) => {
             if let Expr::Attribute(a) = c.func.as_ref() {
-                if DATAFRAME_METHODS.contains(&a.attr.as_str()) {
+                let name = a.attr.as_str();
+                if DATAFRAME_METHODS.contains(&name) && !COLUMN_METHODS.contains(&name) {
                     return true;
                 }
                 return has_dataframe_method(&a.value);
@@ -98,21 +99,21 @@ fn collect_df_names(expr: &Expr, out: &mut HashSet<String>) {
     {
         let method = a.attr.as_str();
 
-        // Immediate Name receiver of any DataFrame method.
+        // Immediate Name receiver of any DataFrame-exclusive method.
         if DATAFRAME_METHODS.contains(&method)
+            && !COLUMN_METHODS.contains(&method)
             && let Expr::Name(n) = a.value.as_ref()
         {
             out.insert(n.id.to_string());
         }
 
-        // Bare Name arguments of join / union operations — but only when
-        // the receiver is not a stdlib / non-DataFrame object.
-        if CACHE_HINT_OPS.contains(&method) && !receiver_is_non_df(&a.value) {
-            for arg in &c.args {
-                if let Expr::Name(n) = arg {
-                    out.insert(n.id.to_string());
-                }
-            }
+        // Only the first positional argument of join / union is the other DataFrame.
+        // Subsequent arguments are join conditions (Column, str, list) — not DataFrames.
+        if CACHE_HINT_OPS.contains(&method)
+            && !receiver_is_non_df(&a.value)
+            && let Some(Expr::Name(n)) = c.args.first()
+        {
+            out.insert(n.id.to_string());
         }
 
         collect_df_names(&a.value, out);
@@ -203,11 +204,12 @@ fn collect_refs(expr: &Expr, df_vars: &HashSet<String>, out: &mut Vec<(String, u
             if let Some(entry) = root_df_ref(a.value.as_ref(), df_vars) {
                 out.push(entry);
             }
-            // Collect bare Name arguments (the other DataFrame in a join/union).
-            for arg in &c.args {
-                if let Some(entry) = root_df_ref(arg, df_vars) {
-                    out.push(entry);
-                }
+            // Only the first positional argument is the other DataFrame.
+            // Subsequent arguments are join conditions — not DataFrames.
+            if let Some(first_arg) = c.args.first()
+                && let Some(entry) = root_df_ref(first_arg, df_vars)
+            {
+                out.push(entry);
             }
         }
         // Always recurse — there may be nested join/union calls.
