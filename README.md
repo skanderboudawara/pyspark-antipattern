@@ -108,18 +108,18 @@ With `show_best_practice = true` — best-practice guidance for each rule:
 
 Full documentation is available at **https://skanderboudawara.github.io/pyspark-antipattern/**.
 
-Rules are organized by category in the [`docs/rules/`](docs/rules/) folder. Each rule has its own markdown file with a full explanation, best-practice guidance, and a severity badge indicating its performance impact.
+Rules are organized by category in the [`docs/rules/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/) folder. Each rule has its own markdown file with a full explanation, best-practice guidance, and a severity badge indicating its performance impact.
 
 | Category | Folder | Focus |
 |---|---|---|
-| **ARR** — Array | [`docs/rules/arr/`](docs/rules/arr/) | Array function antipatterns |
-| **D** — Driver | [`docs/rules/driver/`](docs/rules/driver/) | Actions that pull data to the driver node |
-| **F** — Format | [`docs/rules/format/`](docs/rules/format/) | Code style and DataFrame API misuse |
-| **L** — Looping | [`docs/rules/looping/`](docs/rules/looping/) | DataFrame operations inside loops |
-| **P** — Pandas | [`docs/rules/pandas/`](docs/rules/pandas/) | Pandas interop pitfalls |
-| **PERF** — Performance | [`docs/rules/performance/`](docs/rules/performance/) | Runtime performance antipatterns |
-| **S** — Shuffle | [`docs/rules/shuffle/`](docs/rules/shuffle/) | Joins, partitioning, and data movement |
-| **U** — UDF | [`docs/rules/udf/`](docs/rules/udf/) | User-defined functions and their alternatives |
+| **ARR** — Array | [`docs/rules/arr/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/arr/) | Array function antipatterns |
+| **D** — Driver | [`docs/rules/driver/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/driver/) | Actions that pull data to the driver node |
+| **F** — Format | [`docs/rules/format/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/format/) | Code style and DataFrame API misuse |
+| **L** — Looping | [`docs/rules/looping/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/looping/) | DataFrame operations inside loops |
+| **P** — Pandas | [`docs/rules/pandas/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/pandas/) | Pandas interop pitfalls |
+| **PERF** — Performance | [`docs/rules/performance/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/performance/) | Runtime performance antipatterns |
+| **S** — Shuffle | [`docs/rules/shuffle/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/shuffle/) | Joins, partitioning, and data movement |
+| **U** — UDF | [`docs/rules/udf/`](https://github.com/skanderboudawara/pyspark-antipattern/tree/main/docs/rules/udf/) | User-defined functions and their alternatives |
 
 Each rule carries a **severity** reflecting its performance impact:
 
