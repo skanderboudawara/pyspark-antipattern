@@ -429,6 +429,8 @@
       
         
       
+        
+      
     
     
     
@@ -801,6 +803,34 @@
     
   
     max_shuffle_operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../settings/noqa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    noqa
   
 
     
@@ -1296,6 +1326,8 @@
       
         
       
+        
+      
     
     
     
@@ -1556,6 +1588,34 @@
     
   
     D008
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../driver/D009/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    D009
   
 
     
@@ -3815,6 +3875,14 @@
 <p>Avoid long renaming chains — overwrite the same DataFrame variable instead</p>
 <h2 id="severity">Severity</h2>
 <p>🟢 <strong>LOW</strong> — Minor performance impact.</p>
+<div class="admonition warning">
+<p class="admonition-title">Experimental rule</p>
+<p>This rule is <strong>experimental</strong>. Detection relies on static variable-name
+tracking across assignment statements and cannot follow aliasing through
+function calls, conditional branches, or dynamic attribute access.
+False positives and false negatives are possible; review every
+finding before acting on it.</p>
+</div>
 <h2 id="pyspark-version">PySpark version</h2>
 <p>Compatible with <strong>PySpark 1.0</strong> and later.</p>
 <h2 id="information">Information</h2>

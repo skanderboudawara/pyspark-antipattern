@@ -12,31 +12,31 @@
         <meta name="author" content="Skander Boudawara">
       
       
-        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D007/">
+        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/settings/noqa/">
       
       
-        <link rel="prev" href="../D006/">
+        <link rel="prev" href="../max_shuffle_operations/">
       
       
-        <link rel="next" href="../D008/">
+        <link rel="next" href="../../contributing/adding-a-rule/">
       
       
         
       
       
-      <link rel="icon" href="../../../icon.jpg">
+      <link rel="icon" href="../../icon.jpg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>D007 - pyspark-antipattern</title>
+        <title>noqa - pyspark-antipattern</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,9 +55,9 @@
       
     
     
-      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rule-d007" class="md-skip">
+        <a href="#noqa" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +98,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="pyspark-antipattern" class="md-header__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
+    <a href="../.." title="pyspark-antipattern" class="md-header__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
       
-  <img src="../../../icon.jpg" alt="logo">
+  <img src="../../icon.jpg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              D007
+              noqa
             
           </span>
         </div>
@@ -235,9 +235,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="pyspark-antipattern" class="md-nav__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
+    <a href="../.." title="pyspark-antipattern" class="md-nav__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
       
-  <img src="../../../icon.jpg" alt="logo">
+  <img src="../../icon.jpg" alt="logo">
 
     </a>
     pyspark-antipattern
@@ -264,7 +264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -291,7 +291,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../installation/" class="md-nav__link">
+      <a href="../../installation/" class="md-nav__link">
         
   
   
@@ -318,7 +318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../configuration/" class="md-nav__link">
+      <a href="../../configuration/" class="md-nav__link">
         
   
   
@@ -345,7 +345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cli/" class="md-nav__link">
+      <a href="../../cli/" class="md-nav__link">
         
   
   
@@ -372,7 +372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../versioning/" class="md-nav__link">
+      <a href="../../versioning/" class="md-nav__link">
         
   
   
@@ -396,6 +396,8 @@
       
   
   
+    
+  
   
   
     
@@ -435,15 +437,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../settings/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -467,7 +469,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -487,7 +489,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/select/" class="md-nav__link">
+      <a href="../select/" class="md-nav__link">
         
   
   
@@ -515,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/warn/" class="md-nav__link">
+      <a href="../warn/" class="md-nav__link">
         
   
   
@@ -543,7 +545,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/ignore/" class="md-nav__link">
+      <a href="../ignore/" class="md-nav__link">
         
   
   
@@ -571,7 +573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/severity/" class="md-nav__link">
+      <a href="../severity/" class="md-nav__link">
         
   
   
@@ -599,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/pyspark_version/" class="md-nav__link">
+      <a href="../pyspark_version/" class="md-nav__link">
         
   
   
@@ -627,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/show_information/" class="md-nav__link">
+      <a href="../show_information/" class="md-nav__link">
         
   
   
@@ -655,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/show_best_practice/" class="md-nav__link">
+      <a href="../show_best_practice/" class="md-nav__link">
         
   
   
@@ -683,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/distinct_threshold/" class="md-nav__link">
+      <a href="../distinct_threshold/" class="md-nav__link">
         
   
   
@@ -711,7 +713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/explode_threshold/" class="md-nav__link">
+      <a href="../explode_threshold/" class="md-nav__link">
         
   
   
@@ -739,7 +741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/loop_threshold/" class="md-nav__link">
+      <a href="../loop_threshold/" class="md-nav__link">
         
   
   
@@ -767,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/exclude_dirs/" class="md-nav__link">
+      <a href="../exclude_dirs/" class="md-nav__link">
         
   
   
@@ -795,7 +797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../settings/max_shuffle_operations/" class="md-nav__link">
+      <a href="../max_shuffle_operations/" class="md-nav__link">
         
   
   
@@ -820,10 +822,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../settings/noqa/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    noqa
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -839,6 +868,142 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Description
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#line-level-suppression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Line-level suppression
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-level-suppression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File-level suppression
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-pyprojecttoml-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with pyproject.toml settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suppress-a-single-rule-on-one-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress a single rule on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-multiple-rules-on-one-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress multiple rules on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-all-rules-on-one-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress all rules on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-an-entire-generated-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress an entire generated file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -911,7 +1076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../contributing/adding-a-rule/" class="md-nav__link">
+      <a href="../../contributing/adding-a-rule/" class="md-nav__link">
         
   
   
@@ -939,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../contributing/commit-messages/" class="md-nav__link">
+      <a href="../../contributing/commit-messages/" class="md-nav__link">
         
   
   
@@ -971,8 +1136,6 @@
       
   
   
-    
-  
   
   
     
@@ -1002,15 +1165,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../" class="md-nav__link ">
+            <a href="../../rules/" class="md-nav__link ">
               
   
   
@@ -1034,7 +1197,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1084,7 +1247,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../arr/" class="md-nav__link ">
+            <a href="../../rules/arr/" class="md-nav__link ">
               
   
   
@@ -1128,7 +1291,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR001/" class="md-nav__link">
+      <a href="../../rules/arr/ARR001/" class="md-nav__link">
         
   
   
@@ -1156,7 +1319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR002/" class="md-nav__link">
+      <a href="../../rules/arr/ARR002/" class="md-nav__link">
         
   
   
@@ -1184,7 +1347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR003/" class="md-nav__link">
+      <a href="../../rules/arr/ARR003/" class="md-nav__link">
         
   
   
@@ -1212,7 +1375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR004/" class="md-nav__link">
+      <a href="../../rules/arr/ARR004/" class="md-nav__link">
         
   
   
@@ -1240,7 +1403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR005/" class="md-nav__link">
+      <a href="../../rules/arr/ARR005/" class="md-nav__link">
         
   
   
@@ -1268,7 +1431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../arr/ARR006/" class="md-nav__link">
+      <a href="../../rules/arr/ARR006/" class="md-nav__link">
         
   
   
@@ -1301,8 +1464,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1334,15 +1495,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../rules/driver/" class="md-nav__link ">
               
   
   
@@ -1366,7 +1527,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_8_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1386,7 +1547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D001/" class="md-nav__link">
+      <a href="../../rules/driver/D001/" class="md-nav__link">
         
   
   
@@ -1414,7 +1575,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D002/" class="md-nav__link">
+      <a href="../../rules/driver/D002/" class="md-nav__link">
         
   
   
@@ -1442,7 +1603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D003/" class="md-nav__link">
+      <a href="../../rules/driver/D003/" class="md-nav__link">
         
   
   
@@ -1470,7 +1631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D004/" class="md-nav__link">
+      <a href="../../rules/driver/D004/" class="md-nav__link">
         
   
   
@@ -1498,7 +1659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D005/" class="md-nav__link">
+      <a href="../../rules/driver/D005/" class="md-nav__link">
         
   
   
@@ -1526,7 +1687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D006/" class="md-nav__link">
+      <a href="../../rules/driver/D006/" class="md-nav__link">
         
   
   
@@ -1551,37 +1712,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    D007
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../rules/driver/D007/" class="md-nav__link">
         
   
   
@@ -1597,87 +1731,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#severity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Severity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pyspark-version" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PySpark version
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#information" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Information
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best practices
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Best practices">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1690,7 +1743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D008/" class="md-nav__link">
+      <a href="../../rules/driver/D008/" class="md-nav__link">
         
   
   
@@ -1718,7 +1771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../D009/" class="md-nav__link">
+      <a href="../../rules/driver/D009/" class="md-nav__link">
         
   
   
@@ -1812,7 +1865,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../format/" class="md-nav__link ">
+            <a href="../../rules/format/" class="md-nav__link ">
               
   
   
@@ -1856,7 +1909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F001/" class="md-nav__link">
+      <a href="../../rules/format/F001/" class="md-nav__link">
         
   
   
@@ -1884,7 +1937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F002/" class="md-nav__link">
+      <a href="../../rules/format/F002/" class="md-nav__link">
         
   
   
@@ -1912,7 +1965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F003/" class="md-nav__link">
+      <a href="../../rules/format/F003/" class="md-nav__link">
         
   
   
@@ -1940,7 +1993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F004/" class="md-nav__link">
+      <a href="../../rules/format/F004/" class="md-nav__link">
         
   
   
@@ -1968,7 +2021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F005/" class="md-nav__link">
+      <a href="../../rules/format/F005/" class="md-nav__link">
         
   
   
@@ -1996,7 +2049,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F006/" class="md-nav__link">
+      <a href="../../rules/format/F006/" class="md-nav__link">
         
   
   
@@ -2024,7 +2077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F007/" class="md-nav__link">
+      <a href="../../rules/format/F007/" class="md-nav__link">
         
   
   
@@ -2052,7 +2105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F008/" class="md-nav__link">
+      <a href="../../rules/format/F008/" class="md-nav__link">
         
   
   
@@ -2080,7 +2133,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F009/" class="md-nav__link">
+      <a href="../../rules/format/F009/" class="md-nav__link">
         
   
   
@@ -2108,7 +2161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F010/" class="md-nav__link">
+      <a href="../../rules/format/F010/" class="md-nav__link">
         
   
   
@@ -2136,7 +2189,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F011/" class="md-nav__link">
+      <a href="../../rules/format/F011/" class="md-nav__link">
         
   
   
@@ -2164,7 +2217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F012/" class="md-nav__link">
+      <a href="../../rules/format/F012/" class="md-nav__link">
         
   
   
@@ -2192,7 +2245,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F013/" class="md-nav__link">
+      <a href="../../rules/format/F013/" class="md-nav__link">
         
   
   
@@ -2220,7 +2273,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F014/" class="md-nav__link">
+      <a href="../../rules/format/F014/" class="md-nav__link">
         
   
   
@@ -2248,7 +2301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F015/" class="md-nav__link">
+      <a href="../../rules/format/F015/" class="md-nav__link">
         
   
   
@@ -2276,7 +2329,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F016/" class="md-nav__link">
+      <a href="../../rules/format/F016/" class="md-nav__link">
         
   
   
@@ -2304,7 +2357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F017/" class="md-nav__link">
+      <a href="../../rules/format/F017/" class="md-nav__link">
         
   
   
@@ -2332,7 +2385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F018/" class="md-nav__link">
+      <a href="../../rules/format/F018/" class="md-nav__link">
         
   
   
@@ -2360,7 +2413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F019/" class="md-nav__link">
+      <a href="../../rules/format/F019/" class="md-nav__link">
         
   
   
@@ -2388,7 +2441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../format/F020/" class="md-nav__link">
+      <a href="../../rules/format/F020/" class="md-nav__link">
         
   
   
@@ -2448,7 +2501,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../looping/" class="md-nav__link ">
+            <a href="../../rules/looping/" class="md-nav__link ">
               
   
   
@@ -2492,7 +2545,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../looping/L001/" class="md-nav__link">
+      <a href="../../rules/looping/L001/" class="md-nav__link">
         
   
   
@@ -2520,7 +2573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../looping/L002/" class="md-nav__link">
+      <a href="../../rules/looping/L002/" class="md-nav__link">
         
   
   
@@ -2548,7 +2601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../looping/L003/" class="md-nav__link">
+      <a href="../../rules/looping/L003/" class="md-nav__link">
         
   
   
@@ -2604,7 +2657,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../pandas/" class="md-nav__link ">
+            <a href="../../rules/pandas/" class="md-nav__link ">
               
   
   
@@ -2648,7 +2701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../pandas/P001/" class="md-nav__link">
+      <a href="../../rules/pandas/P001/" class="md-nav__link">
         
   
   
@@ -2718,7 +2771,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../performance/" class="md-nav__link ">
+            <a href="../../rules/performance/" class="md-nav__link ">
               
   
   
@@ -2762,7 +2815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF001/" class="md-nav__link">
+      <a href="../../rules/performance/PERF001/" class="md-nav__link">
         
   
   
@@ -2790,7 +2843,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF002/" class="md-nav__link">
+      <a href="../../rules/performance/PERF002/" class="md-nav__link">
         
   
   
@@ -2818,7 +2871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF003/" class="md-nav__link">
+      <a href="../../rules/performance/PERF003/" class="md-nav__link">
         
   
   
@@ -2846,7 +2899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF004/" class="md-nav__link">
+      <a href="../../rules/performance/PERF004/" class="md-nav__link">
         
   
   
@@ -2874,7 +2927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF005/" class="md-nav__link">
+      <a href="../../rules/performance/PERF005/" class="md-nav__link">
         
   
   
@@ -2902,7 +2955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF006/" class="md-nav__link">
+      <a href="../../rules/performance/PERF006/" class="md-nav__link">
         
   
   
@@ -2930,7 +2983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF007/" class="md-nav__link">
+      <a href="../../rules/performance/PERF007/" class="md-nav__link">
         
   
   
@@ -2958,7 +3011,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../performance/PERF008/" class="md-nav__link">
+      <a href="../../rules/performance/PERF008/" class="md-nav__link">
         
   
   
@@ -3040,7 +3093,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../shuffle/" class="md-nav__link ">
+            <a href="../../rules/shuffle/" class="md-nav__link ">
               
   
   
@@ -3084,7 +3137,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S001/" class="md-nav__link">
+      <a href="../../rules/shuffle/S001/" class="md-nav__link">
         
   
   
@@ -3112,7 +3165,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S002/" class="md-nav__link">
+      <a href="../../rules/shuffle/S002/" class="md-nav__link">
         
   
   
@@ -3140,7 +3193,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S003/" class="md-nav__link">
+      <a href="../../rules/shuffle/S003/" class="md-nav__link">
         
   
   
@@ -3168,7 +3221,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S004/" class="md-nav__link">
+      <a href="../../rules/shuffle/S004/" class="md-nav__link">
         
   
   
@@ -3196,7 +3249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S005/" class="md-nav__link">
+      <a href="../../rules/shuffle/S005/" class="md-nav__link">
         
   
   
@@ -3224,7 +3277,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S006/" class="md-nav__link">
+      <a href="../../rules/shuffle/S006/" class="md-nav__link">
         
   
   
@@ -3252,7 +3305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S007/" class="md-nav__link">
+      <a href="../../rules/shuffle/S007/" class="md-nav__link">
         
   
   
@@ -3280,7 +3333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S008/" class="md-nav__link">
+      <a href="../../rules/shuffle/S008/" class="md-nav__link">
         
   
   
@@ -3308,7 +3361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S009/" class="md-nav__link">
+      <a href="../../rules/shuffle/S009/" class="md-nav__link">
         
   
   
@@ -3336,7 +3389,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S010/" class="md-nav__link">
+      <a href="../../rules/shuffle/S010/" class="md-nav__link">
         
   
   
@@ -3364,7 +3417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S011/" class="md-nav__link">
+      <a href="../../rules/shuffle/S011/" class="md-nav__link">
         
   
   
@@ -3392,7 +3445,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S012/" class="md-nav__link">
+      <a href="../../rules/shuffle/S012/" class="md-nav__link">
         
   
   
@@ -3420,7 +3473,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S013/" class="md-nav__link">
+      <a href="../../rules/shuffle/S013/" class="md-nav__link">
         
   
   
@@ -3448,7 +3501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../shuffle/S014/" class="md-nav__link">
+      <a href="../../rules/shuffle/S014/" class="md-nav__link">
         
   
   
@@ -3516,7 +3569,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../udf/" class="md-nav__link ">
+            <a href="../../rules/udf/" class="md-nav__link ">
               
   
   
@@ -3560,7 +3613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U001/" class="md-nav__link">
+      <a href="../../rules/udf/U001/" class="md-nav__link">
         
   
   
@@ -3588,7 +3641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U002/" class="md-nav__link">
+      <a href="../../rules/udf/U002/" class="md-nav__link">
         
   
   
@@ -3616,7 +3669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U003/" class="md-nav__link">
+      <a href="../../rules/udf/U003/" class="md-nav__link">
         
   
   
@@ -3644,7 +3697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U004/" class="md-nav__link">
+      <a href="../../rules/udf/U004/" class="md-nav__link">
         
   
   
@@ -3672,7 +3725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U005/" class="md-nav__link">
+      <a href="../../rules/udf/U005/" class="md-nav__link">
         
   
   
@@ -3700,7 +3753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U006/" class="md-nav__link">
+      <a href="../../rules/udf/U006/" class="md-nav__link">
         
   
   
@@ -3728,7 +3781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../udf/U007/" class="md-nav__link">
+      <a href="../../rules/udf/U007/" class="md-nav__link">
         
   
   
@@ -3791,10 +3844,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#severity" class="md-nav__link">
+  <a href="#description" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Severity
+        Description
       
     </span>
   </a>
@@ -3802,10 +3855,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyspark-version" class="md-nav__link">
+  <a href="#line-level-suppression" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PySpark version
+        Line-level suppression
       
     </span>
   </a>
@@ -3813,10 +3866,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#information" class="md-nav__link">
+  <a href="#file-level-suppression" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Information
+        File-level suppression
       
     </span>
   </a>
@@ -3824,22 +3877,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
+  <a href="#precedence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best practices
+        Precedence
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Best practices">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-pyprojecttoml-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with pyproject.toml settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#suppress-a-single-rule-on-one-line" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Suppress a single rule on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-multiple-rules-on-one-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress multiple rules on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-all-rules-on-one-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress all rules on one line
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suppress-an-entire-generated-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suppress an entire generated file
       
     </span>
   </a>
@@ -3871,35 +3979,111 @@
   
 
 
-<h1 id="rule-d007">Rule D007</h1>
-<p>Avoid using <code>df.filter(...).count() == 0</code>; use <code>.isEmpty()</code> instead</p>
-<h2 id="severity">Severity</h2>
-<p>🔴 <strong>HIGH</strong> — Major performance impact.</p>
-<h2 id="pyspark-version">PySpark version</h2>
-<p>Compatible with <strong>PySpark 3.3</strong> and later.</p>
-<h2 id="information">Information</h2>
-<p>Using <code>df.filter(...).count() == 0</code> triggers a full scan of the filtered DataFrame, which is inefficient for large datasets. This can cause:</p>
+<h1 id="noqa">noqa</h1>
+<p><strong>Syntax:</strong> inline comment — not a <code>pyproject.toml</code> setting
+<strong>Scope:</strong> line-level or file-level</p>
+<hr />
+<h2 id="description">Description</h2>
+<p><code># noqa: pap:</code> comments let you suppress violations inline, directly in your Python source code — without touching <code>pyproject.toml</code>.</p>
+<p>Use <code>noqa</code> for <strong>specific, justified exceptions</strong>: generated files, known false positives, or patterns your team has consciously accepted in one place. For broader suppression across the whole codebase, use <a href="../ignore/"><code>ignore</code></a> or <a href="../warn/"><code>warn</code></a> in <code>pyproject.toml</code> instead.</p>
+<hr />
+<h2 id="line-level-suppression">Line-level suppression</h2>
+<p>Suppress one or more rules on a <strong>single line</strong>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>  <span class="c1"># noqa: pap: D001</span>
+</span></code></pre></div>
+<p>Suppress <strong>multiple rules</strong> on the same line with a comma-separated list:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">bad_join</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>  <span class="c1"># noqa: pap: S010, S002</span>
+</span></code></pre></div>
+<p>Suppress <strong>all pap rules</strong> on a line (use sparingly):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">expr</span><span class="p">(</span><span class="s2">&quot;a+b&quot;</span><span class="p">))</span>  <span class="c1"># noqa: pap</span>
+</span></code></pre></div>
+<p>The comment must be on the <strong>same line</strong> as the violation. A <code># noqa</code> on the line above or below has no effect.</p>
+<hr />
+<h2 id="file-level-suppression">File-level suppression</h2>
+<p>To suppress <strong>every violation in an entire file</strong>, add <code># noqa: pap: FILE</code> anywhere in the file — typically at the top:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># noqa: pap: FILE</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># This file is auto-generated by codegen.py — do not edit by hand.</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_report</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>  <span class="c1"># would normally fire D001</span>
+</span></code></pre></div>
+<p>The <code>FILE</code> keyword can appear on any line, but placing it at the top makes intent obvious. It is often the right choice for:</p>
 <ul>
-<li>High computation and memory usage  </li>
-<li>Slower execution  </li>
-<li>Unnecessary resource consumption  </li>
+<li><strong>Auto-generated files</strong> that are not maintained by hand</li>
+<li><strong>Migration scripts</strong> with intentional one-off patterns</li>
+<li><strong>Vendored or third-party code</strong> copied into the repo</li>
 </ul>
-<h2 id="best-practices">Best practices</h2>
-<ul>
-<li>Use <code>.filter(...).isEmpty()</code> to efficiently check if filtered data exists:<br />
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="c1"># handle empty result</span>
-</span></code></pre></div></li>
-<li>Use <code>.count()</code> only when the exact number of filtered rows is required  </li>
-</ul>
-<p><strong>Rule of thumb:</strong> Prefer <code>.isEmpty()</code> over <code>.count() == 0</code> for emptiness checks after filtering.</p>
-<h3 id="example">Example</h3>
-<p>Bad:
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">pass</span>
-</span></code></pre></div></p>
-<p>Good:
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span> <span class="k">pass</span>
-</span></code></pre></div></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>File-level suppression silences <strong>all</strong> pap rules in the file — including rules that may indicate genuine performance problems. Prefer line-level suppression when only a subset of violations should be ignored.</p>
+</div>
+<hr />
+<h2 id="precedence">Precedence</h2>
+<p><code>noqa</code> takes effect <strong>after</strong> all other filters (<code>ignore</code>, <code>warn</code>, <code>select</code>, <code>severity</code>, <code>pyspark_version</code>). A violation that is already ignored by <code>pyproject.toml</code> settings will never reach the <code>noqa</code> filter — <code>noqa</code> is only relevant for violations that would otherwise be reported.</p>
+<hr />
+<h2 id="comparison-with-pyprojecttoml-settings">Comparison with pyproject.toml settings</h2>
+<table>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Scope</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ignore = [...]</code></td>
+<td>All files, all occurrences</td>
+<td><code>pyproject.toml</code></td>
+</tr>
+<tr>
+<td><code>warn = [...]</code></td>
+<td>All files, all occurrences</td>
+<td><code>pyproject.toml</code></td>
+</tr>
+<tr>
+<td><code># noqa: pap: RULE</code></td>
+<td>One specific line</td>
+<td>Source file</td>
+</tr>
+<tr>
+<td><code># noqa: pap</code></td>
+<td>All rules on one line</td>
+<td>Source file</td>
+</tr>
+<tr>
+<td><code># noqa: pap: FILE</code></td>
+<td>Entire file</td>
+<td>Source file</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="examples">Examples</h2>
+<h3 id="suppress-a-single-rule-on-one-line">Suppress a single rule on one line</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># D001 fires here because .collect() loads the full dataset to the driver.</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># In this test helper, that is intentional — the data is tiny and local.</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rows</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>  <span class="c1"># noqa: pap: D001</span>
+</span></code></pre></div>
+<h3 id="suppress-multiple-rules-on-one-line">Suppress multiple rules on one line</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># S010 (crossJoin) and S002 (join without hint) both fire here.</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># This is a deliberate cartesian product in a small-data reporting query.</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">report</span> <span class="o">=</span> <span class="n">dim</span><span class="o">.</span><span class="n">crossJoin</span><span class="p">(</span><span class="n">fact</span><span class="p">)</span>  <span class="c1"># noqa: pap: S010, S002</span>
+</span></code></pre></div>
+<h3 id="suppress-all-rules-on-one-line">Suppress all rules on one line</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">legacy_rdd</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>  <span class="c1"># noqa: pap</span>
+</span></code></pre></div>
+<h3 id="suppress-an-entire-generated-file">Suppress an entire generated file</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># noqa: pap: FILE</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Auto-generated by tools/generate_schema.py</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># Do not edit — run `make generate` to regenerate.</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">StructField</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">LongType</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">SCHEMA</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">([</span><span class="o">...</span><span class="p">])</span>
+</span></code></pre></div>
 
 
 
@@ -3955,10 +4139,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.indexes", "navigation.top", "navigation.instant", "content.code.copy", "content.code.annotate", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.top", "navigation.instant", "content.code.copy", "content.code.annotate", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

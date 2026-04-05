@@ -12,13 +12,13 @@
         <meta name="author" content="Skander Boudawara">
       
       
-        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D007/">
+        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D009/">
       
       
-        <link rel="prev" href="../D006/">
+        <link rel="prev" href="../D008/">
       
       
-        <link rel="next" href="../D008/">
+        <link rel="next" href="../../format/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>D007 - pyspark-antipattern</title>
+        <title>D009 - pyspark-antipattern</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rule-d007" class="md-skip">
+        <a href="#rule-d009" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              D007
+              D009
             
           </span>
         </div>
@@ -1551,6 +1551,62 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../D007/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    D007
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../D008/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    D008
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1570,7 +1626,7 @@
   <span class="md-ellipsis">
     
   
-    D007
+    D009
   
 
     
@@ -1588,7 +1644,7 @@
   <span class="md-ellipsis">
     
   
-    D007
+    D009
   
 
     
@@ -1678,62 +1734,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../D008/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    D008
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../D009/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    D009
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -3871,34 +3871,67 @@
   
 
 
-<h1 id="rule-d007">Rule D007</h1>
-<p>Avoid using <code>df.filter(...).count() == 0</code>; use <code>.isEmpty()</code> instead</p>
+<h1 id="rule-d009">Rule D009</h1>
+<p>Avoid using <code>.count()</code> as a boolean truth value; use <code>.isEmpty()</code> instead</p>
 <h2 id="severity">Severity</h2>
 <p>🔴 <strong>HIGH</strong> — Major performance impact.</p>
 <h2 id="pyspark-version">PySpark version</h2>
 <p>Compatible with <strong>PySpark 3.3</strong> and later.</p>
 <h2 id="information">Information</h2>
-<p>Using <code>df.filter(...).count() == 0</code> triggers a full scan of the filtered DataFrame, which is inefficient for large datasets. This can cause:</p>
+<p>Using <code>.count()</code> as a boolean condition (e.g. <code>if df.count():</code>) triggers a
+full distributed scan to count every row before the branch is taken. This is
+wasteful when the only question is <em>"does any row exist?"</em>. It can cause:</p>
 <ul>
-<li>High computation and memory usage  </li>
-<li>Slower execution  </li>
-<li>Unnecessary resource consumption  </li>
+<li>A complete scan of the DataFrame (no early exit)</li>
+<li>High memory and CPU usage on large datasets</li>
+<li>Slower pipeline execution compared to short-circuit alternatives</li>
 </ul>
+<p><code>.isEmpty()</code> stops as soon as the first row is found, making it an O(1)
+operation in the best case instead of O(n).</p>
 <h2 id="best-practices">Best practices</h2>
-<ul>
-<li>Use <code>.filter(...).isEmpty()</code> to efficiently check if filtered data exists:<br />
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="c1"># handle empty result</span>
-</span></code></pre></div></li>
-<li>Use <code>.count()</code> only when the exact number of filtered rows is required  </li>
-</ul>
-<p><strong>Rule of thumb:</strong> Prefer <code>.isEmpty()</code> over <code>.count() == 0</code> for emptiness checks after filtering.</p>
+<p>Replace boolean <code>.count()</code> uses with <code>.isEmpty()</code> or <code>not df.isEmpty()</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Anti-pattern</th>
+<th>Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>if df.count():</code></td>
+<td><code>if not df.isEmpty():</code></td>
+</tr>
+<tr>
+<td><code>if not df.count():</code></td>
+<td><code>if df.isEmpty():</code></td>
+</tr>
+<tr>
+<td><code>if x and df.count():</code></td>
+<td><code>if x and not df.isEmpty():</code></td>
+</tr>
+<tr>
+<td><code>if x and not df.count():</code></td>
+<td><code>if x and df.isEmpty():</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule of thumb:</strong> Reserve <code>.count()</code> for when you need the <em>exact</em> row count.
+For presence/absence checks always prefer <code>.isEmpty()</code>.</p>
 <h3 id="example">Example</h3>
 <p>Bad:
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">pass</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;active&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">process</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;empty DataFrame&quot;</span><span class="p">)</span>
 </span></code></pre></div></p>
 <p>Good:
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span> <span class="k">pass</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;active&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">process</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;empty DataFrame&quot;</span><span class="p">)</span>
 </span></code></pre></div></p>
 
 

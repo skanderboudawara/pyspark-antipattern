@@ -431,6 +431,8 @@
       
         
       
+        
+      
     
     
     
@@ -803,6 +805,34 @@
     
   
     max_shuffle_operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="noqa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    noqa
   
 
     
@@ -1296,6 +1326,8 @@
       
         
       
+        
+      
     
     
     
@@ -1556,6 +1588,34 @@
     
   
     D008
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/driver/D009/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    D009
   
 
     
@@ -3614,6 +3674,25 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inline-suppression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inline suppression
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3718,6 +3797,36 @@
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="inline-suppression">Inline suppression</h2>
+<p>Violations can also be suppressed directly in source files using <code># noqa</code> comments — no <code>pyproject.toml</code> change needed.</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code># noqa: pap: D001</code></td>
+<td>Suppress rule D001 on this line</td>
+</tr>
+<tr>
+<td><code># noqa: pap: D001, S004</code></td>
+<td>Suppress multiple rules on this line</td>
+</tr>
+<tr>
+<td><code># noqa: pap</code></td>
+<td>Suppress all pap rules on this line</td>
+</tr>
+<tr>
+<td><code># noqa: pap: FILE</code></td>
+<td>Suppress all violations in the entire file</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="noqa/">noqa</a> for full details and examples.</p>
 
 
 

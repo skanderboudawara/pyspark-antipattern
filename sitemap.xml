@@ -97,6 +97,10 @@
          <lastmod>2026-04-05</lastmod>
     </url>
     <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/driver/D009/</loc>
+         <lastmod>2026-04-05</lastmod>
+    </url>
+    <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/rules/format/</loc>
          <lastmod>2026-04-05</lastmod>
     </url>
@@ -358,6 +362,10 @@
     </url>
     <url>
          <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/max_shuffle_operations/</loc>
+         <lastmod>2026-04-05</lastmod>
+    </url>
+    <url>
+         <loc>https://skanderboudawara.github.io/pyspark-antipattern/settings/noqa/</loc>
          <lastmod>2026-04-05</lastmod>
     </url>
     <url>
