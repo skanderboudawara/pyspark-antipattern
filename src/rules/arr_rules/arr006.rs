@@ -10,7 +10,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "ARR006";
@@ -26,15 +26,18 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 /// Returns `true` when `expr` is `size(collect_list(...).over(...))`.
 fn is_size_of_windowed_collect_list(expr: &Expr) -> bool {
     if let Expr::Call(outer) = expr
-        && is_named(&outer.func, "size") && !outer.args.is_empty() {
-            // The sole argument must be collect_list(...).over(...)
-            if let Expr::Call(over_call) = &outer.args[0]
-                && let Expr::Attribute(a) = over_call.func.as_ref()
-                    && a.attr.as_str() == "over"
-                        && let Expr::Call(inner) = a.value.as_ref() {
-                            return is_named(&inner.func, "collect_list");
-                        }
+        && is_named(&outer.func, "size")
+        && !outer.args.is_empty()
+    {
+        // The sole argument must be collect_list(...).over(...)
+        if let Expr::Call(over_call) = &outer.args[0]
+            && let Expr::Attribute(a) = over_call.func.as_ref()
+            && a.attr.as_str() == "over"
+            && let Expr::Call(inner) = a.value.as_ref()
+        {
+            return is_named(&inner.func, "collect_list");
         }
+    }
     false
 }
 
@@ -63,15 +66,15 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
-    let mut v = Check { source, file, index, severity, violations: vec![] };
+    let mut v = Check {
+        source,
+        file,
+        index,
+        severity,
+        violations: vec![],
+    };
     for s in stmts {
         v.visit_stmt(s);
     }

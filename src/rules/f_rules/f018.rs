@@ -26,7 +26,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_start,
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "F018";
@@ -48,7 +48,9 @@ fn collect_datetime_names(stmts: &[Stmt]) -> HashSet<String> {
                 let module = imp.module.as_ref().map(|m| m.as_str()).unwrap_or("");
                 if module == "datetime" {
                     for alias in &imp.names {
-                        let local = alias.asname.as_ref()
+                        let local = alias
+                            .asname
+                            .as_ref()
                             .map(|a| a.to_string())
                             .unwrap_or_else(|| alias.name.to_string());
                         names.insert(local);
@@ -58,7 +60,9 @@ fn collect_datetime_names(stmts: &[Stmt]) -> HashSet<String> {
             Stmt::Import(imp) => {
                 for alias in &imp.names {
                     if alias.name.as_str() == "datetime" {
-                        let local = alias.asname.as_ref()
+                        let local = alias
+                            .asname
+                            .as_ref()
                             .map(|a| a.to_string())
                             .unwrap_or_else(|| "datetime".to_string());
                         names.insert(local);
@@ -103,10 +107,7 @@ fn is_python_datetime_call(expr: &Expr, dt_names: &HashSet<String>) -> bool {
 
 /// Recursively search `expr` for the first Python datetime call.
 /// Returns a reference to that sub-expression so we can point the caret at it.
-fn find_datetime_call<'e>(
-    expr: &'e Expr,
-    dt_names: &HashSet<String>,
-) -> Option<&'e Expr> {
+fn find_datetime_call<'e>(expr: &'e Expr, dt_names: &HashSet<String>) -> Option<&'e Expr> {
     if is_python_datetime_call(expr, dt_names) {
         return Some(expr);
     }
@@ -124,15 +125,9 @@ fn find_datetime_call<'e>(
             }
             None
         }
-        Expr::BinOp(b) => {
-            find_datetime_call(&b.left, dt_names)
-                .or_else(|| find_datetime_call(&b.right, dt_names))
-        }
-        Expr::Compare(c) => {
-            find_datetime_call(&c.left, dt_names).or_else(|| {
-                c.comparators.iter().find_map(|cmp| find_datetime_call(cmp, dt_names))
-            })
-        }
+        Expr::BinOp(b) => find_datetime_call(&b.left, dt_names).or_else(|| find_datetime_call(&b.right, dt_names)),
+        Expr::Compare(c) => find_datetime_call(&c.left, dt_names)
+            .or_else(|| c.comparators.iter().find_map(|cmp| find_datetime_call(cmp, dt_names))),
         Expr::BoolOp(b) => b.values.iter().find_map(|v| find_datetime_call(v, dt_names)),
         Expr::UnaryOp(u) => find_datetime_call(&u.operand, dt_names),
         _ => None,
@@ -172,7 +167,8 @@ impl<'a> Check<'a> {
                 severity: self.severity,
                 impact: crate::violation::Impact::Low,
                 file: self.file.to_string(),
-                line, col,
+                line,
+                col,
                 source_line,
                 span_len,
             });
@@ -185,7 +181,7 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr {
             // Determine which Spark function this is.
             let func_name: Option<&str> = match call.func.as_ref() {
-                Expr::Name(n)      => Some(n.id.as_str()),
+                Expr::Name(n) => Some(n.id.as_str()),
                 Expr::Attribute(a) => Some(a.attr.as_str()),
                 _ => None,
             };
@@ -193,28 +189,40 @@ impl<'a> Visitor for Check<'a> {
             match func_name {
                 // lit(datetime_thing)
                 Some("lit") => {
-                    for arg in &call.args { self.check_arg(arg); }
+                    for arg in &call.args {
+                        self.check_arg(arg);
+                    }
                 }
                 // df.withColumn("name", datetime_thing)
                 Some("withColumn") => {
-                    if let Some(arg) = call.args.get(1) { self.check_arg(arg); }
+                    if let Some(arg) = call.args.get(1) {
+                        self.check_arg(arg);
+                    }
                 }
                 // when(cond, datetime_thing)  or  .when(cond, datetime_thing)
                 Some("when") => {
                     // condition (arg 0) and value (arg 1) both matter
-                    for arg in &call.args { self.check_arg(arg); }
+                    for arg in &call.args {
+                        self.check_arg(arg);
+                    }
                 }
                 // .otherwise(datetime_thing)
                 Some("otherwise") => {
-                    if let Some(arg) = call.args.first() { self.check_arg(arg); }
+                    if let Some(arg) = call.args.first() {
+                        self.check_arg(arg);
+                    }
                 }
                 // df.filter(col > datetime_thing)  /  df.where(...)
                 Some("filter") | Some("where") => {
-                    for arg in &call.args { self.check_arg(arg); }
+                    for arg in &call.args {
+                        self.check_arg(arg);
+                    }
                 }
                 // df.select(…, datetime_thing, …)
                 Some("select") => {
-                    for arg in &call.args { self.check_arg(arg); }
+                    for arg in &call.args {
+                        self.check_arg(arg);
+                    }
                 }
                 _ => {}
             }
@@ -225,24 +233,22 @@ impl<'a> Visitor for Check<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let dt_names = collect_datetime_names(stmts);
     if dt_names.is_empty() {
         return vec![]; // no datetime imports → nothing to flag
     }
 
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         dt_names: &dt_names,
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

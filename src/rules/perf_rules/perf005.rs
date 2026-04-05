@@ -22,7 +22,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_start,
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, walk_stmt, Visitor},
+    visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "PERF005";
@@ -49,9 +49,10 @@ fn root_name(expr: &Expr) -> Option<&str> {
 /// True if `expr` is a `.persist(...)` call (any arguments).
 fn is_persist_call(expr: &Expr) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return a.attr.as_str() == "persist";
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return a.attr.as_str() == "persist";
+    }
     false
 }
 
@@ -96,31 +97,32 @@ impl<'a> Visitor for ScopeCollector<'a> {
         // Detect:  name = ....persist(...)
         if let Stmt::Assign(a) = stmt
             && is_persist_call(&a.value)
-                && let Some(target) = a.targets.first()
-                    && let Expr::Name(n) = target {
-                        // Point violation at the `persist` method name.
-                        let (line, col) = if let Expr::Call(c) = a.value.as_ref() {
-                            if let Expr::Attribute(attr) = c.func.as_ref() {
-                                let end: u32 = attr.range.end().into();
-                                let s = end.saturating_sub("persist".len() as u32);
-                                self.index.line_col(s)
-                            } else {
-                                self.index.line_col(expr_start(&a.value))
-                            }
-                        } else {
-                            self.index.line_col(expr_start(&a.value))
-                        };
-                        let source_line = self.index.line_text(self.source, line).to_string();
-                        self.persisted.insert(
-                            n.id.to_string(),
-                            PersistInfo {
-                                var_name: n.id.to_string(),
-                                line,
-                                col,
-                                source_line,
-                            },
-                        );
-                    }
+            && let Some(target) = a.targets.first()
+            && let Expr::Name(n) = target
+        {
+            // Point violation at the `persist` method name.
+            let (line, col) = if let Expr::Call(c) = a.value.as_ref() {
+                if let Expr::Attribute(attr) = c.func.as_ref() {
+                    let end: u32 = attr.range.end().into();
+                    let s = end.saturating_sub("persist".len() as u32);
+                    self.index.line_col(s)
+                } else {
+                    self.index.line_col(expr_start(&a.value))
+                }
+            } else {
+                self.index.line_col(expr_start(&a.value))
+            };
+            let source_line = self.index.line_text(self.source, line).to_string();
+            self.persisted.insert(
+                n.id.to_string(),
+                PersistInfo {
+                    var_name: n.id.to_string(),
+                    line,
+                    col,
+                    source_line,
+                },
+            );
+        }
 
         walk_stmt(self, stmt);
     }
@@ -129,23 +131,18 @@ impl<'a> Visitor for ScopeCollector<'a> {
         // Detect:  name.unpersist()   (anywhere in the expression tree)
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
-                && attr.attr.as_str() == "unpersist"
-                    && let Some(name) = root_name(attr.value.as_ref()) {
-                        self.unpersisted.insert(name.to_string());
-                    }
+            && attr.attr.as_str() == "unpersist"
+            && let Some(name) = root_name(attr.value.as_ref())
+        {
+            self.unpersisted.insert(name.to_string());
+        }
         walk_expr(self, expr);
     }
 }
 
 // ── Per-scope analysis ────────────────────────────────────────────────────────
 
-fn check_scope(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    severity: Severity,
-    index: &LineIndex,
-) -> Vec<Violation> {
+fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, index: &LineIndex) -> Vec<Violation> {
     let mut collector = ScopeCollector::new(source, index);
     for s in stmts {
         collector.visit_stmt(s);
@@ -174,13 +171,7 @@ fn check_scope(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];
 

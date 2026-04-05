@@ -14,7 +14,7 @@ use crate::{
     line_index::LineIndex,
     spark_ops::{CHECKPOINT_OPS, SHUFFLE_OPS},
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, walk_stmt, Visitor},
+    visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "PERF003";
@@ -63,9 +63,10 @@ impl Collector {
 /// Used to detect `groupBy().agg()` chains so we don't double-count the stage.
 fn receiver_is_method(expr: &Expr, method: &str) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return a.attr.as_str() == method;
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return a.attr.as_str() == method;
+    }
     false
 }
 
@@ -101,7 +102,10 @@ impl Visitor for Collector {
                             });
                         }
                     } else if CHECKPOINT_OPS.contains(&name) {
-                        self.events.push(Event { pos, kind: EventKind::Checkpoint });
+                        self.events.push(Event {
+                            pos,
+                            kind: EventKind::Checkpoint,
+                        });
                     }
                 }
                 // Bare name call: `process(df)`
@@ -256,14 +260,7 @@ fn scan(
                     if cost > 0 {
                         counter += cost;
                         if counter > threshold {
-                            violations.push(make_violation(
-                                event.pos,
-                                name.len() + 2,
-                                source,
-                                file,
-                                index,
-                                severity,
-                            ));
+                            violations.push(make_violation(event.pos, name.len() + 2, source, file, index, severity));
                             counter = 0;
                         }
                     }
@@ -275,13 +272,7 @@ fn scan(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let threshold = config.max_shuffle_operations;
 
     // Start with the project-wide costs (functions defined in other files),
@@ -290,6 +281,15 @@ pub fn check(
     fn_costs.extend(build_fn_costs(stmts));
 
     let mut violations = vec![];
-    scan(stmts, &fn_costs, threshold, source, file, index, config.severity_of(ID), &mut violations);
+    scan(
+        stmts,
+        &fn_costs,
+        threshold,
+        source,
+        file,
+        index,
+        config.severity_of(ID),
+        &mut violations,
+    );
     violations
 }

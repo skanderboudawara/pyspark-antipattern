@@ -45,11 +45,14 @@ fn collect_inline_comment() {
 #[test]
 fn noqa_suppresses_on_correct_line() {
     use pyspark_antipattern::{config::Config, line_index::LineIndex, noqa, rules::RuleFn};
-    use rustpython_parser::{ast::Mod, parse, Mode};
+    use rustpython_parser::{Mode, ast::Mod, parse};
 
     fn check_with_noqa(rule_fn: RuleFn, source: &str) -> Vec<pyspark_antipattern::violation::Violation> {
         let parsed = parse(source, Mode::Module, "<test>").unwrap();
-        let stmts = match parsed { Mod::Module(m) => m.body, _ => vec![] };
+        let stmts = match parsed {
+            Mod::Module(m) => m.body,
+            _ => vec![],
+        };
         let index = LineIndex::new(source);
         let suppressions = noqa::parse_suppressions(source);
         let violations = rule_fn(&stmts, source, "<test>", &Config::default(), &index);
@@ -58,11 +61,17 @@ fn noqa_suppresses_on_correct_line() {
 
     // suppressed on same line
     let src = "result = df.collect()  # noqa: pap: D001";
-    assert!(check_with_noqa(d001::check, src).is_empty(), "noqa on same line should suppress");
+    assert!(
+        check_with_noqa(d001::check, src).is_empty(),
+        "noqa on same line should suppress"
+    );
 
     // noqa on wrong line should NOT suppress
     let src2 = "# noqa: pap: D001\nresult = df.collect()";
-    assert!(!check_with_noqa(d001::check, src2).is_empty(), "noqa on different line should not suppress");
+    assert!(
+        !check_with_noqa(d001::check, src2).is_empty(),
+        "noqa on different line should not suppress"
+    );
 }
 
 // ── Windows line endings (\r\n) ───────────────────────────────────────────────
@@ -97,6 +106,10 @@ fn violation_inside_with_block() {
 // ── S007 coalesce(1) vs coalesce(2) ──────────────────────────────────────────
 
 #[test]
-fn s007_coalesce_1_fires() { assert_violation(&check(s007::check, "df.coalesce(1)"), "S007", 1); }
+fn s007_coalesce_1_fires() {
+    assert_violation(&check(s007::check, "df.coalesce(1)"), "S007", 1);
+}
 #[test]
-fn s007_coalesce_2_no_fire() { assert_no_violation(&check(s007::check, "df.coalesce(2)"), "S007"); }
+fn s007_coalesce_2_no_fire() {
+    assert_no_violation(&check(s007::check, "df.coalesce(2)"), "S007");
+}

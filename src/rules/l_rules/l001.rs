@@ -7,15 +7,25 @@ use crate::{
     line_index::LineIndex,
     rules::utils::{chain_has_method, for_loop_iters},
     violation::{RuleId, Violation},
-    visitor::{walk_expr, walk_stmt, Visitor},
+    visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "L001";
 
 /// DataFrame-like method names that indicate a loop body is operating on a DF.
 const DF_METHODS: &[&str] = &[
-    "filter", "select", "withColumn", "groupBy", "agg", "join",
-    "union", "unionByName", "orderBy", "sort", "distinct", "repartition",
+    "filter",
+    "select",
+    "withColumn",
+    "groupBy",
+    "agg",
+    "join",
+    "union",
+    "unionByName",
+    "orderBy",
+    "sort",
+    "distinct",
+    "repartition",
 ];
 
 struct BodyScanner {
@@ -26,15 +36,16 @@ struct BodyScanner {
 impl Visitor for BodyScanner {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
-            && let Expr::Attribute(attr) = call.func.as_ref() {
-                let name = attr.attr.as_str();
-                if name == "checkpoint" || name == "localCheckpoint" {
-                    self.has_checkpoint = true;
-                }
-                if DF_METHODS.contains(&name) {
-                    self.has_df_op = true;
-                }
+            && let Expr::Attribute(attr) = call.func.as_ref()
+        {
+            let name = attr.attr.as_str();
+            if name == "checkpoint" || name == "localCheckpoint" {
+                self.has_checkpoint = true;
             }
+            if DF_METHODS.contains(&name) {
+                self.has_df_op = true;
+            }
+        }
         walk_expr(self, expr);
     }
 }
@@ -84,35 +95,41 @@ impl<'a> Visitor for Check<'a> {
                 if iters > self.loop_threshold {
                     self.scan_loop_body(&f.body, f.range.start().into());
                 }
-                for s in &f.body { self.visit_stmt(s); }
-                for s in &f.orelse { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
+                for s in &f.orelse {
+                    self.visit_stmt(s);
+                }
             }
             Stmt::While(w) => {
                 if WHILE_ASSUMED_ITERS > self.loop_threshold {
                     self.scan_loop_body(&w.body, w.range.start().into());
                 }
-                for s in &w.body { self.visit_stmt(s); }
-                for s in &w.orelse { self.visit_stmt(s); }
+                for s in &w.body {
+                    self.visit_stmt(s);
+                }
+                for s in &w.orelse {
+                    self.visit_stmt(s);
+                }
             }
             _ => walk_stmt(self, stmt),
         }
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let _ = chain_has_method; // used in other rules, suppress warning
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         loop_threshold: config.loop_threshold as i64,
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

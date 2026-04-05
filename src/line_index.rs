@@ -17,10 +17,7 @@ impl LineIndex {
 
     /// Convert a byte offset to 1-based (line, col).
     pub fn line_col(&self, offset: u32) -> (usize, usize) {
-        let line_idx = self
-            .line_starts
-            .partition_point(|&s| s <= offset)
-            .saturating_sub(1);
+        let line_idx = self.line_starts.partition_point(|&s| s <= offset).saturating_sub(1);
         let col = (offset - self.line_starts[line_idx]) as usize;
         (line_idx + 1, col + 1)
     }

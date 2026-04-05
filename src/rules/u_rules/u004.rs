@@ -18,7 +18,7 @@ use crate::{
     config::Config,
     line_index::LineIndex,
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "U004";
@@ -55,21 +55,22 @@ impl<'a> Visitor for CallScanner<'a> {
                 _ => None,
             };
             if let Some(name) = callee_name
-                && self.udf_names.contains(name) {
-                    let start: u32 = call.range.start().into();
-                    let (line, col) = self.index.line_col(start);
-                    let source_line = self.index.line_text(self.source, line).to_string();
-                    self.violations.push(Violation {
-                        rule_id: RuleId(ID.to_string()),
-                        severity: self.severity,
-                        impact: crate::violation::Impact::Low,
-                        file: self.file.to_string(),
-                        line,
-                        col,
-                        source_line,
-                        span_len: name.len() + 2,
-                    });
-                }
+                && self.udf_names.contains(name)
+            {
+                let start: u32 = call.range.start().into();
+                let (line, col) = self.index.line_col(start);
+                let source_line = self.index.line_text(self.source, line).to_string();
+                self.violations.push(Violation {
+                    rule_id: RuleId(ID.to_string()),
+                    severity: self.severity,
+                    impact: crate::violation::Impact::Low,
+                    file: self.file.to_string(),
+                    line,
+                    col,
+                    source_line,
+                    span_len: name.len() + 2,
+                });
+            }
         }
         walk_expr(self, expr);
     }
@@ -77,13 +78,7 @@ impl<'a> Visitor for CallScanner<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Pass 1: collect UDF function names.
     let mut udf_names: HashSet<String> = HashSet::new();
     for stmt in stmts {
@@ -115,13 +110,13 @@ pub fn check(
             continue;
         }
         // Only flag calls to *other* UDFs, not self-recursion.
-        let others: HashSet<String> = udf_names.iter()
-            .filter(|n| n.as_str() != name)
-            .cloned()
-            .collect();
+        let others: HashSet<String> = udf_names.iter().filter(|n| n.as_str() != name).cloned().collect();
         let mut scanner = CallScanner {
             udf_names: &others,
-            source, file, index, severity,
+            source,
+            file,
+            index,
+            severity,
             violations: vec![],
         };
         for s in body {

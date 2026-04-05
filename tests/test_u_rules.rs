@@ -2,7 +2,6 @@ mod common;
 use common::{assert_no_violation, assert_violation, check};
 use pyspark_antipattern::rules::u_rules::*;
 
-
 // ── U001: @udf returning StringType ──────────────────────────────────────────
 #[test]
 fn u001_fires() {
@@ -135,7 +134,8 @@ fn u006_fires_return_all_list() {
 }
 #[test]
 fn u006_fires_assigned_all() {
-    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    result = all(x > 0 for x in items)\n    return result\n";
+    let src =
+        "@udf(returnType=BooleanType())\ndef f(items):\n    result = all(x > 0 for x in items)\n    return result\n";
     assert_violation(&check(u006::check, src), "U006", 3);
 }
 #[test]
@@ -167,7 +167,8 @@ fn u007_fires_return_any_list() {
 }
 #[test]
 fn u007_fires_assigned_any() {
-    let src = "@udf(returnType=BooleanType())\ndef f(items):\n    result = any(x < 0 for x in items)\n    return result\n";
+    let src =
+        "@udf(returnType=BooleanType())\ndef f(items):\n    result = any(x < 0 for x in items)\n    return result\n";
     assert_violation(&check(u007::check, src), "U007", 3);
 }
 #[test]

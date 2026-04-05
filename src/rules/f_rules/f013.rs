@@ -7,7 +7,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::{expr_violation, method_violation},
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "F013";
@@ -19,9 +19,10 @@ fn is_reserved_name(s: &str) -> bool {
 fn reserved_str_arg(expr: &Expr) -> Option<&str> {
     if let Expr::Constant(c) = expr
         && let Constant::Str(s) = &c.value
-            && is_reserved_name(s) {
-                return Some(s.as_str());
-            }
+        && is_reserved_name(s)
+    {
+        return Some(s.as_str());
+    }
     None
 }
 
@@ -36,57 +37,74 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
-            && let Expr::Attribute(attr) = call.func.as_ref() {
-                match attr.attr.as_str() {
-                    // withColumn("__name__", expr) — check first arg
-                    "withColumn" => {
-                        if let Some(arg) = call.args.first()
-                            && reserved_str_arg(arg).is_some() {
-                                self.violations.push(expr_violation(
-                                    arg, 1, self.source, self.file, self.index,
-                                    self.severity, ID,
-                                ));
-                            }
+            && let Expr::Attribute(attr) = call.func.as_ref()
+        {
+            match attr.attr.as_str() {
+                // withColumn("__name__", expr) — check first arg
+                "withColumn" => {
+                    if let Some(arg) = call.args.first()
+                        && reserved_str_arg(arg).is_some()
+                    {
+                        self.violations.push(expr_violation(
+                            arg,
+                            1,
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
+                        ));
                     }
-                    // withColumnRenamed("old", "__new__") — check second arg
-                    "withColumnRenamed" => {
-                        if let Some(arg) = call.args.get(1)
-                            && reserved_str_arg(arg).is_some() {
-                                self.violations.push(expr_violation(
-                                    arg, 1, self.source, self.file, self.index,
-                                    self.severity, ID,
-                                ));
-                            }
-                    }
-                    // col("x").alias("__name__") — check first arg
-                    "alias" => {
-                        if let Some(arg) = call.args.first()
-                            && reserved_str_arg(arg).is_some() {
-                                self.violations.push(method_violation(
-                                    attr, "alias", self.source, self.file,
-                                    self.index, self.severity, ID,
-                                ));
-                            }
-                    }
-                    _ => {}
                 }
+                // withColumnRenamed("old", "__new__") — check second arg
+                "withColumnRenamed" => {
+                    if let Some(arg) = call.args.get(1)
+                        && reserved_str_arg(arg).is_some()
+                    {
+                        self.violations.push(expr_violation(
+                            arg,
+                            1,
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
+                        ));
+                    }
+                }
+                // col("x").alias("__name__") — check first arg
+                "alias" => {
+                    if let Some(arg) = call.args.first()
+                        && reserved_str_arg(arg).is_some()
+                    {
+                        self.violations.push(method_violation(
+                            attr,
+                            "alias",
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
+                        ));
+                    }
+                }
+                _ => {}
             }
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

@@ -1,4 +1,3 @@
-pub mod utils;
 pub mod arr_rules;
 pub mod d_rules;
 pub mod f_rules;
@@ -7,6 +6,7 @@ pub mod p_rules;
 pub mod perf_rules;
 pub mod s_rules;
 pub mod u_rules;
+pub mod utils;
 
 use rustpython_parser::ast::Stmt;
 

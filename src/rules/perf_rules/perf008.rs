@@ -24,7 +24,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "PERF008";
@@ -32,9 +32,10 @@ const ID: &str = "PERF008";
 /// Returns `true` if `expr` is (or ends in) a `.parallelize(...)` call.
 fn is_parallelize_call(expr: &Expr) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return a.attr.as_str() == "parallelize";
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return a.attr.as_str() == "parallelize";
+    }
     false
 }
 
@@ -44,9 +45,10 @@ fn contains_parallelize(expr: &Expr) -> bool {
         return true;
     }
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return contains_parallelize(a.value.as_ref());
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return contains_parallelize(a.value.as_ref());
+    }
     false
 }
 
@@ -57,10 +59,11 @@ fn collect_parallelize_vars(stmts: &[Stmt]) -> std::collections::HashSet<String>
     for stmt in stmts {
         if let Stmt::Assign(a) = stmt
             && a.targets.len() == 1
-                && let Expr::Name(n) = &a.targets[0]
-                    && contains_parallelize(a.value.as_ref()) {
-                        vars.insert(n.id.to_string());
-                    }
+            && let Expr::Name(n) = &a.targets[0]
+            && contains_parallelize(a.value.as_ref())
+        {
+            vars.insert(n.id.to_string());
+        }
     }
     vars
 }
@@ -78,37 +81,39 @@ impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(c) = expr
             && let Expr::Attribute(a) = c.func.as_ref()
-                && a.attr.as_str() == "csv"
-                    && let Some(first_arg) = c.args.first() {
-                        let fires = is_parallelize_call(first_arg)
-                            || matches!(first_arg, Expr::Name(n)
+            && a.attr.as_str() == "csv"
+            && let Some(first_arg) = c.args.first()
+        {
+            let fires = is_parallelize_call(first_arg)
+                || matches!(first_arg, Expr::Name(n)
                                 if self.parallelize_vars.contains(n.id.as_str()));
-                        if fires {
-                            self.violations.push(expr_violation(
-                                expr,
-                                "csv".len(),
-                                self.source,
-                                self.file,
-                                self.index,
-                                self.severity,
-                                ID,
-                            ));
-                        }
-                    }
+            if fires {
+                self.violations.push(expr_violation(
+                    expr,
+                    "csv".len(),
+                    self.source,
+                    self.file,
+                    self.index,
+                    self.severity,
+                    ID,
+                ));
+            }
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let parallelize_vars = collect_parallelize_vars(stmts);
     let severity = config.severity_of(ID);
-    let mut v = Check { source, file, index, severity, parallelize_vars, violations: vec![] };
+    let mut v = Check {
+        source,
+        file,
+        index,
+        severity,
+        parallelize_vars,
+        violations: vec![],
+    };
     for s in stmts {
         v.visit_stmt(s);
     }

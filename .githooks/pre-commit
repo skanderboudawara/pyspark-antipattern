@@ -13,4 +13,6 @@ python "$root/scripts/check_rule_consistency.py" || exit 1
 
 cargo clippy --manifest-path "$root/Cargo.toml" -- -D warnings || exit 1
 
+cargo fmt --manifest-path "$root/Cargo.toml" -- --check || exit 1
+
 exit $?

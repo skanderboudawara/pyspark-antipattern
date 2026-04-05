@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "F009";
@@ -34,32 +34,36 @@ impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Detect a `when(...)` call whose arguments contain another `when(...)` call.
         if is_when_call(expr)
-            && let Expr::Call(c) = expr {
-                for arg in &c.args {
-                    if is_when_call(arg) {
-                        self.violations.push(expr_violation(
-                            arg, "when()".len(), self.source, self.file, self.index,
-                            self.severity, ID,
-                        ));
-                    }
+            && let Expr::Call(c) = expr
+        {
+            for arg in &c.args {
+                if is_when_call(arg) {
+                    self.violations.push(expr_violation(
+                        arg,
+                        "when()".len(),
+                        self.source,
+                        self.file,
+                        self.index,
+                        self.severity,
+                        ID,
+                    ));
                 }
             }
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

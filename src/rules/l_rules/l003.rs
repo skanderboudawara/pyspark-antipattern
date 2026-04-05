@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::{for_loop_iters, method_violation},
     violation::Violation,
-    visitor::{walk_expr, walk_stmt, Visitor},
+    visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "L003";
@@ -24,12 +24,18 @@ impl<'a> Visitor for BodyScanner<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
-                && attr.attr.as_str() == "withColumn" {
-                    self.violations.push(method_violation(
-                        attr, "withColumn", self.source, self.file, self.index,
-                        self.severity, ID,
-                    ));
-                }
+            && attr.attr.as_str() == "withColumn"
+        {
+            self.violations.push(method_violation(
+                attr,
+                "withColumn",
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
+            ));
+        }
         walk_expr(self, expr);
     }
 }
@@ -69,34 +75,40 @@ impl<'a> Visitor for Check<'a> {
                 if iters > self.loop_threshold {
                     self.scan_body(&f.body);
                 }
-                for s in &f.body { self.visit_stmt(s); }
-                for s in &f.orelse { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
+                for s in &f.orelse {
+                    self.visit_stmt(s);
+                }
             }
             Stmt::While(w) => {
                 if WHILE_ASSUMED_ITERS > self.loop_threshold {
                     self.scan_body(&w.body);
                 }
-                for s in &w.body { self.visit_stmt(s); }
-                for s in &w.orelse { self.visit_stmt(s); }
+                for s in &w.body {
+                    self.visit_stmt(s);
+                }
+                for s in &w.orelse {
+                    self.visit_stmt(s);
+                }
             }
             _ => walk_stmt(self, stmt),
         }
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         loop_threshold: config.loop_threshold as i64,
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

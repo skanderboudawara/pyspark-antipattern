@@ -8,7 +8,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "F012";
@@ -48,7 +48,13 @@ impl<'a> Check<'a> {
     fn check_column_value_arg(&mut self, arg: &Expr) {
         if is_bare_literal(arg) && !is_lit_wrapped(arg) {
             self.violations.push(expr_violation(
-                arg, 1, self.source, self.file, self.index, self.severity, ID,
+                arg,
+                1,
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
             ));
         }
     }
@@ -95,18 +101,16 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

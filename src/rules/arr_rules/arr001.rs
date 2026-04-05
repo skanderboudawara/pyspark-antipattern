@@ -10,7 +10,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "ARR001";
@@ -32,9 +32,10 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 /// Returns the string value if expr is a string constant, else None.
 fn str_const(expr: &Expr) -> Option<&str> {
     if let Expr::Constant(c) = expr
-        && let Constant::Str(s) = &c.value {
-            return Some(s.as_str());
-        }
+        && let Constant::Str(s) = &c.value
+    {
+        return Some(s.as_str());
+    }
     None
 }
 
@@ -43,9 +44,10 @@ fn col_ref_name(expr: &Expr) -> Option<&str> {
     // col("x")
     if let Expr::Call(c) = expr
         && is_named(&c.func, "col")
-            && let Some(arg) = c.args.first() {
-                return str_const(arg);
-            }
+        && let Some(arg) = c.args.first()
+    {
+        return str_const(arg);
+    }
     // bare "x"
     str_const(expr)
 }
@@ -55,9 +57,10 @@ fn col_ref_name(expr: &Expr) -> Option<&str> {
 fn unwrap_window(expr: &Expr) -> &Expr {
     if let Expr::Call(c) = expr
         && let Expr::Attribute(a) = c.func.as_ref()
-            && a.attr.as_str() == "over" {
-                return a.value.as_ref();
-            }
+        && a.attr.as_str() == "over"
+    {
+        return a.value.as_ref();
+    }
     expr
 }
 
@@ -75,16 +78,20 @@ impl<'a> Visitor for InlineCheck<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(outer) = expr
             && is_named(&outer.func, "array_distinct")
-                && let Some(arg) = outer.args.first()
-                    && let Expr::Call(inner) = unwrap_window(arg)
-                        && is_named(&inner.func, "collect_list") {
-                            self.violations.push(expr_violation(
-                                expr,
-                                "array_distinct".len(),
-                                self.source, self.file, self.index,
-                                self.severity, ID,
-                            ));
-                        }
+            && let Some(arg) = outer.args.first()
+            && let Expr::Call(inner) = unwrap_window(arg)
+            && is_named(&inner.func, "collect_list")
+        {
+            self.violations.push(expr_violation(
+                expr,
+                "array_distinct".len(),
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
+            ));
+        }
         walk_expr(self, expr);
     }
 }
@@ -96,32 +103,38 @@ impl<'a> Visitor for InlineCheck<'a> {
 fn collect_list_col_name(expr: &Expr) -> Option<&str> {
     // Matches any depth of chained calls whose outermost withColumn arg is collect_list
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "withColumn" && c.args.len() >= 2
-                && let Expr::Call(inner) = unwrap_window(&c.args[1])
-                    && is_named(&inner.func, "collect_list") {
-                        return str_const(&c.args[0]);
-                    }
-            // recurse into chained receiver
-            return collect_list_col_name(a.value.as_ref());
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        if a.attr.as_str() == "withColumn"
+            && c.args.len() >= 2
+            && let Expr::Call(inner) = unwrap_window(&c.args[1])
+            && is_named(&inner.func, "collect_list")
+        {
+            return str_const(&c.args[0]);
         }
+        // recurse into chained receiver
+        return collect_list_col_name(a.value.as_ref());
+    }
     None
 }
 
 fn is_array_distinct_of(expr: &Expr, col_name: &str) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "withColumn" && c.args.len() >= 2
-                && let Some(target) = str_const(&c.args[0])
-                    && target == col_name
-                        && let Expr::Call(inner) = &c.args[1]
-                            && is_named(&inner.func, "array_distinct")
-                                && let Some(arg) = inner.args.first()
-                                    && let Some(ref_name) = col_ref_name(arg) {
-                                        return ref_name == col_name;
-                                    }
-            return is_array_distinct_of(a.value.as_ref(), col_name);
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        if a.attr.as_str() == "withColumn"
+            && c.args.len() >= 2
+            && let Some(target) = str_const(&c.args[0])
+            && target == col_name
+            && let Expr::Call(inner) = &c.args[1]
+            && is_named(&inner.func, "array_distinct")
+            && let Some(arg) = inner.args.first()
+            && let Some(ref_name) = col_ref_name(arg)
+        {
+            return ref_name == col_name;
         }
+        return is_array_distinct_of(a.value.as_ref(), col_name);
+    }
     false
 }
 
@@ -141,22 +154,30 @@ fn scan_split_pattern(
         let expr = match stmt {
             Stmt::Assign(a) if a.targets.len() == 1 => Some(a.value.as_ref()),
             Stmt::Expr(e) => Some(e.value.as_ref()),
-            _ => { prev = None; continue; }
+            _ => {
+                prev = None;
+                continue;
+            }
         };
 
         if let Some(e) = expr {
             // Check if this statement's expression contains the second pattern
             // given the previous statement set up a collect_list column.
             if let Some((prev_col, _)) = prev
-                && is_array_distinct_of(e, prev_col) {
-                    violations.push(expr_violation(
-                        e,
-                        "array_distinct".len(),
-                        source, file, index, severity, ID,
-                    ));
-                    prev = None;
-                    continue;
-                }
+                && is_array_distinct_of(e, prev_col)
+            {
+                violations.push(expr_violation(
+                    e,
+                    "array_distinct".len(),
+                    source,
+                    file,
+                    index,
+                    severity,
+                    ID,
+                ));
+                prev = None;
+                continue;
+            }
             // Check if this statement sets up a collect_list column.
             if let Some(col_name) = collect_list_col_name(e) {
                 // `col_name` is a &str pointing into a Constant::Str node inside `e`,
@@ -172,19 +193,21 @@ fn scan_split_pattern(
 
 // ── public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];
 
     // Pattern 1: inline nesting via expression visitor
-    let mut inline = InlineCheck { source, file, index, severity, violations: vec![] };
-    for s in stmts { inline.visit_stmt(s); }
+    let mut inline = InlineCheck {
+        source,
+        file,
+        index,
+        severity,
+        violations: vec![],
+    };
+    for s in stmts {
+        inline.visit_stmt(s);
+    }
     violations.extend(inline.violations);
 
     // Pattern 2: split withColumn across consecutive statements

@@ -26,9 +26,9 @@ pub enum Impact {
 impl std::fmt::Display for Impact {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Impact::Low    => write!(f, "LOW"),
+            Impact::Low => write!(f, "LOW"),
             Impact::Medium => write!(f, "MEDIUM"),
-            Impact::High   => write!(f, "HIGH"),
+            Impact::High => write!(f, "HIGH"),
         }
     }
 }
@@ -37,13 +37,10 @@ impl<'de> serde::Deserialize<'de> for Impact {
     fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
         let s = <String as serde::Deserialize>::deserialize(d)?;
         match s.to_lowercase().as_str() {
-            "low"    => Ok(Impact::Low),
+            "low" => Ok(Impact::Low),
             "medium" => Ok(Impact::Medium),
-            "high"   => Ok(Impact::High),
-            other    => Err(serde::de::Error::unknown_variant(
-                other,
-                &["low", "medium", "high"],
-            )),
+            "high" => Ok(Impact::High),
+            other => Err(serde::de::Error::unknown_variant(other, &["low", "medium", "high"])),
         }
     }
 }
@@ -79,10 +76,7 @@ impl std::str::FromStr for PySparkVersion {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.split('.').collect();
-        let parse = |p: &str| {
-            p.parse::<u32>()
-                .map_err(|_| format!("invalid version component: {p}"))
-        };
+        let parse = |p: &str| p.parse::<u32>().map_err(|_| format!("invalid version component: {p}"));
         match parts.as_slice() {
             [major, minor] => Ok(Self::new(parse(major)?, parse(minor)?, 0)),
             [major, minor, patch] => Ok(Self::new(parse(major)?, parse(minor)?, parse(patch)?)),
@@ -100,15 +94,15 @@ impl<'de> serde::Deserialize<'de> for PySparkVersion {
 
 #[derive(Debug, Clone)]
 pub struct Violation {
-    pub rule_id:     RuleId,
-    pub severity:    Severity,
+    pub rule_id: RuleId,
+    pub severity: Severity,
     /// Performance impact of this rule — set centrally in `checker.rs` via
     /// `reporter::rule_impact()` after violations are collected from rules.
     /// Rule implementations should use `..Default::default()` and not set this.
-    pub impact:      Impact,
-    pub file:        String,
-    pub line:        usize, // 1-based
-    pub col:         usize, // 1-based
+    pub impact: Impact,
+    pub file: String,
+    pub line: usize, // 1-based
+    pub col: usize,  // 1-based
     pub source_line: String,
-    pub span_len:    usize,
+    pub span_len: usize,
 }

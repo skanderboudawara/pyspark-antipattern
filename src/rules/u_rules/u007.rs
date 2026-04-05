@@ -22,7 +22,7 @@ use crate::{
     config::Config,
     line_index::LineIndex,
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, walk_stmt, Visitor},
+    visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "U007";
@@ -82,13 +82,7 @@ impl<'a> Visitor for BodyScanner<'a> {
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];
 
@@ -101,7 +95,13 @@ pub fn check(
         if !decorators.iter().any(is_udf_decorator) {
             continue;
         }
-        let mut scanner = BodyScanner { source, file, index, severity, violations: vec![] };
+        let mut scanner = BodyScanner {
+            source,
+            file,
+            index,
+            severity,
+            violations: vec![],
+        };
         for s in body {
             scanner.visit_stmt(s);
         }

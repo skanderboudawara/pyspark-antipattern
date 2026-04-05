@@ -80,12 +80,7 @@ pub struct RuleContent {
 static CACHE: OnceLock<HashMap<&'static str, RuleContent>> = OnceLock::new();
 
 fn cache() -> &'static HashMap<&'static str, RuleContent> {
-    CACHE.get_or_init(|| {
-        RULE_MARKDOWN
-            .iter()
-            .map(|(id, md)| (*id, parse_markdown(md)))
-            .collect()
-    })
+    CACHE.get_or_init(|| RULE_MARKDOWN.iter().map(|(id, md)| (*id, parse_markdown(md))).collect())
 }
 
 pub fn get_content(rule_id: &str) -> Option<&'static RuleContent> {
@@ -129,8 +124,5 @@ fn parse_markdown(md: &str) -> RuleContent {
 
 /// Strip basic markdown formatting for plain-text terminal output.
 pub fn strip_md(s: &str) -> String {
-    s.replace('`', "")
-        .replace("**", "")
-        .replace('*', "")
-        .replace("  ", " ")
+    s.replace('`', "").replace("**", "").replace('*', "").replace("  ", " ")
 }

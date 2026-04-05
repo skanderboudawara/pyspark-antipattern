@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_stmt, Visitor},
+    visitor::{Visitor, walk_stmt},
 };
 
 const ID: &str = "U003";
@@ -41,41 +41,53 @@ impl<'a> Visitor for Check<'a> {
                 for decorator in &f.decorator_list {
                     if is_udf_decorator(decorator) {
                         self.violations.push(expr_violation(
-                            decorator, "udf".len(),
-                            self.source, self.file, self.index, self.severity, ID,
+                            decorator,
+                            "udf".len(),
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
                         ));
                     }
                 }
-                for s in &f.body { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
             }
             Stmt::AsyncFunctionDef(f) => {
                 for decorator in &f.decorator_list {
                     if is_udf_decorator(decorator) {
                         self.violations.push(expr_violation(
-                            decorator, "udf".len(),
-                            self.source, self.file, self.index, self.severity, ID,
+                            decorator,
+                            "udf".len(),
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
                         ));
                     }
                 }
-                for s in &f.body { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
             }
             _ => walk_stmt(self, stmt),
         }
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

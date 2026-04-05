@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_stmt, Visitor},
+    visitor::{Visitor, walk_stmt},
 };
 
 const ID: &str = "U001";
@@ -24,15 +24,15 @@ fn decorator_returns_string_type(expr: &Expr) -> bool {
         }
         // Check positional arg
         if let Some(first) = call.args.first()
-            && is_string_type_call(first) {
-                return true;
-            }
+            && is_string_type_call(first)
+        {
+            return true;
+        }
         // Check keyword arg returnType
         for kw in &call.keywords {
-            if kw.arg.as_ref().is_some_and(|a| a.as_str() == "returnType")
-                && is_string_type_call(&kw.value) {
-                    return true;
-                }
+            if kw.arg.as_ref().is_some_and(|a| a.as_str() == "returnType") && is_string_type_call(&kw.value) {
+                return true;
+            }
         }
     }
     false
@@ -64,41 +64,53 @@ impl<'a> Visitor for Check<'a> {
                 for decorator in &f.decorator_list {
                     if decorator_returns_string_type(decorator) {
                         self.violations.push(expr_violation(
-                            decorator, "udf".len(),
-                            self.source, self.file, self.index, self.severity, ID,
+                            decorator,
+                            "udf".len(),
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
                         ));
                     }
                 }
-                for s in &f.body { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
             }
             Stmt::AsyncFunctionDef(f) => {
                 for decorator in &f.decorator_list {
                     if decorator_returns_string_type(decorator) {
                         self.violations.push(expr_violation(
-                            decorator, "udf".len(),
-                            self.source, self.file, self.index, self.severity, ID,
+                            decorator,
+                            "udf".len(),
+                            self.source,
+                            self.file,
+                            self.index,
+                            self.severity,
+                            ID,
                         ));
                     }
                 }
-                for s in &f.body { self.visit_stmt(s); }
+                for s in &f.body {
+                    self.visit_stmt(s);
+                }
             }
             _ => walk_stmt(self, stmt),
         }
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

@@ -18,9 +18,9 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
             Severity::Warning => ("warning", Color::Yellow),
         };
         let (impact_label, impact_color) = match v.impact {
-            Impact::Low    => ("LOW",    Color::Green),
+            Impact::Low => ("LOW", Color::Green),
             Impact::Medium => ("MEDIUM", Color::Yellow),
-            Impact::High   => ("HIGH",   Color::Red),
+            Impact::High => ("HIGH", Color::Red),
         };
         let title = rule_title(&v.rule_id.0);
         let gutter = v.line.to_string().len();
@@ -30,20 +30,23 @@ pub fn print_violations(violations: &[Violation], config: &Config) {
         write!(out, "{label}").ok();
         out.set_color(ColorSpec::new().set_bold(true)).ok();
         write!(out, "[{}]", v.rule_id).ok();
-        out.set_color(ColorSpec::new().set_fg(Some(impact_color)).set_bold(true)).ok();
+        out.set_color(ColorSpec::new().set_fg(Some(impact_color)).set_bold(true))
+            .ok();
         write!(out, "[{impact_label}]").ok();
         out.reset().ok();
         writeln!(out, ": {title}").ok();
 
         // "  --> file.py:42:10"
-        out.set_color(ColorSpec::new().set_fg(Some(Color::Cyan)).set_bold(true)).ok();
+        out.set_color(ColorSpec::new().set_fg(Some(Color::Cyan)).set_bold(true))
+            .ok();
         write!(out, "  --> ").ok();
         out.reset().ok();
         writeln!(out, "{}:{}:{}", v.file, v.line, v.col).ok();
 
         // gutter + source line + carets
         writeln!(out, "{} |", " ".repeat(gutter)).ok();
-        out.set_color(ColorSpec::new().set_fg(Some(Color::Cyan)).set_bold(true)).ok();
+        out.set_color(ColorSpec::new().set_fg(Some(Color::Cyan)).set_bold(true))
+            .ok();
         write!(out, "{} | ", v.line).ok();
         out.reset().ok();
         writeln!(out, "{}", v.source_line).ok();
@@ -89,8 +92,8 @@ pub fn rule_impact(id: &str) -> Impact {
     match id {
         // ── LOW ─────────────────────────────────────────────────────────────
         "ARR002" | "ARR004" | "ARR005" | "ARR006" => Impact::Low,
-        "F001" | "F002" | "F003" | "F005" | "F006" | "F007" | "F008" | "F009" | "F010"
-        | "F011" | "F012" | "F013" | "F015" | "F016" | "F017" | "F018" | "F020" => Impact::Low,
+        "F001" | "F002" | "F003" | "F005" | "F006" | "F007" | "F008" | "F009" | "F010" | "F011" | "F012" | "F013"
+        | "F015" | "F016" | "F017" | "F018" | "F020" => Impact::Low,
         "S012" => Impact::Low,
 
         // ── MEDIUM ───────────────────────────────────────────────────────────
@@ -181,7 +184,8 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
         "S001" | "S003" | "S007" | "S014" => PySparkVersion::new(1, 4, 0),
 
         // L003/PERF001/PERF004/PERF005/PERF007/S002/S004/S005/S006/S011/S012 — available since PySpark 1.3.0
-        "L003" | "PERF001" | "PERF004" | "PERF005" | "PERF007" | "S002" | "S004" | "S005" | "S006" | "S011" | "S012" => PySparkVersion::new(1, 3, 0),
+        "L003" | "PERF001" | "PERF004" | "PERF005" | "PERF007" | "S002" | "S004" | "S005" | "S006" | "S011"
+        | "S012" => PySparkVersion::new(1, 3, 0),
 
         // L002/S009 — available since PySpark 1.0.0
         "L002" | "S009" => PySparkVersion::new(1, 0, 0),
@@ -272,17 +276,20 @@ pub fn print_impact_summary(high: usize, medium: usize, low: usize) {
 
     writeln!(out, "\nImpact summary:").ok();
 
-    out.set_color(ColorSpec::new().set_fg(Some(Color::Red)).set_bold(true)).ok();
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Red)).set_bold(true))
+        .ok();
     write!(out, "  HIGH").ok();
     out.reset().ok();
     writeln!(out, "   {high} error(s)").ok();
 
-    out.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)).set_bold(true)).ok();
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)).set_bold(true))
+        .ok();
     write!(out, "  MEDIUM").ok();
     out.reset().ok();
     writeln!(out, " {medium} error(s)").ok();
 
-    out.set_color(ColorSpec::new().set_fg(Some(Color::Green)).set_bold(true)).ok();
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Green)).set_bold(true))
+        .ok();
     write!(out, "  LOW").ok();
     out.reset().ok();
     writeln!(out, "    {low} error(s)").ok();

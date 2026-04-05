@@ -16,16 +16,16 @@ pub struct ToolSection {
 #[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
 pub struct Config {
-    pub select:  Vec<String>,
-    pub warn:    Vec<String>,
-    pub ignore:  Vec<String>,
+    pub select: Vec<String>,
+    pub warn: Vec<String>,
+    pub ignore: Vec<String>,
     pub show_best_practice: bool,
-    pub show_information:   bool,
+    pub show_information: bool,
     pub distinct_threshold: usize,
-    pub explode_threshold:  usize,
-    pub loop_threshold:     usize,
-    pub exclude_dirs:            Vec<String>,
-    pub max_shuffle_operations:  usize,
+    pub explode_threshold: usize,
+    pub loop_threshold: usize,
+    pub exclude_dirs: Vec<String>,
+    pub max_shuffle_operations: usize,
     /// Only report violations with impact >= this level (default: show all).
     pub severity: Option<crate::violation::Impact>,
     /// Cluster PySpark version — silences rules that require a newer version (default: show all).
@@ -43,10 +43,26 @@ pub struct Config {
 
 pub fn default_exclude_dirs() -> Vec<String> {
     [
-        ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
-        ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
-        ".svn", ".tox", ".venv", "__pypackages__", "_build",
-        "buck-out", "dist", "node_modules", "venv",
+        ".bzr",
+        ".direnv",
+        ".eggs",
+        ".git",
+        ".git-rewrite",
+        ".hg",
+        ".mypy_cache",
+        ".nox",
+        ".pants.d",
+        ".pytype",
+        ".ruff_cache",
+        ".svn",
+        ".tox",
+        ".venv",
+        "__pypackages__",
+        "_build",
+        "buck-out",
+        "dist",
+        "node_modules",
+        "venv",
     ]
     .iter()
     .map(|s| s.to_string())
@@ -56,21 +72,21 @@ pub fn default_exclude_dirs() -> Vec<String> {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            select:  vec![],
-            warn:    vec![],
-            ignore:  vec![],
+            select: vec![],
+            warn: vec![],
+            ignore: vec![],
             show_best_practice: false,
-            show_information:   false,
+            show_information: false,
             distinct_threshold: 5,
-            explode_threshold:  3,
-            loop_threshold:     10,
-            exclude_dirs:            default_exclude_dirs(),
-            max_shuffle_operations:  9,
-            severity:                None,
-            pyspark_version:         None,
-            global_fn_costs:         HashMap::new(),
+            explode_threshold: 3,
+            loop_threshold: 10,
+            exclude_dirs: default_exclude_dirs(),
+            max_shuffle_operations: 9,
+            severity: None,
+            pyspark_version: None,
+            global_fn_costs: HashMap::new(),
             global_fn_distinct_costs: HashMap::new(),
-            global_fn_explode_costs:  HashMap::new(),
+            global_fn_explode_costs: HashMap::new(),
         }
     }
 }
@@ -81,14 +97,9 @@ impl Config {
     }
 
     pub fn load(path: &std::path::Path) -> Result<Self, String> {
-        let raw = std::fs::read_to_string(path)
-            .map_err(|e| format!("Cannot read {}: {e}", path.display()))?;
-        let parsed: PyprojectToml = toml::from_str(&raw)
-            .map_err(|e| format!("TOML parse error: {e}"))?;
-        Ok(parsed
-            .tool
-            .and_then(|t| t.pyspark_antipattern)
-            .unwrap_or_default())
+        let raw = std::fs::read_to_string(path).map_err(|e| format!("Cannot read {}: {e}", path.display()))?;
+        let parsed: PyprojectToml = toml::from_str(&raw).map_err(|e| format!("TOML parse error: {e}"))?;
+        Ok(parsed.tool.and_then(|t| t.pyspark_antipattern).unwrap_or_default())
     }
 
     /// Returns true if `id` matches a rule entry exactly ("F012") or by group prefix ("F", "PERF", "ARR", …).
@@ -106,10 +117,9 @@ impl Config {
 
     pub fn is_ignored(&self, id: &str) -> bool {
         // select acts as a selector: when non-empty, only listed rules are shown
-        if !self.select.is_empty()
-            && !self.select.iter().any(|r| Self::matches(r, id)) {
-                return true;
-            }
+        if !self.select.is_empty() && !self.select.iter().any(|r| Self::matches(r, id)) {
+            return true;
+        }
         self.ignore.iter().any(|r| Self::matches(r, id))
     }
 
@@ -125,7 +135,7 @@ impl Config {
     /// (i.e. its impact meets or exceeds `min_severity`).
     pub fn meets_min_severity(&self, impact: crate::violation::Impact) -> bool {
         match self.severity {
-            None      => true,
+            None => true,
             Some(min) => impact >= min,
         }
     }
@@ -134,8 +144,8 @@ impl Config {
     /// (i.e. the rule's minimum version is <= the user's configured cluster version).
     pub fn supports_rule_version(&self, since: crate::violation::PySparkVersion) -> bool {
         match self.pyspark_version {
-            None             => true,
-            Some(user_ver)   => since <= user_ver,
+            None => true,
+            Some(user_ver) => since <= user_ver,
         }
     }
 }

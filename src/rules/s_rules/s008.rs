@@ -17,7 +17,7 @@ use crate::{
     rules::utils::{for_loop_iters, method_violation},
     spark_ops::EXPLODE_OPS,
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "S008";
@@ -67,8 +67,13 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
             match call.func.as_ref() {
                 Expr::Attribute(attr) if is_explode(attr.attr.as_str()) => {
                     self.occurrences.push(method_violation(
-                        attr, attr.attr.as_str(), self.source, self.file, self.index,
-                        self.severity, ID,
+                        attr,
+                        attr.attr.as_str(),
+                        self.source,
+                        self.file,
+                        self.index,
+                        self.severity,
+                        ID,
                     ));
                 }
                 Expr::Name(n) if is_explode(n.id.as_str()) => {
@@ -80,15 +85,14 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
                         severity: self.severity,
                         impact: crate::violation::Impact::Low,
                         file: self.file.to_string(),
-                        line, col,
+                        line,
+                        col,
                         source_line,
                         span_len: n.id.as_str().len() + 2,
                     });
                 }
                 // Bare function call that introduces explode() from another scope.
-                Expr::Name(n)
-                    if self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0) > 0 =>
-                {
+                Expr::Name(n) if self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0) > 0 => {
                     let start: u32 = n.range.start().into();
                     let (line, col) = self.index.line_col(start);
                     let source_line = self.index.line_text(self.source, line).to_string();
@@ -97,7 +101,8 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
                         severity: self.severity,
                         impact: crate::violation::Impact::Low,
                         file: self.file.to_string(),
-                        line, col,
+                        line,
+                        col,
                         source_line,
                         span_len: n.id.len() + 2,
                     });
@@ -167,10 +172,7 @@ fn body_explode_cost(body: &[Stmt], fn_costs: &HashMap<String, i64>) -> i64 {
 /// rounds) to handle transitive calls.
 ///
 /// `pub(crate)` so `checker.rs` can call this during the global pre-pass.
-pub(crate) fn build_fn_explode_costs(
-    stmts: &[Stmt],
-    seed: &HashMap<String, i64>,
-) -> HashMap<String, i64> {
+pub(crate) fn build_fn_explode_costs(stmts: &[Stmt], seed: &HashMap<String, i64>) -> HashMap<String, i64> {
     let mut fn_bodies: Vec<(String, &[Stmt])> = vec![];
     for stmt in stmts {
         match stmt {
@@ -204,13 +206,7 @@ pub(crate) fn build_fn_explode_costs(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut fn_costs = config.global_fn_explode_costs.clone();
     fn_costs.extend(build_fn_explode_costs(stmts, &fn_costs));
 
@@ -220,7 +216,9 @@ pub fn check(
     }
 
     let mut collector = OccurrenceCollector {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         fn_costs: &fn_costs,
         occurrences: vec![],

@@ -26,10 +26,7 @@ pub fn parse_suppressions(source: &str) -> HashMap<usize, HashSet<String>> {
 }
 
 /// Remove violations suppressed by noqa comments.
-pub fn filter_suppressed(
-    violations: Vec<Violation>,
-    suppressions: &HashMap<usize, HashSet<String>>,
-) -> Vec<Violation> {
+pub fn filter_suppressed(violations: Vec<Violation>, suppressions: &HashMap<usize, HashSet<String>>) -> Vec<Violation> {
     violations
         .into_iter()
         .filter(|v| match suppressions.get(&v.line) {

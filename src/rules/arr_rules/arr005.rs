@@ -11,7 +11,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "ARR005";
@@ -28,10 +28,12 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 /// module qualification, e.g. `F.size(F.collect_list(...))`).
 fn is_size_of_collect_list(expr: &Expr) -> bool {
     if let Expr::Call(outer) = expr
-        && is_named(&outer.func, "size") && !outer.args.is_empty()
-            && let Expr::Call(inner) = &outer.args[0] {
-                return is_named(&inner.func, "collect_list");
-            }
+        && is_named(&outer.func, "size")
+        && !outer.args.is_empty()
+        && let Expr::Call(inner) = &outer.args[0]
+    {
+        return is_named(&inner.func, "collect_list");
+    }
     false
 }
 
@@ -39,9 +41,10 @@ fn is_size_of_collect_list(expr: &Expr) -> bool {
 fn strip_alias(expr: &Expr) -> &Expr {
     if let Expr::Call(c) = expr
         && let Expr::Attribute(a) = c.func.as_ref()
-            && a.attr.as_str() == "alias" {
-                return a.value.as_ref();
-            }
+        && a.attr.as_str() == "alias"
+    {
+        return a.value.as_ref();
+    }
     expr
 }
 
@@ -58,35 +61,36 @@ impl<'a> Visitor for Check<'a> {
         // Only look inside .agg(...) calls.
         if let Expr::Call(call) = expr
             && let Expr::Attribute(a) = call.func.as_ref()
-                && a.attr.as_str() == "agg" {
-                    for arg in &call.args {
-                        let inner = strip_alias(arg);
-                        if is_size_of_collect_list(inner) {
-                            self.violations.push(expr_violation(
-                                inner,
-                                "size".len(),
-                                self.source,
-                                self.file,
-                                self.index,
-                                self.severity,
-                                ID,
-                            ));
-                        }
-                    }
+            && a.attr.as_str() == "agg"
+        {
+            for arg in &call.args {
+                let inner = strip_alias(arg);
+                if is_size_of_collect_list(inner) {
+                    self.violations.push(expr_violation(
+                        inner,
+                        "size".len(),
+                        self.source,
+                        self.file,
+                        self.index,
+                        self.severity,
+                        ID,
+                    ));
                 }
+            }
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
-    let mut v = Check { source, file, index, severity, violations: vec![] };
+    let mut v = Check {
+        source,
+        file,
+        index,
+        severity,
+        violations: vec![],
+    };
     for s in stmts {
         v.visit_stmt(s);
     }

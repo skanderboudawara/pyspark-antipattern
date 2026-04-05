@@ -1,11 +1,6 @@
-use rustpython_parser::{ast::Mod, parse, Mode};
+use rustpython_parser::{Mode, ast::Mod, parse};
 
-use pyspark_antipattern::{
-    config::Config,
-    line_index::LineIndex,
-    rules::RuleFn,
-    violation::Violation,
-};
+use pyspark_antipattern::{config::Config, line_index::LineIndex, rules::RuleFn, violation::Violation};
 
 /// Parse `source` and run `rule_fn` against it using default config.
 pub fn check(rule_fn: RuleFn, source: &str) -> Vec<Violation> {
@@ -26,9 +21,7 @@ pub fn check_with(rule_fn: RuleFn, source: &str, config: &Config) -> Vec<Violati
 /// Assert that `violations` contains exactly one entry with `rule_id` at `line`.
 #[track_caller]
 pub fn assert_violation(violations: &[Violation], rule_id: &str, line: usize) {
-    let found = violations
-        .iter()
-        .any(|v| v.rule_id.0 == rule_id && v.line == line);
+    let found = violations.iter().any(|v| v.rule_id.0 == rule_id && v.line == line);
     assert!(
         found,
         "expected {rule_id} at line {line}, got: {:#?}",
@@ -42,9 +35,6 @@ pub fn assert_violation(violations: &[Violation], rule_id: &str, line: usize) {
 /// Assert that no violations with `rule_id` are present.
 #[track_caller]
 pub fn assert_no_violation(violations: &[Violation], rule_id: &str) {
-    let found: Vec<_> = violations
-        .iter()
-        .filter(|v| v.rule_id.0 == rule_id)
-        .collect();
+    let found: Vec<_> = violations.iter().filter(|v| v.rule_id.0 == rule_id).collect();
     assert!(found.is_empty(), "expected no {rule_id}, but found: {found:#?}");
 }

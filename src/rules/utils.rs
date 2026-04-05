@@ -100,11 +100,12 @@ pub fn method_chain(expr: &Expr) -> Vec<&str> {
     let mut cur = expr;
     loop {
         if let Expr::Call(c) = cur
-            && let Expr::Attribute(a) = c.func.as_ref() {
-                chain.push(a.attr.as_str());
-                cur = a.value.as_ref();
-                continue;
-            }
+            && let Expr::Attribute(a) = c.func.as_ref()
+        {
+            chain.push(a.attr.as_str());
+            cur = a.value.as_ref();
+            continue;
+        }
         break;
     }
     chain
@@ -114,9 +115,10 @@ pub fn method_chain(expr: &Expr) -> Vec<&str> {
 pub fn consecutive_method_depth(expr: &Expr, method: &str) -> usize {
     if let Expr::Call(c) = expr
         && let Expr::Attribute(a) = c.func.as_ref()
-            && a.attr.as_str() == method {
-                return 1 + consecutive_method_depth(a.value.as_ref(), method);
-            }
+        && a.attr.as_str() == method
+    {
+        return 1 + consecutive_method_depth(a.value.as_ref(), method);
+    }
     0
 }
 
@@ -145,12 +147,13 @@ pub fn is_non_dataframe_receiver(expr: &Expr) -> bool {
 /// Check whether a method name appears anywhere in the call chain.
 pub fn chain_has_method(expr: &Expr, method: &str) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == method {
-                return true;
-            }
-            return chain_has_method(a.value.as_ref(), method);
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        if a.attr.as_str() == method {
+            return true;
         }
+        return chain_has_method(a.value.as_ref(), method);
+    }
     false
 }
 
@@ -172,15 +175,17 @@ pub fn for_loop_iters(iter_expr: &Expr) -> Option<i64> {
                 2 => {
                     // range(start, stop) → stop - start
                     let start = const_int(&c.args[0])?;
-                    let stop  = const_int(&c.args[1])?;
+                    let stop = const_int(&c.args[1])?;
                     return Some((stop - start).max(0));
                 }
                 3 => {
                     // range(start, stop, step)
                     let start = const_int(&c.args[0])?;
-                    let stop  = const_int(&c.args[1])?;
-                    let step  = const_int(&c.args[2])?;
-                    if step == 0 { return None; }
+                    let stop = const_int(&c.args[1])?;
+                    let step = const_int(&c.args[2])?;
+                    if step == 0 {
+                        return None;
+                    }
                     let count = ((stop - start) as f64 / step as f64).ceil().max(0.0) as i64;
                     return Some(count);
                 }
@@ -194,8 +199,9 @@ pub fn for_loop_iters(iter_expr: &Expr) -> Option<i64> {
 /// Try to extract a small integer literal value from an expression.
 pub fn const_int(expr: &Expr) -> Option<i64> {
     if let Expr::Constant(c) = expr
-        && let rustpython_parser::ast::Constant::Int(n) = &c.value {
-            return n.to_string().parse::<i64>().ok();
-        }
+        && let rustpython_parser::ast::Constant::Int(n) = &c.value
+    {
+        return n.to_string().parse::<i64>().ok();
+    }
     None
 }

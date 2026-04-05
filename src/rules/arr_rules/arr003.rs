@@ -15,7 +15,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "ARR003";
@@ -32,9 +32,10 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 fn unwrap_window(expr: &Expr) -> &Expr {
     if let Expr::Call(c) = expr
         && let Expr::Attribute(a) = c.func.as_ref()
-            && a.attr.as_str() == "over" {
-                return a.value.as_ref();
-            }
+        && a.attr.as_str() == "over"
+    {
+        return a.value.as_ref();
+    }
     expr
 }
 
@@ -50,32 +51,33 @@ impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(outer) = expr
             && is_named(&outer.func, "array_distinct")
-                && let Some(arg) = outer.args.first()
-                    && let Expr::Call(inner) = unwrap_window(arg)
-                        && is_named(&inner.func, "collect_set") {
-                            self.violations.push(expr_violation(
-                                expr,
-                                "array_distinct".len(),
-                                self.source,
-                                self.file,
-                                self.index,
-                                self.severity,
-                                ID,
-                            ));
-                        }
+            && let Some(arg) = outer.args.first()
+            && let Expr::Call(inner) = unwrap_window(arg)
+            && is_named(&inner.func, "collect_set")
+        {
+            self.violations.push(expr_violation(
+                expr,
+                "array_distinct".len(),
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
+            ));
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
-    let mut v = Check { source, file, index, severity, violations: vec![] };
+    let mut v = Check {
+        source,
+        file,
+        index,
+        severity,
+        violations: vec![],
+    };
     for s in stmts {
         v.visit_stmt(s);
     }

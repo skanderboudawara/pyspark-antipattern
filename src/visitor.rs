@@ -1,4 +1,4 @@
-use rustpython_parser::ast::{Expr, ExceptHandler, Stmt};
+use rustpython_parser::ast::{ExceptHandler, Expr, Stmt};
 
 pub trait Visitor: Sized {
     fn visit_stmt(&mut self, stmt: &Stmt) {

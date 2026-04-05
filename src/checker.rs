@@ -2,24 +2,28 @@ use std::collections::HashMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use rayon::prelude::*;
-use rustpython_parser::{ast::Mod, parse, Mode};
+use rustpython_parser::{Mode, ast::Mod, parse};
 use walkdir::WalkDir;
 
 use crate::{
     config::Config,
     line_index::LineIndex,
     noqa,
-    rules::{perf_rules::perf003, s_rules::{s004, s008}, ALL_RULES},
+    rules::{
+        ALL_RULES,
+        perf_rules::perf003,
+        s_rules::{s004, s008},
+    },
     violation::Violation,
 };
 
 /// All costs extracted from a single file in one parse.
 struct FileCosts {
-    fn_costs:         HashMap<String, usize>,
+    fn_costs: HashMap<String, usize>,
     fn_distinct_costs: HashMap<String, i64>,
-    fn_explode_costs:  HashMap<String, i64>,
+    fn_explode_costs: HashMap<String, i64>,
     /// `local_alias → original_name` from `from X import Y as Z`
-    import_aliases:   HashMap<String, String>,
+    import_aliases: HashMap<String, String>,
 }
 
 /// Lint a single .py file and return violations (noqa-filtered and sorted).
@@ -28,8 +32,7 @@ struct FileCosts {
 /// for the file read so the same buffer can be reused without a second I/O
 /// call.
 pub fn check_file(path: &str, source: &str, config: &Config) -> Result<Vec<Violation>, String> {
-    let parsed = parse(source, Mode::Module, path)
-        .map_err(|e| format!("Parse error in {path}: {e}"))?;
+    let parsed = parse(source, Mode::Module, path).map_err(|e| format!("Parse error in {path}: {e}"))?;
 
     let stmts = match parsed {
         Mod::Module(m) => m.body,
@@ -83,9 +86,9 @@ fn extract_file_costs(path: &str) -> Option<FileCosts> {
     }
 
     Some(FileCosts {
-        fn_costs:          perf003::build_fn_costs(&stmts),
+        fn_costs: perf003::build_fn_costs(&stmts),
         fn_distinct_costs: s004::build_fn_distinct_costs(&stmts, &empty_i64),
-        fn_explode_costs:  s008::build_fn_explode_costs(&stmts, &empty_i64),
+        fn_explode_costs: s008::build_fn_explode_costs(&stmts, &empty_i64),
         import_aliases,
     })
 }
@@ -95,19 +98,14 @@ fn extract_file_costs(path: &str) -> Option<FileCosts> {
 /// Each file is parsed **once** (in parallel via rayon).  After merging, a
 /// single alias-resolution pass propagates costs through `from X import Y as Z`
 /// imports.
-fn build_all_global_costs(
-    paths: &[String],
-) -> (HashMap<String, usize>, HashMap<String, i64>, HashMap<String, i64>) {
+fn build_all_global_costs(paths: &[String]) -> (HashMap<String, usize>, HashMap<String, i64>, HashMap<String, i64>) {
     // Phase 1 — parse all files in parallel.
-    let all_costs: Vec<FileCosts> = paths
-        .par_iter()
-        .filter_map(|p| extract_file_costs(p))
-        .collect();
+    let all_costs: Vec<FileCosts> = paths.par_iter().filter_map(|p| extract_file_costs(p)).collect();
 
     // Phase 2 — sequential merge (last-writer wins on name collisions).
-    let mut global_fn:       HashMap<String, usize> = HashMap::new();
-    let mut global_distinct: HashMap<String, i64>   = HashMap::new();
-    let mut global_explode:  HashMap<String, i64>   = HashMap::new();
+    let mut global_fn: HashMap<String, usize> = HashMap::new();
+    let mut global_distinct: HashMap<String, i64> = HashMap::new();
+    let mut global_explode: HashMap<String, i64> = HashMap::new();
 
     for fc in &all_costs {
         global_fn.extend(fc.fn_costs.iter().map(|(k, v)| (k.clone(), *v)));
@@ -117,15 +115,21 @@ fn build_all_global_costs(
 
     // Phase 3 — alias resolution: `from lib import helper as h` → h gets
     // the same cost as helper, for every cost map.
-    let mut fn_aliases:       Vec<(String, usize)> = vec![];
-    let mut distinct_aliases: Vec<(String, i64)>   = vec![];
-    let mut explode_aliases:  Vec<(String, i64)>   = vec![];
+    let mut fn_aliases: Vec<(String, usize)> = vec![];
+    let mut distinct_aliases: Vec<(String, i64)> = vec![];
+    let mut explode_aliases: Vec<(String, i64)> = vec![];
 
     for fc in &all_costs {
         for (alias, original) in &fc.import_aliases {
-            if let Some(&c) = global_fn.get(original.as_str())       { fn_aliases.push((alias.clone(), c)); }
-            if let Some(&c) = global_distinct.get(original.as_str()) { distinct_aliases.push((alias.clone(), c)); }
-            if let Some(&c) = global_explode.get(original.as_str())  { explode_aliases.push((alias.clone(), c)); }
+            if let Some(&c) = global_fn.get(original.as_str()) {
+                fn_aliases.push((alias.clone(), c));
+            }
+            if let Some(&c) = global_distinct.get(original.as_str()) {
+                distinct_aliases.push((alias.clone(), c));
+            }
+            if let Some(&c) = global_explode.get(original.as_str()) {
+                explode_aliases.push((alias.clone(), c));
+            }
         }
     }
 
@@ -145,7 +149,9 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
     WalkDir::new(root)
         .into_iter()
         .filter_entry(|e| {
-            if e.depth() == 0 { return true; }
+            if e.depth() == 0 {
+                return true;
+            }
             if e.file_type().is_dir() {
                 let dir_name = e.file_name().to_string_lossy();
                 return !config.is_excluded_dir(&dir_name);
@@ -168,13 +174,9 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
 /// Returns `(file_count, read_failures)`.  `read_failures` is the number of
 /// files that could not be read or parsed — callers should exit non-zero when
 /// this is > 0 so CI catches permission errors and corrupt files.
-pub fn check_path(
-    root: &str,
-    config: &Config,
-    on_file: &mut dyn FnMut(Vec<Violation>),
-) -> (usize, usize) {
+pub fn check_path(root: &str, config: &Config, on_file: &mut dyn FnMut(Vec<Violation>)) -> (usize, usize) {
     let mut paths = collect_paths(root, config);
-    paths.sort();                       // deterministic, alphabetical order
+    paths.sort(); // deterministic, alphabetical order
     let file_count = paths.len();
 
     eprintln!("Scanning {} file(s) — building cross-file cost maps…", file_count);
@@ -196,9 +198,9 @@ pub fn check_path(
 
     let (gfn, gdistinct, gexplode) = build_all_global_costs(&scan_paths);
     let mut config_with_global = config.clone();
-    config_with_global.global_fn_costs          = gfn;
+    config_with_global.global_fn_costs = gfn;
     config_with_global.global_fn_distinct_costs = gdistinct;
-    config_with_global.global_fn_explode_costs  = gexplode;
+    config_with_global.global_fn_explode_costs = gexplode;
 
     eprintln!("Linting {} file(s)…", file_count);
 
@@ -209,7 +211,7 @@ pub fn check_path(
         .par_iter()
         .map(|path| {
             let source = match std::fs::read_to_string(path) {
-                Ok(s)  => s,
+                Ok(s) => s,
                 Err(e) => {
                     eprintln!("warning: Cannot read {path}: {e}");
                     read_failures.fetch_add(1, Ordering::Relaxed);
@@ -217,7 +219,7 @@ pub fn check_path(
                 }
             };
             match check_file(path, &source, &config_with_global) {
-                Ok(v)    => v,
+                Ok(v) => v,
                 Err(msg) => {
                     eprintln!("warning: {msg}");
                     read_failures.fetch_add(1, Ordering::Relaxed);

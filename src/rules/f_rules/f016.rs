@@ -39,9 +39,7 @@ fn has_spark_method(expr: &Expr) -> bool {
     match expr {
         Expr::Call(c) => {
             if let Expr::Attribute(a) = c.func.as_ref() {
-                if DATAFRAME_METHODS.contains(&a.attr.as_str())
-                    && !is_non_dataframe_receiver(a.value.as_ref())
-                {
+                if DATAFRAME_METHODS.contains(&a.attr.as_str()) && !is_non_dataframe_receiver(a.value.as_ref()) {
                     return true;
                 }
                 return has_spark_method(a.value.as_ref());
@@ -111,49 +109,112 @@ fn scan_stmts(
             // function-local variables don't bleed into the outer scope.
             Stmt::FunctionDef(f) => {
                 scan_stmts(
-                    &f.body, source, file, index, severity,
-                    &mut Default::default(), &mut Default::default(), violations,
+                    &f.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    &mut Default::default(),
+                    &mut Default::default(),
+                    violations,
                 );
             }
             Stmt::AsyncFunctionDef(f) => {
                 scan_stmts(
-                    &f.body, source, file, index, severity,
-                    &mut Default::default(), &mut Default::default(), violations,
+                    &f.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    &mut Default::default(),
+                    &mut Default::default(),
+                    violations,
                 );
             }
             // For if/for/while/with, share the parent scope context so that
             // renames inside blocks count toward the outer chain.
             Stmt::If(i) => {
-                scan_stmts(&i.body, source, file, index, severity, renamed_from, chain_depth, violations);
-                scan_stmts(&i.orelse, source, file, index, severity, renamed_from, chain_depth, violations);
+                scan_stmts(
+                    &i.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
+                scan_stmts(
+                    &i.orelse,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
             }
             Stmt::For(f) => {
-                scan_stmts(&f.body, source, file, index, severity, renamed_from, chain_depth, violations);
+                scan_stmts(
+                    &f.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
             }
             Stmt::While(w) => {
-                scan_stmts(&w.body, source, file, index, severity, renamed_from, chain_depth, violations);
+                scan_stmts(
+                    &w.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
             }
             Stmt::With(w) => {
-                scan_stmts(&w.body, source, file, index, severity, renamed_from, chain_depth, violations);
+                scan_stmts(
+                    &w.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
             }
             Stmt::Try(t) => {
-                scan_stmts(&t.body, source, file, index, severity, renamed_from, chain_depth, violations);
+                scan_stmts(
+                    &t.body,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    renamed_from,
+                    chain_depth,
+                    violations,
+                );
             }
             _ => {}
         }
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut violations = vec![];
     scan_stmts(
-        stmts, source, file, index,
+        stmts,
+        source,
+        file,
+        index,
         config.severity_of(ID),
         &mut Default::default(),
         &mut Default::default(),

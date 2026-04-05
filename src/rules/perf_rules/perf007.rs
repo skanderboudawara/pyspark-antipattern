@@ -47,13 +47,7 @@ use crate::{
 const ID: &str = "PERF007";
 
 /// Operations where using an uncached DataFrame as input causes DAG replay.
-const CACHE_HINT_OPS: &[&str] = &[
-    "join",
-    "crossJoin",
-    "union",
-    "unionAll",
-    "unionByName",
-];
+const CACHE_HINT_OPS: &[&str] = &["join", "crossJoin", "union", "unionAll", "unionByName"];
 
 // ── Non-DataFrame receiver guard ─────────────────────────────────────────────
 
@@ -107,33 +101,35 @@ fn has_dataframe_method(expr: &Expr) -> bool {
 /// calls (since those arguments are almost always DataFrames).
 fn collect_df_names(expr: &Expr, out: &mut HashSet<String>) {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            let method = a.attr.as_str();
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        let method = a.attr.as_str();
 
-            // Immediate Name receiver of any DataFrame method.
-            if DATAFRAME_METHODS.contains(&method)
-                && let Expr::Name(n) = a.value.as_ref() {
+        // Immediate Name receiver of any DataFrame method.
+        if DATAFRAME_METHODS.contains(&method)
+            && let Expr::Name(n) = a.value.as_ref()
+        {
+            out.insert(n.id.to_string());
+        }
+
+        // Bare Name arguments of join / union operations — but only when
+        // the receiver is not a stdlib / non-DataFrame object.
+        if CACHE_HINT_OPS.contains(&method) && !receiver_is_non_df(&a.value) {
+            for arg in &c.args {
+                if let Expr::Name(n) = arg {
                     out.insert(n.id.to_string());
                 }
-
-            // Bare Name arguments of join / union operations — but only when
-            // the receiver is not a stdlib / non-DataFrame object.
-            if CACHE_HINT_OPS.contains(&method) && !receiver_is_non_df(&a.value) {
-                for arg in &c.args {
-                    if let Expr::Name(n) = arg {
-                        out.insert(n.id.to_string());
-                    }
-                }
-            }
-
-            collect_df_names(&a.value, out);
-            for arg in &c.args {
-                collect_df_names(arg, out);
-            }
-            for kw in &c.keywords {
-                collect_df_names(&kw.value, out);
             }
         }
+
+        collect_df_names(&a.value, out);
+        for arg in &c.args {
+            collect_df_names(arg, out);
+        }
+        for kw in &c.keywords {
+            collect_df_names(&kw.value, out);
+        }
+    }
 }
 
 /// Build the set of variable names that are DataFrames in this scope.
@@ -146,9 +142,10 @@ fn identify_df_vars(stmts: &[Stmt]) -> HashSet<String> {
         match stmt {
             Stmt::Assign(a) => {
                 if has_dataframe_method(&a.value)
-                    && let Some(Expr::Name(n)) = a.targets.first() {
-                        df_vars.insert(n.id.to_string());
-                    }
+                    && let Some(Expr::Name(n)) = a.targets.first()
+                {
+                    df_vars.insert(n.id.to_string());
+                }
                 collect_df_names(&a.value, &mut df_vars);
             }
             Stmt::Expr(e) => {
@@ -165,9 +162,10 @@ fn identify_df_vars(stmts: &[Stmt]) -> HashSet<String> {
 /// True when `expr` is a `.cache()` or `.persist(…)` call.
 fn is_cache_or_persist(expr: &Expr) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return matches!(a.attr.as_str(), "cache" | "persist");
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return matches!(a.attr.as_str(), "cache" | "persist");
+    }
     false
 }
 
@@ -205,28 +203,29 @@ fn root_df_ref(expr: &Expr, df_vars: &HashSet<String>) -> Option<(String, u32)> 
 /// such as `df.union(df2).join(df3, 'id')` do not count `df` twice.
 fn collect_refs(expr: &Expr, df_vars: &HashSet<String>, out: &mut Vec<(String, u32)>) {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            if CACHE_HINT_OPS.contains(&a.attr.as_str()) && !receiver_is_non_df(&a.value) {
-                // Collect the root of the receiver chain.
-                if let Some(entry) = root_df_ref(a.value.as_ref(), df_vars) {
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        if CACHE_HINT_OPS.contains(&a.attr.as_str()) && !receiver_is_non_df(&a.value) {
+            // Collect the root of the receiver chain.
+            if let Some(entry) = root_df_ref(a.value.as_ref(), df_vars) {
+                out.push(entry);
+            }
+            // Collect bare Name arguments (the other DataFrame in a join/union).
+            for arg in &c.args {
+                if let Some(entry) = root_df_ref(arg, df_vars) {
                     out.push(entry);
                 }
-                // Collect bare Name arguments (the other DataFrame in a join/union).
-                for arg in &c.args {
-                    if let Some(entry) = root_df_ref(arg, df_vars) {
-                        out.push(entry);
-                    }
-                }
-            }
-            // Always recurse — there may be nested join/union calls.
-            collect_refs(&a.value, df_vars, out);
-            for arg in &c.args {
-                collect_refs(arg, df_vars, out);
-            }
-            for kw in &c.keywords {
-                collect_refs(&kw.value, df_vars, out);
             }
         }
+        // Always recurse — there may be nested join/union calls.
+        collect_refs(&a.value, df_vars, out);
+        for arg in &c.args {
+            collect_refs(arg, df_vars, out);
+        }
+        for kw in &c.keywords {
+            collect_refs(&kw.value, df_vars, out);
+        }
+    }
 }
 
 // ── Per-variable tracking state ───────────────────────────────────────────────
@@ -240,13 +239,7 @@ struct VarState {
 
 // ── Core scope analysis ───────────────────────────────────────────────────────
 
-fn check_scope(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    severity: Severity,
-    index: &LineIndex,
-) -> Vec<Violation> {
+fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, index: &LineIndex) -> Vec<Violation> {
     let df_vars = identify_df_vars(stmts);
     let mut states: HashMap<String, VarState> = HashMap::new();
     let mut violations: Vec<Violation> = vec![];
@@ -365,13 +358,7 @@ fn check_scope(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];
 

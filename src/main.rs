@@ -107,62 +107,79 @@ fn main() {
             severity,
             pyspark_version,
         } => {
-            let mut config = config::Config::load(std::path::Path::new(&config_path))
-                .unwrap_or_else(|e| {
-                    eprintln!("Config warning: {e} — using defaults");
-                    config::Config::default()
-                });
+            let mut config = config::Config::load(std::path::Path::new(&config_path)).unwrap_or_else(|e| {
+                eprintln!("Config warning: {e} — using defaults");
+                config::Config::default()
+            });
 
             // CLI flags override pyproject.toml values.
             // When --warn is given without --select, implicitly restrict to only
             // the warned rules — the caller wants to see those rules exclusively.
             let warn_without_select = warn.is_some() && select.is_none();
-            if let Some(v) = select { config.select = v; }
+            if let Some(v) = select {
+                config.select = v;
+            }
             if let Some(v) = warn {
                 if warn_without_select && config.select.is_empty() {
                     config.select = v.clone();
                 }
                 config.warn = v;
             }
-            if let Some(v) = ignore   { config.ignore   = v; }
-            if let Some(v) = show_best_practice    { config.show_best_practice    = v; }
-            if let Some(v) = show_information      { config.show_information      = v; }
-            if let Some(v) = distinct_threshold    { config.distinct_threshold    = v; }
-            if let Some(v) = explode_threshold     { config.explode_threshold     = v; }
-            if let Some(v) = loop_threshold        { config.loop_threshold        = v; }
-            if let Some(v) = max_shuffle_operations { config.max_shuffle_operations = v; }
-            if let Some(v) = exclude_dirs          { config.exclude_dirs          = v; }
+            if let Some(v) = ignore {
+                config.ignore = v;
+            }
+            if let Some(v) = show_best_practice {
+                config.show_best_practice = v;
+            }
+            if let Some(v) = show_information {
+                config.show_information = v;
+            }
+            if let Some(v) = distinct_threshold {
+                config.distinct_threshold = v;
+            }
+            if let Some(v) = explode_threshold {
+                config.explode_threshold = v;
+            }
+            if let Some(v) = loop_threshold {
+                config.loop_threshold = v;
+            }
+            if let Some(v) = max_shuffle_operations {
+                config.max_shuffle_operations = v;
+            }
+            if let Some(v) = exclude_dirs {
+                config.exclude_dirs = v;
+            }
             if let Some(s) = pyspark_version {
                 match s.parse::<violation::PySparkVersion>() {
-                    Ok(v)  => config.pyspark_version = Some(v),
+                    Ok(v) => config.pyspark_version = Some(v),
                     Err(e) => eprintln!("warning: invalid --pyspark-version '{s}': {e}"),
                 }
             }
             if let Some(s) = severity {
                 match s.to_lowercase().as_str() {
-                    "low"    => config.severity = Some(violation::Impact::Low),
+                    "low" => config.severity = Some(violation::Impact::Low),
                     "medium" => config.severity = Some(violation::Impact::Medium),
-                    "high"   => config.severity = Some(violation::Impact::High),
-                    other    => eprintln!("warning: unknown --severity value '{other}'; expected low, medium, or high"),
+                    "high" => config.severity = Some(violation::Impact::High),
+                    other => eprintln!("warning: unknown --severity value '{other}'; expected low, medium, or high"),
                 }
             }
 
-            let mut error_count   = 0usize;
+            let mut error_count = 0usize;
             let mut warning_count = 0usize;
-            let mut high_count    = 0usize;
-            let mut medium_count  = 0usize;
-            let mut low_count     = 0usize;
+            let mut high_count = 0usize;
+            let mut medium_count = 0usize;
+            let mut low_count = 0usize;
 
             let (file_count, read_failures) = checker::check_path(&path, &config, &mut |violations| {
                 for v in &violations {
                     match v.severity {
-                        violation::Severity::Error   => error_count   += 1,
+                        violation::Severity::Error => error_count += 1,
                         violation::Severity::Warning => warning_count += 1,
                     }
                     match v.impact {
-                        violation::Impact::High   => high_count   += 1,
+                        violation::Impact::High => high_count += 1,
                         violation::Impact::Medium => medium_count += 1,
-                        violation::Impact::Low    => low_count    += 1,
+                        violation::Impact::Low => low_count += 1,
                     }
                 }
                 if !violations.is_empty() {

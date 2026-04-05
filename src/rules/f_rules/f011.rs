@@ -10,13 +10,7 @@ use crate::{
 
 const ID: &str = "F011";
 
-pub fn check(
-    _stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    _index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(_stmts: &[Stmt], source: &str, file: &str, config: &Config, _index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];
 

@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::method_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "D005";
@@ -24,35 +24,34 @@ impl<'a> Visitor for Check<'a> {
         // Pattern: Call { func: Attribute { value: Attribute { attr: "rdd" }, attr: "isEmpty" } }
         if let Expr::Call(call) = expr
             && let Expr::Attribute(outer) = call.func.as_ref()
-                && outer.attr.as_str() == "isEmpty"
-                    && let Expr::Attribute(inner) = outer.value.as_ref()
-                        && inner.attr.as_str() == "rdd" {
-                            self.violations.push(method_violation(
-                                outer,
-                                "isEmpty",
-                                self.source,
-                                self.file,
-                                self.index,
-                                self.severity,
-                                ID,
-                            ));
-                        }
+            && outer.attr.as_str() == "isEmpty"
+            && let Expr::Attribute(inner) = outer.value.as_ref()
+            && inner.attr.as_str() == "rdd"
+        {
+            self.violations.push(method_violation(
+                outer,
+                "isEmpty",
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
+            ));
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

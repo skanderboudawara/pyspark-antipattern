@@ -16,7 +16,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::{for_loop_iters, method_violation},
     violation::{RuleId, Severity, Violation},
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "S004";
@@ -66,13 +66,16 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
             match call.func.as_ref() {
                 Expr::Attribute(attr) if attr.attr.as_str() == "distinct" => {
                     self.occurrences.push(method_violation(
-                        attr, "distinct", self.source, self.file, self.index,
-                        self.severity, ID,
+                        attr,
+                        "distinct",
+                        self.source,
+                        self.file,
+                        self.index,
+                        self.severity,
+                        ID,
                     ));
                 }
-                Expr::Name(n)
-                    if self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0) > 0 =>
-                {
+                Expr::Name(n) if self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0) > 0 => {
                     // This function call brings in distinct() from another scope.
                     let start: u32 = n.range.start().into();
                     let (line, col) = self.index.line_col(start);
@@ -160,10 +163,7 @@ fn body_distinct_cost(body: &[Stmt], fn_costs: &HashMap<String, i64>) -> i64 {
 /// rounds) to handle transitive calls.
 ///
 /// `pub(crate)` so `checker.rs` can call this during the global pre-pass.
-pub(crate) fn build_fn_distinct_costs(
-    stmts: &[Stmt],
-    seed: &HashMap<String, i64>,
-) -> HashMap<String, i64> {
+pub(crate) fn build_fn_distinct_costs(stmts: &[Stmt], seed: &HashMap<String, i64>) -> HashMap<String, i64> {
     let mut fn_bodies: Vec<(String, &[Stmt])> = vec![];
     for stmt in stmts {
         match stmt {
@@ -198,13 +198,7 @@ pub(crate) fn build_fn_distinct_costs(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Merge global (cross-file) costs with this file's own function definitions.
     let mut fn_costs = config.global_fn_distinct_costs.clone();
     fn_costs.extend(build_fn_distinct_costs(stmts, &fn_costs));
@@ -217,7 +211,9 @@ pub fn check(
     // Emit a violation for every actual call site (direct .distinct() or
     // cross-scope function calls that bring in distinct operations).
     let mut collector = OccurrenceCollector {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         fn_costs: &fn_costs,
         occurrences: vec![],

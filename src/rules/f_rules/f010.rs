@@ -6,7 +6,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::expr_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "F010";
@@ -32,9 +32,10 @@ fn is_when_chain(expr: &Expr) -> bool {
 /// Returns true if the topmost call in this chain is `.otherwise(...)`.
 fn top_is_otherwise(expr: &Expr) -> bool {
     if let Expr::Call(c) = expr
-        && let Expr::Attribute(a) = c.func.as_ref() {
-            return a.attr.as_str() == "otherwise";
-        }
+        && let Expr::Attribute(a) = c.func.as_ref()
+    {
+        return a.attr.as_str() == "otherwise";
+    }
     false
 }
 
@@ -50,8 +51,13 @@ impl<'a> Check<'a> {
     fn inspect_arg(&mut self, arg: &Expr) {
         if is_when_chain(arg) && !top_is_otherwise(arg) {
             self.violations.push(expr_violation(
-                arg, "when(...)".len(), self.source, self.file, self.index,
-                self.severity, ID,
+                arg,
+                "when(...)".len(),
+                self.source,
+                self.file,
+                self.index,
+                self.severity,
+                ID,
             ));
         }
     }
@@ -69,18 +75,16 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }

@@ -7,7 +7,7 @@ use crate::{
     line_index::LineIndex,
     rules::utils::method_violation,
     violation::Violation,
-    visitor::{walk_expr, Visitor},
+    visitor::{Visitor, walk_expr},
 };
 
 const ID: &str = "S001";
@@ -33,14 +33,15 @@ fn mark_ok_unions(expr: &Expr, ok: &mut HashSet<u32>) {
 
 fn find_union_offsets(expr: &Expr, set: &mut HashSet<u32>) {
     if let Expr::Call(call) = expr
-        && let Expr::Attribute(attr) = call.func.as_ref() {
-            if matches!(attr.attr.as_str(), "union" | "unionByName") {
-                set.insert(call.range.start().into());
-                return;
-            }
-            // Keep looking down
-            find_union_offsets(attr.value.as_ref(), set);
+        && let Expr::Attribute(attr) = call.func.as_ref()
+    {
+        if matches!(attr.attr.as_str(), "union" | "unionByName") {
+            set.insert(call.range.start().into());
+            return;
         }
+        // Keep looking down
+        find_union_offsets(attr.value.as_ref(), set);
+    }
 }
 
 struct Check<'a> {
@@ -56,39 +57,39 @@ impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
-                && matches!(attr.attr.as_str(), "union" | "unionByName") {
-                    // Skip set/frozenset literals — e.g. {1,2}.union({3,4})
-                    let receiver_is_set = match attr.value.as_ref() {
-                        Expr::Set(_) => true,
-                        Expr::Call(c) => matches!(
-                            c.func.as_ref(),
-                            Expr::Name(n) if matches!(n.id.as_str(), "set" | "frozenset")
-                        ),
-                        _ => false,
-                    };
-                    if receiver_is_set {
-                        walk_expr(self, expr);
-                        return;
-                    }
-                    let offset: u32 = call.range.start().into();
-                    if !self.ok_unions.contains(&offset) {
-                        self.violations.push(method_violation(
-                            attr, attr.attr.as_str(), self.source, self.file,
-                            self.index, self.severity, ID,
-                        ));
-                    }
-                }
+            && matches!(attr.attr.as_str(), "union" | "unionByName")
+        {
+            // Skip set/frozenset literals — e.g. {1,2}.union({3,4})
+            let receiver_is_set = match attr.value.as_ref() {
+                Expr::Set(_) => true,
+                Expr::Call(c) => matches!(
+                    c.func.as_ref(),
+                    Expr::Name(n) if matches!(n.id.as_str(), "set" | "frozenset")
+                ),
+                _ => false,
+            };
+            if receiver_is_set {
+                walk_expr(self, expr);
+                return;
+            }
+            let offset: u32 = call.range.start().into();
+            if !self.ok_unions.contains(&offset) {
+                self.violations.push(method_violation(
+                    attr,
+                    attr.attr.as_str(),
+                    self.source,
+                    self.file,
+                    self.index,
+                    self.severity,
+                    ID,
+                ));
+            }
+        }
         walk_expr(self, expr);
     }
 }
 
-pub fn check(
-    stmts: &[Stmt],
-    source: &str,
-    file: &str,
-    config: &Config,
-    index: &LineIndex,
-) -> Vec<Violation> {
+pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // First pass: collect union offsets that have coalesce/repartition applied.
     let mut ok_unions: HashSet<u32> = HashSet::new();
     struct FirstPass<'a> {
@@ -101,15 +102,21 @@ pub fn check(
         }
     }
     let mut fp = FirstPass { ok: &mut ok_unions };
-    for s in stmts { fp.visit_stmt(s); }
+    for s in stmts {
+        fp.visit_stmt(s);
+    }
 
     // Second pass: flag remaining unions.
     let mut v = Check {
-        source, file, index,
+        source,
+        file,
+        index,
         severity: config.severity_of(ID),
         violations: vec![],
         ok_unions,
     };
-    for s in stmts { v.visit_stmt(s); }
+    for s in stmts {
+        v.visit_stmt(s);
+    }
     v.violations
 }
