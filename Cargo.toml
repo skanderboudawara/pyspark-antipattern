@@ -1,6 +1,6 @@
 [package]
 name = "pyspark-antipattern"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2024"
 description = "PySpark antipattern linter for CI/CD pipelines"
 homepage = "https://skanderboudawara.github.io/pyspark-antipattern/"

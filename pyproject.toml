@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyspark-antipattern"
-version = "0.3.1"
+version = "0.3.2"
 description = "A static analysis linter for PySpark — catches performance antipatterns before they reach your cluster"
 requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }
