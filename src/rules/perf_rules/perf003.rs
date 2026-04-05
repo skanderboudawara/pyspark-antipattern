@@ -201,6 +201,7 @@ fn make_violation(
 /// Scan `stmts` linearly, maintaining a running shuffle counter.  Each
 /// function-def body is scanned independently (its own counter starting at 0).
 /// Bare function calls whose cost is known are added to the caller's counter.
+#[allow(clippy::too_many_arguments)]
 fn scan(
     stmts: &[Stmt],
     fn_costs: &HashMap<String, usize>,

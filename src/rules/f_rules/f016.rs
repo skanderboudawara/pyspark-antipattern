@@ -57,6 +57,7 @@ fn has_spark_method(expr: &Expr) -> bool {
 /// `renamed_from` maps each variable name to the variable it was renamed from;
 /// `chain_depth` maps each variable name to how many rename steps it is away
 /// from the original.
+#[allow(clippy::too_many_arguments)]
 fn scan_stmts(
     stmts: &[Stmt],
     source: &str,

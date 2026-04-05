@@ -9,5 +9,8 @@
 
 root="$(git rev-parse --show-toplevel)"
 
-python "$root/scripts/check_rule_consistency.py"
+python "$root/scripts/check_rule_consistency.py" || exit 1
+
+cargo clippy --manifest-path "$root/Cargo.toml" -- -D warnings || exit 1
+
 exit $?
