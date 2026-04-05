@@ -25,11 +25,21 @@ fn is_count_call(expr: &Expr) -> bool {
         && let Expr::Attribute(attr) = call.func.as_ref()
         && attr.attr.as_str() == "count"
     {
+        let receiver = attr.value.as_ref();
         // Skip str/list/tuple/set literals — e.g. "hello".count("x") == 0
-        return !matches!(
-            attr.value.as_ref(),
+        if matches!(
+            receiver,
             Expr::Constant(_) | Expr::List(_) | Expr::Tuple(_) | Expr::Set(_) | Expr::Dict(_)
-        );
+        ) {
+            return false;
+        }
+        // Skip filter/where chains — already covered by D007 to avoid double-firing
+        if crate::rules::utils::chain_has_method(receiver, "filter")
+            || crate::rules::utils::chain_has_method(receiver, "where")
+        {
+            return false;
+        }
+        return true;
     }
     false
 }

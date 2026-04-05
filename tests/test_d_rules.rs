@@ -81,6 +81,21 @@ fn d006_no_str_count_eq() {
 fn d006_no_list_count_eq() {
     assert_no_violation(&check(d006::check, "if [1,2].count(3) == 0: pass"), "D006");
 }
+#[test]
+fn d006_no_fire_on_filter_count_eq_zero() {
+    // filter().count() == 0 is D007's domain — D006 must not double-fire
+    assert_no_violation(
+        &check(d006::check, "if df.filter(col('a') > 1).count() == 0: pass"),
+        "D006",
+    );
+}
+#[test]
+fn d006_no_fire_on_where_count_eq_zero() {
+    assert_no_violation(
+        &check(d006::check, "if df.where(col('a') > 1).count() == 0: pass"),
+        "D006",
+    );
+}
 
 // ── D007: filter().count() == 0 ──────────────────────────────────────────────
 #[test]
