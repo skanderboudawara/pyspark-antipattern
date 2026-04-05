@@ -1,0 +1,57 @@
+name: Fix documentation
+description: Report an error or gap in the rule documentation
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for documentation-only issues: wrong examples,
+        missing edge cases, broken links, or misleading wording.
+
+  - type: input
+    id: rule_id
+    attributes:
+      label: Rule ID
+      description: The rule whose documentation needs fixing (e.g. PERF007, F016).
+      placeholder: "PERF007"
+    validations:
+      required: true
+
+  - type: input
+    id: doc_location
+    attributes:
+      label: Documentation file or URL
+      description: Path inside the repo (e.g. `docs/rules/performance/PERF007.md`) or a link to the hosted docs page.
+      placeholder: "docs/rules/performance/PERF007.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_content
+    attributes:
+      label: Current (incorrect / incomplete) content
+      description: Quote or describe the part that is wrong.
+      placeholder: |
+        The "Best practices" section says `.persist()` always persists to disk,
+        which is incorrect — the default storage level is MEMORY_ONLY.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_content
+    attributes:
+      label: Proposed correction
+      description: What should it say instead?
+      placeholder: |
+        The default storage level for `.persist()` is `MEMORY_ONLY`.
+        Use `StorageLevel.MEMORY_AND_DISK` to spill to disk when memory is insufficient.
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Relevant links, Spark release notes, or anything else that supports the correction.
+    validations:
+      required: false

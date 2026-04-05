@@ -1,0 +1,99 @@
+name: New rule proposal
+description: Propose a new antipattern detection rule
+labels: ["new-rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a new lint rule.
+        The more detail you provide, the easier it is to assess and implement.
+
+  - type: input
+    id: rule_id
+    attributes:
+      label: Proposed rule ID
+      description: "Category prefix + number (e.g. PERF009, S015, F021). Leave blank if unsure."
+      placeholder: "PERF009"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Format (F)
+        - Performance (PERF)
+        - Shuffle (S)
+        - Looping (L)
+        - UDF (U)
+        - Array (ARR)
+        - Driver (D)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: antipattern
+    attributes:
+      label: Antipattern description
+      description: What PySpark pattern should be flagged and why is it harmful?
+      placeholder: |
+        `df.toPandas()` called inside a loop re-triggers a full Spark job on every iteration,
+        defeating lazy evaluation and creating one driver-side collection per loop body.
+    validations:
+      required: true
+
+  - type: textarea
+    id: bad_code
+    attributes:
+      label: Example — bad code (should fire)
+      render: python
+      placeholder: |
+        for partition in partitions:
+            pdf = df.filter(col("id") == partition).toPandas()
+            process(pdf)
+    validations:
+      required: true
+
+  - type: textarea
+    id: good_code
+    attributes:
+      label: Example — good code (should not fire)
+      render: python
+      placeholder: |
+        pdf = df.toPandas()
+        for partition in partitions:
+            process(pdf[pdf["id"] == partition])
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      options:
+        - LOW
+        - MEDIUM
+        - HIGH
+    validations:
+      required: true
+
+  - type: textarea
+    id: false_positives
+    attributes:
+      label: Known false-positive scenarios
+      description: Cases that look like the pattern but are actually fine.
+      placeholder: |
+        - `df.toPandas()` outside any loop is intentional.
+        - Loops over plain Python lists that don't touch Spark should not fire.
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to Spark documentation, blog posts, or benchmarks supporting the rule.
+    validations:
+      required: false

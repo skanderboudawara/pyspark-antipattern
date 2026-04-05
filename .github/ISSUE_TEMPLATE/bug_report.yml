@@ -1,0 +1,73 @@
+name: Bug report
+description: Report incorrect behaviour from an existing rule
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+        Please fill in every section so we can reproduce and fix it quickly.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A short, clear description of what is wrong.
+      placeholder: "Rule X fires on code that should be clean / does not fire on code that should be flagged."
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Code to reproduce
+      description: Minimal Python snippet that triggers (or fails to trigger) the violation.
+      render: python
+      placeholder: |
+        df = df.filter(col("x") > 0)
+        df2 = df.join(other, "id")
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should the linter do with the snippet above?
+      placeholder: "No violation should be reported / A violation should be reported on line N."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What does the linter actually do?
+      placeholder: "Reports a false positive on line 1 / Silently passes without any violation."
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `pyspark-antipattern --version`
+      placeholder: "0.3.2"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Ubuntu 22.04 / macOS 14 / Windows 11"
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Logs, config file, or anything else that might help.
+    validations:
+      required: false
