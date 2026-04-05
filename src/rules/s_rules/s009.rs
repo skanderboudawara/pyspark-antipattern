@@ -25,11 +25,11 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
         {
-            // Only flag .map() called on something that has .rdd in the chain
-            // (to reduce false positives on non-RDD .map() calls).
+            // Only flag .map() whose immediate receiver is the `.rdd` property.
+            // `rdd` is always an Attribute node — chain_has_method would never
+            // match it because it only walks Call nodes.
             if attr.attr.as_str() == "map"
-                && (crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
-                    || matches!(attr.value.as_ref(), Expr::Attribute(a) if a.attr.as_str() == "rdd"))
+                && matches!(attr.value.as_ref(), Expr::Attribute(a) if a.attr.as_str() == "rdd")
             {
                 self.violations.push(method_violation(
                     attr,

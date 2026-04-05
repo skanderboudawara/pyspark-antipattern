@@ -198,6 +198,15 @@ fn s009_fires() {
     assert_violation(&check(s009::check, "df.rdd.map(lambda r: r['x'])"), "S009", 1);
 }
 #[test]
+fn s009_fires_chained_rdd() {
+    // transform before .rdd — the .rdd property is still the immediate receiver of .map()
+    assert_violation(
+        &check(s009::check, "df.filter(col('x') > 0).rdd.map(lambda r: r['x'])"),
+        "S009",
+        1,
+    );
+}
+#[test]
 fn s009_no_fire_no_rdd() {
     assert_no_violation(&check(s009::check, "df.map(lambda r: r)"), "S009");
 }
