@@ -1,6 +1,9 @@
 mod common;
 use common::{assert_no_violation, assert_violation, check};
+use pyspark_antipattern::config::Config;
+use pyspark_antipattern::line_index::LineIndex;
 use pyspark_antipattern::rules::f_rules::*;
+use rustpython_parser::{Mode, ast::Mod, parse};
 
 // ── F001: withColumn + withColumnRenamed mixed ────────────────────────────────
 #[test]
@@ -219,6 +222,28 @@ fn f013_withcolumnrenamed_reserved() {
 #[test]
 fn f013_alias_reserved() {
     assert_violation(&check(f013::check, "col('x').alias('__metadata__')"), "F013", 1);
+}
+#[test]
+fn f013_alias_caret_at_reserved_name() {
+    // Caret must point at the reserved name argument, not at the `alias` method name.
+    let src = "col('x').alias('__metadata__')";
+    let parsed = parse(src, Mode::Module, "<test>").unwrap();
+    let stmts = match parsed {
+        Mod::Module(m) => m.body,
+        _ => vec![],
+    };
+    let index = LineIndex::new(src);
+    let violations = f013::check(&stmts, src, "<test>", &Config::default(), &index);
+    let v = violations
+        .iter()
+        .find(|v| v.rule_id.0 == "F013")
+        .expect("expected F013 violation");
+    let expected_col = src.find("'__metadata__'").unwrap() + 1; // 1-indexed
+    assert_eq!(
+        v.col, expected_col,
+        "caret should be at '__metadata__' (col {expected_col}), got col {}",
+        v.col
+    );
 }
 #[test]
 fn f013_no_normal_name() {

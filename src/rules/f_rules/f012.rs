@@ -23,18 +23,6 @@ fn is_bare_literal(expr: &Expr) -> bool {
     }
 }
 
-fn is_lit_wrapped(expr: &Expr) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Name(n) = c.func.as_ref() {
-            return n.id.as_str() == "lit";
-        }
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            return a.attr.as_str() == "lit";
-        }
-    }
-    false
-}
-
 struct Check<'a> {
     source: &'a str,
     file: &'a str,
@@ -45,7 +33,7 @@ struct Check<'a> {
 
 impl<'a> Check<'a> {
     fn check_column_value_arg(&mut self, arg: &Expr) {
-        if is_bare_literal(arg) && !is_lit_wrapped(arg) {
+        if is_bare_literal(arg) {
             self.violations.push(expr_violation(
                 arg,
                 1,

@@ -5,7 +5,7 @@ use rustpython_parser::ast::{Constant, Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
-    rules::utils::{expr_violation, method_violation},
+    rules::utils::expr_violation,
     violation::Violation,
     visitor::{Visitor, walk_expr},
 };
@@ -77,9 +77,9 @@ impl<'a> Visitor for Check<'a> {
                     if let Some(arg) = call.args.first()
                         && reserved_str_arg(arg).is_some()
                     {
-                        self.violations.push(method_violation(
-                            attr,
-                            "alias",
+                        self.violations.push(expr_violation(
+                            arg,
+                            1,
                             self.source,
                             self.file,
                             self.index,
