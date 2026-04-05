@@ -62,7 +62,7 @@ impl<'a> BodyScanner<'a> {
             Stmt::For(f) => f.range.start().into(),
             _ => return,
         };
-        let (line, col) = self.index.line_col(start);
+        let (line, col) = self.index.line_col(start, self.source);
         let source_line = self.index.line_text(self.source, line).to_string();
         self.violations.push(Violation {
             rule_id: RuleId(ID.to_string()),

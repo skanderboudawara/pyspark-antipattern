@@ -21,7 +21,7 @@ pub fn method_violation(
     // attr.range.end() is right after the last char of the attribute name.
     let end: u32 = func_attr.range.end().into();
     let start = end.saturating_sub(attr_name.len() as u32);
-    let (line, col) = index.line_col(start);
+    let (line, col) = index.line_col(start, source);
     let source_line = index.line_text(source, line).to_string();
     Violation {
         rule_id: RuleId(rule_id.to_string()),
@@ -46,7 +46,7 @@ pub fn expr_violation(
     rule_id: &str,
 ) -> Violation {
     let start: u32 = expr_start(expr);
-    let (line, col) = index.line_col(start);
+    let (line, col) = index.line_col(start, source);
     let source_line = index.line_text(source, line).to_string();
     Violation {
         rule_id: RuleId(rule_id.to_string()),

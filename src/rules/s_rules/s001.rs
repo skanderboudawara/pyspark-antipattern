@@ -44,6 +44,40 @@ fn find_union_offsets(expr: &Expr, set: &mut HashSet<u32>) {
     }
 }
 
+// ── Set-variable tracking ─────────────────────────────────────────────────────
+
+/// Returns `true` when `expr` is a literal set or a `set()`/`frozenset()` call.
+fn is_set_constructor(expr: &Expr) -> bool {
+    match expr {
+        Expr::Set(_) => true,
+        Expr::Call(c) => {
+            matches!(c.func.as_ref(), Expr::Name(n) if matches!(n.id.as_str(), "set" | "frozenset"))
+        }
+        _ => false,
+    }
+}
+
+/// Collect names of variables assigned directly from set constructions so that
+/// chained calls like `x = set(a); x.union(y)` are not falsely flagged.
+///
+/// Only top-level assignments are scanned; set variables inside functions or
+/// conditions are intentionally ignored (conservative heuristic).
+fn collect_set_var_names(stmts: &[Stmt]) -> HashSet<String> {
+    let mut names = HashSet::new();
+    for stmt in stmts {
+        if let Stmt::Assign(a) = stmt
+            && is_set_constructor(&a.value)
+        {
+            for target in &a.targets {
+                if let Expr::Name(n) = target {
+                    names.insert(n.id.to_string());
+                }
+            }
+        }
+    }
+    names
+}
+
 struct Check<'a> {
     source: &'a str,
     file: &'a str,
@@ -51,6 +85,7 @@ struct Check<'a> {
     severity: crate::violation::Severity,
     violations: Vec<Violation>,
     ok_unions: HashSet<u32>,
+    set_var_names: HashSet<String>,
 }
 
 impl<'a> Visitor for Check<'a> {
@@ -59,13 +94,15 @@ impl<'a> Visitor for Check<'a> {
             && let Expr::Attribute(attr) = call.func.as_ref()
             && matches!(attr.attr.as_str(), "union" | "unionByName")
         {
-            // Skip set/frozenset literals — e.g. {1,2}.union({3,4})
+            // Skip set/frozenset literals and calls — e.g. {1,2}.union({3,4})
             let receiver_is_set = match attr.value.as_ref() {
                 Expr::Set(_) => true,
                 Expr::Call(c) => matches!(
                     c.func.as_ref(),
                     Expr::Name(n) if matches!(n.id.as_str(), "set" | "frozenset")
                 ),
+                // Variable previously assigned from a set construction
+                Expr::Name(n) => self.set_var_names.contains(n.id.as_str()),
                 _ => false,
             };
             if receiver_is_set {
@@ -106,6 +143,8 @@ pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &
         fp.visit_stmt(s);
     }
 
+    let set_var_names = collect_set_var_names(stmts);
+
     // Second pass: flag remaining unions.
     let mut v = Check {
         source,
@@ -114,6 +153,7 @@ pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &
         severity: config.severity_of(ID),
         violations: vec![],
         ok_unions,
+        set_var_names,
     };
     for s in stmts {
         v.visit_stmt(s);

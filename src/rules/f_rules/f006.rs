@@ -29,7 +29,7 @@ impl<'a> Visitor for Check<'a> {
         {
             let end: u32 = attr.range.end().into();
             let start = end.saturating_sub("withColumnRenamed".len() as u32);
-            let (line, col) = self.index.line_col(start);
+            let (line, col) = self.index.line_col(start, self.source);
             if self.seen.insert((line, col)) {
                 self.violations.push(method_violation(
                     attr,

@@ -105,12 +105,12 @@ impl<'a> Visitor for ScopeCollector<'a> {
                 if let Expr::Attribute(attr) = c.func.as_ref() {
                     let end: u32 = attr.range.end().into();
                     let s = end.saturating_sub("persist".len() as u32);
-                    self.index.line_col(s)
+                    self.index.line_col(s, self.source)
                 } else {
-                    self.index.line_col(expr_start(&a.value))
+                    self.index.line_col(expr_start(&a.value), self.source)
                 }
             } else {
-                self.index.line_col(expr_start(&a.value))
+                self.index.line_col(expr_start(&a.value), self.source)
             };
             let source_line = self.index.line_text(self.source, line).to_string();
             self.persisted.insert(

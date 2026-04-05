@@ -22,12 +22,22 @@ use crate::{
 const ID: &str = "S004";
 const WHILE_ASSUMED_ITERS: i64 = 99;
 
+// ── Two-level cost lookup ─────────────────────────────────────────────────────
+
+/// Look up the cost of `key` in `local` first, then `global`.
+/// Avoids cloning the global map into a per-file merged map.
+#[inline]
+fn lookup(local: &HashMap<String, i64>, global: &HashMap<String, i64>, key: &str) -> i64 {
+    local.get(key).or_else(|| global.get(key)).copied().unwrap_or(0)
+}
+
 // ── Expression-level counter ──────────────────────────────────────────────────
 
 /// Counts `.distinct()` calls and bare function-call costs in one expression.
 struct ExprCounter<'a> {
     count: i64,
-    fn_costs: &'a HashMap<String, i64>,
+    local_costs: &'a HashMap<String, i64>,
+    global_costs: &'a HashMap<String, i64>,
 }
 
 impl<'a> Visitor for ExprCounter<'a> {
@@ -38,7 +48,7 @@ impl<'a> Visitor for ExprCounter<'a> {
                     self.count += 1;
                 }
                 Expr::Name(n) => {
-                    self.count += self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0);
+                    self.count += lookup(self.local_costs, self.global_costs, n.id.as_str());
                 }
                 _ => {}
             }
@@ -56,7 +66,8 @@ struct OccurrenceCollector<'a> {
     file: &'a str,
     index: &'a LineIndex,
     severity: Severity,
-    fn_costs: &'a HashMap<String, i64>,
+    local_costs: &'a HashMap<String, i64>,
+    global_costs: &'a HashMap<String, i64>,
     occurrences: Vec<Violation>,
 }
 
@@ -75,10 +86,10 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
                         ID,
                     ));
                 }
-                Expr::Name(n) if self.fn_costs.get(n.id.as_str()).copied().unwrap_or(0) > 0 => {
+                Expr::Name(n) if lookup(self.local_costs, self.global_costs, n.id.as_str()) > 0 => {
                     // This function call brings in distinct() from another scope.
                     let start: u32 = n.range.start().into();
-                    let (line, col) = self.index.line_col(start);
+                    let (line, col) = self.index.line_col(start, self.source);
                     let source_line = self.index.line_text(self.source, line).to_string();
                     self.occurrences.push(Violation {
                         rule_id: RuleId(ID.to_string()),
@@ -103,45 +114,53 @@ impl<'a> Visitor for OccurrenceCollector<'a> {
 /// Walk `stmts` and return the total weighted distinct() count.
 ///
 /// Function definitions are **not** recursed into — their cost is captured in
-/// `fn_costs` so that only call sites (not definitions) are counted.
-/// This avoids double-counting when a helper is defined and called in the same
-/// file.
-fn weighted_count(stmts: &[Stmt], multiplier: i64, fn_costs: &HashMap<String, i64>) -> i64 {
+/// `local_costs`/`global_costs` so that only call sites (not definitions) are
+/// counted.  This avoids double-counting when a helper is defined and called in
+/// the same file.
+fn weighted_count(stmts: &[Stmt], multiplier: i64, local: &HashMap<String, i64>, global: &HashMap<String, i64>) -> i64 {
     let mut total = 0i64;
     for stmt in stmts {
         match stmt {
             Stmt::For(f) => {
                 let iters = for_loop_iters(&f.iter).unwrap_or(i64::MAX / multiplier.max(1));
                 let m = multiplier.saturating_mul(iters);
-                total = total.saturating_add(weighted_count(&f.body, m, fn_costs));
-                total = total.saturating_add(weighted_count(&f.orelse, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&f.body, m, local, global));
+                total = total.saturating_add(weighted_count(&f.orelse, multiplier, local, global));
             }
             Stmt::While(w) => {
                 let m = multiplier.saturating_mul(WHILE_ASSUMED_ITERS);
-                total = total.saturating_add(weighted_count(&w.body, m, fn_costs));
-                total = total.saturating_add(weighted_count(&w.orelse, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&w.body, m, local, global));
+                total = total.saturating_add(weighted_count(&w.orelse, multiplier, local, global));
             }
             Stmt::If(i) => {
-                total = total.saturating_add(weighted_count(&i.body, multiplier, fn_costs));
-                total = total.saturating_add(weighted_count(&i.orelse, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&i.body, multiplier, local, global));
+                total = total.saturating_add(weighted_count(&i.orelse, multiplier, local, global));
             }
             Stmt::With(w) => {
-                total = total.saturating_add(weighted_count(&w.body, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&w.body, multiplier, local, global));
             }
             Stmt::Try(t) => {
-                total = total.saturating_add(weighted_count(&t.body, multiplier, fn_costs));
-                total = total.saturating_add(weighted_count(&t.orelse, multiplier, fn_costs));
-                total = total.saturating_add(weighted_count(&t.finalbody, multiplier, fn_costs));
+                total = total.saturating_add(weighted_count(&t.body, multiplier, local, global));
+                total = total.saturating_add(weighted_count(&t.orelse, multiplier, local, global));
+                total = total.saturating_add(weighted_count(&t.finalbody, multiplier, local, global));
             }
-            // Function definitions are NOT recursed — costs come from fn_costs.
+            // Function definitions are NOT recursed — costs come from local/global.
             Stmt::FunctionDef(_) | Stmt::AsyncFunctionDef(_) => {}
             Stmt::Expr(e) => {
-                let mut counter = ExprCounter { count: 0, fn_costs };
+                let mut counter = ExprCounter {
+                    count: 0,
+                    local_costs: local,
+                    global_costs: global,
+                };
                 counter.visit_expr(&e.value);
                 total = total.saturating_add(counter.count.saturating_mul(multiplier));
             }
             Stmt::Assign(a) => {
-                let mut counter = ExprCounter { count: 0, fn_costs };
+                let mut counter = ExprCounter {
+                    count: 0,
+                    local_costs: local,
+                    global_costs: global,
+                };
                 counter.visit_expr(&a.value);
                 total = total.saturating_add(counter.count.saturating_mul(multiplier));
             }
@@ -155,7 +174,9 @@ fn weighted_count(stmts: &[Stmt], multiplier: i64, fn_costs: &HashMap<String, i6
 
 /// Compute the total weighted distinct() cost contributed by a function body.
 fn body_distinct_cost(body: &[Stmt], fn_costs: &HashMap<String, i64>) -> i64 {
-    weighted_count(body, 1, fn_costs)
+    // During convergence we use a single merged map; the clone is bounded to
+    // the number of locally-defined functions, not the global map.
+    weighted_count(body, 1, fn_costs, &HashMap::new())
 }
 
 /// Build a `function_name → weighted_distinct_cost` map for all top-level
@@ -173,6 +194,7 @@ pub(crate) fn build_fn_distinct_costs(stmts: &[Stmt], seed: &HashMap<String, i64
         }
     }
 
+    // Convergence uses a merged map — bounded to functions in this file + seed.
     let mut fn_costs = seed.clone();
     for _ in 0..10 {
         let mut changed = false;
@@ -199,11 +221,12 @@ pub(crate) fn build_fn_distinct_costs(stmts: &[Stmt], seed: &HashMap<String, i64
 // ── Public entry point ────────────────────────────────────────────────────────
 
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
-    // Merge global (cross-file) costs with this file's own function definitions.
-    let mut fn_costs = config.global_fn_distinct_costs.clone();
-    fn_costs.extend(build_fn_distinct_costs(stmts, &fn_costs));
+    // Build only the file-local function costs; the global map is passed by
+    // reference so we never clone it per file.
+    let local_costs = build_fn_distinct_costs(stmts, &config.global_fn_distinct_costs);
+    let global_costs = &config.global_fn_distinct_costs;
 
-    let weighted = weighted_count(stmts, 1, &fn_costs);
+    let weighted = weighted_count(stmts, 1, &local_costs, global_costs);
     if weighted <= config.distinct_threshold as i64 {
         return vec![];
     }
@@ -215,7 +238,8 @@ pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &
         file,
         index,
         severity: config.severity_of(ID),
-        fn_costs: &fn_costs,
+        local_costs: &local_costs,
+        global_costs,
         occurrences: vec![],
     };
     for s in stmts {

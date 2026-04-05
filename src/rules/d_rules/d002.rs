@@ -25,7 +25,7 @@ impl<'a> Visitor for Check<'a> {
         {
             let end: u32 = attr.range.end().into();
             let start = end.saturating_sub("rdd".len() as u32);
-            let (line, col) = self.index.line_col(start);
+            let (line, col) = self.index.line_col(start, self.source);
             let source_line = self.index.line_text(self.source, line).to_string();
             self.violations.push(Violation {
                 rule_id: RuleId(ID.to_string()),

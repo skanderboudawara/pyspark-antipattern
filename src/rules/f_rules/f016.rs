@@ -86,7 +86,7 @@ fn scan_stmts(
 
                             if depth > 2 {
                                 let start: u32 = target.range.start().into();
-                                let (line, col) = index.line_col(start);
+                                let (line, col) = index.line_col(start, source);
                                 let source_line = index.line_text(source, line).to_string();
                                 violations.push(Violation {
                                     rule_id: RuleId(ID.to_string()),

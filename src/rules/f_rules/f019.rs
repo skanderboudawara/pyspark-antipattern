@@ -66,7 +66,7 @@ impl<'a> Check<'a> {
     /// Emit a violation pointing at the keyword name (e.g. `inferSchema=True`).
     fn flag_keyword(&mut self, kw: &Keyword) {
         let offset: u32 = kw.range.start().into();
-        let (line, col) = self.index.line_col(offset);
+        let (line, col) = self.index.line_col(offset, self.source);
         let source_line = self.index.line_text(self.source, line).to_string();
         let span_len = kw.arg.as_ref().map_or(1, |a| a.len());
         self.violations.push(Violation {

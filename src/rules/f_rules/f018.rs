@@ -151,7 +151,7 @@ impl<'a> Check<'a> {
     fn check_arg(&mut self, arg: &Expr) {
         if let Some(dt_expr) = find_datetime_call(arg, self.dt_names) {
             let offset = expr_start(dt_expr);
-            let (line, col) = self.index.line_col(offset);
+            let (line, col) = self.index.line_col(offset, self.source);
             let source_line = self.index.line_text(self.source, line).to_string();
             // Approximate span: up to the first `(` or end of name
             let span_len = match dt_expr {

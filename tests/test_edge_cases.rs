@@ -1,6 +1,9 @@
 mod common;
 use common::{assert_no_violation, assert_violation, check};
-use pyspark_antipattern::rules::{d_rules::*, f_rules::*, s_rules::*};
+use pyspark_antipattern::{
+    line_index::LineIndex,
+    rules::{d_rules::*, f_rules::*, s_rules::*},
+};
 
 // ── Multiline with parentheses ────────────────────────────────────────────────
 
@@ -112,4 +115,89 @@ fn s007_coalesce_1_fires() {
 #[test]
 fn s007_coalesce_2_no_fire() {
     assert_no_violation(&check(s007::check, "df.coalesce(2)"), "S007");
+}
+
+// ── Fix 2: S001 set-variable receiver tracking ────────────────────────────────
+
+#[test]
+fn s001_no_fire_set_variable() {
+    // x is assigned from set() — x.union(y) should not fire S001
+    let src = "x = set(a)\ny = x.union(b)";
+    assert_no_violation(&check(s001::check, src), "S001");
+}
+
+#[test]
+fn s001_no_fire_frozenset_variable() {
+    let src = "x = frozenset([1, 2, 3])\nresult = x.union(frozenset([4, 5]))";
+    assert_no_violation(&check(s001::check, src), "S001");
+}
+
+#[test]
+fn s001_fires_non_set_variable() {
+    // df is not a set — df.union(df2) should still fire
+    let src = "df = spark.read.parquet('a')\nresult = df.union(df2)";
+    assert_violation(&check(s001::check, src), "S001", 2);
+}
+
+// ── Fix 3: S004 / S008 two-level lookup (no global clone) ─────────────────────
+
+#[test]
+fn s004_helper_fn_cost_still_tracked() {
+    // A helper that calls .distinct() multiple times should still be counted
+    // even after the two-level lookup refactor.
+    let src = "def helper(df):\n    a = df.distinct()\n    b = a.distinct()\n    c = b.distinct()\n    d = c.distinct()\n    e = d.distinct()\n    return e.distinct()\nhelper(df1)\nhelper(df2)\nhelper(df3)\n";
+    // helper has cost 6; called 3 times → total 18 > default threshold 5
+    assert_violation(&check(s004::check, src), "S004", 8);
+}
+
+#[test]
+fn s008_helper_fn_cost_still_tracked() {
+    use pyspark_antipattern::rules::s_rules::s008;
+    let src = "def helper(df):\n    a = df.select(explode(col('a')))\n    b = a.select(explode(col('b')))\n    c = b.select(explode(col('c')))\n    return c.select(explode(col('d')))\nhelper(df1)\nhelper(df2)\n";
+    // helper has cost 4; called 2 times → total 8 > default threshold 3
+    assert_violation(&check(s008::check, src), "S008", 6);
+}
+
+// ── Fix 4: Unicode column numbers ─────────────────────────────────────────────
+
+#[test]
+fn line_col_ascii_column_is_correct() {
+    // Pure ASCII: byte offset == char offset, both should give col = 5
+    let source = "abcd.collect()";
+    let index = LineIndex::new(source);
+    let (line, col) = index.line_col(5, source); // offset 5 = 'c' in 'collect'
+    assert_eq!(line, 1);
+    assert_eq!(col, 6); // 1-based
+}
+
+#[test]
+fn line_col_unicode_column_counts_chars_not_bytes() {
+    // "🔥" is 4 bytes but 1 char; column after it should be 2, not 5
+    let source = "🔥.collect()";
+    let index = LineIndex::new(source);
+    // "🔥" occupies bytes 0..4; the dot is at byte offset 4
+    let (line, col) = index.line_col(4, source);
+    assert_eq!(line, 1);
+    assert_eq!(col, 2); // 1 char (the emoji) + 1 = col 2
+}
+
+#[test]
+fn line_col_cjk_column_counts_chars_not_bytes() {
+    // "中" is 3 bytes in UTF-8 but 1 char
+    let source = "中文.collect()";
+    let index = LineIndex::new(source);
+    // "中" = bytes 0..3, "文" = bytes 3..6, dot at byte 6
+    let (line, col) = index.line_col(6, source);
+    assert_eq!(line, 1);
+    assert_eq!(col, 3); // 2 CJK chars + 1 = col 3
+}
+
+#[test]
+fn line_col_multiline_unicode() {
+    let source = "x = 1\n🔥y = df.collect()";
+    let index = LineIndex::new(source);
+    // Line 2 starts at byte 6. "🔥" = 4 bytes, "y" at byte 10.
+    // "collect" method in the call starts well after that.
+    let (line, _col) = index.line_col(6, source); // start of line 2
+    assert_eq!(line, 2);
 }

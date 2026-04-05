@@ -288,7 +288,7 @@ fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, ind
                     state.use_count += 1;
                     if state.use_count >= 2 {
                         state.flagged = true;
-                        let (line, col) = index.line_col(*offset);
+                        let (line, col) = index.line_col(*offset, source);
                         let source_line = index.line_text(source, line).to_string();
                         violations.push(Violation {
                             rule_id: RuleId(ID.to_string()),
@@ -332,7 +332,7 @@ fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, ind
                     state.use_count += 1;
                     if state.use_count >= 2 {
                         state.flagged = true;
-                        let (line, col) = index.line_col(*offset);
+                        let (line, col) = index.line_col(*offset, source);
                         let source_line = index.line_text(source, line).to_string();
                         violations.push(Violation {
                             rule_id: RuleId(ID.to_string()),

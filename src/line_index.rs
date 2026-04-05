@@ -15,11 +15,17 @@ impl LineIndex {
         LineIndex { line_starts: starts }
     }
 
-    /// Convert a byte offset to 1-based (line, col).
-    pub fn line_col(&self, offset: u32) -> (usize, usize) {
+    /// Convert a byte offset to 1-based (line, char-col).
+    ///
+    /// Column is counted in Unicode scalar values (chars), not bytes, so that
+    /// carets are correctly aligned even in files containing emoji or CJK text.
+    pub fn line_col(&self, offset: u32, source: &str) -> (usize, usize) {
         let line_idx = self.line_starts.partition_point(|&s| s <= offset).saturating_sub(1);
-        let col = (offset - self.line_starts[line_idx]) as usize;
-        (line_idx + 1, col + 1)
+        let line_start = self.line_starts[line_idx] as usize;
+        let byte_end = (offset as usize).min(source.len());
+        // Count Unicode scalar values from the start of the line to `offset`.
+        let char_col = source[line_start..byte_end].chars().count();
+        (line_idx + 1, char_col + 1)
     }
 
     /// Get the text of a 1-based line number (without trailing newline).

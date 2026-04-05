@@ -33,7 +33,7 @@ impl<'a> Visitor for Check<'a> {
                 if has_with_col && has_with_col_renamed {
                     let end: u32 = attr.range.end().into();
                     let start = end.saturating_sub(name.len() as u32);
-                    let (line, col) = self.index.line_col(start);
+                    let (line, col) = self.index.line_col(start, self.source);
                     if self.seen.insert((line, col)) {
                         self.violations.push(method_violation(
                             attr,

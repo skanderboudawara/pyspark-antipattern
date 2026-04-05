@@ -188,7 +188,7 @@ fn make_violation(
     index: &LineIndex,
     severity: Severity,
 ) -> Violation {
-    let (line, col) = index.line_col(pos);
+    let (line, col) = index.line_col(pos, source);
     let source_line = index.line_text(source, line).to_string();
     Violation {
         rule_id: RuleId(ID.to_string()),

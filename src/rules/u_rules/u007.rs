@@ -64,7 +64,7 @@ impl<'a> Visitor for BodyScanner<'a> {
             };
             if is_any {
                 let start: u32 = call.range.start().into();
-                let (line, col) = self.index.line_col(start);
+                let (line, col) = self.index.line_col(start, self.source);
                 let source_line = self.index.line_text(self.source, line).to_string();
                 self.violations.push(Violation {
                     rule_id: RuleId(ID.to_string()),

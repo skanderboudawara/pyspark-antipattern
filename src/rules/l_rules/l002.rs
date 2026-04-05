@@ -63,7 +63,7 @@ impl<'a> Visitor for Check<'a> {
                 scanner.visit_stmt(s);
             }
             if scanner.has_df_op && WHILE_ASSUMED_ITERS > self.loop_threshold {
-                let (line, col) = self.index.line_col(w.range.start().into());
+                let (line, col) = self.index.line_col(w.range.start().into(), self.source);
                 let source_line = self.index.line_text(self.source, line).to_string();
                 self.violations.push(Violation {
                     rule_id: RuleId(ID.to_string()),
