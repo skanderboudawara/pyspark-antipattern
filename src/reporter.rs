@@ -108,7 +108,7 @@ pub fn rule_impact(id: &str) -> Impact {
         "S001" | "S002" | "S009" => Impact::Medium,
 
         // ── HIGH ─────────────────────────────────────────────────────────────
-        "D001" | "D002" | "D004" | "D005" | "D006" | "D007" => Impact::High,
+        "D001" | "D002" | "D004" | "D005" | "D006" | "D007" | "D009" => Impact::High,
         "L001" | "L002" | "L003" => Impact::High,
         "P001" => Impact::High,
         "PERF001" | "PERF003" => Impact::High,
@@ -126,8 +126,8 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
         // U005/U006/U007 recommend higher-order functions (transform, forall, exists) — added in PySpark 3.1.0
         "U005" | "U006" | "U007" => PySparkVersion::new(3, 1, 0),
 
-        // D005/D006/D007 recommend .isEmpty() which was added in PySpark 3.3.0
-        "D005" | "D006" | "D007" => PySparkVersion::new(3, 3, 0),
+        // D005/D006/D007/D009 recommend .isEmpty() which was added in PySpark 3.3.0
+        "D005" | "D006" | "D007" | "D009" => PySparkVersion::new(3, 3, 0),
 
         // ARR002 recommends array_compact() — added in PySpark 3.4.0
         // F006 recommends withColumnsRenamed() — added in PySpark 3.4.0
@@ -218,6 +218,7 @@ pub fn rule_title(id: &str) -> &'static str {
         "D006" => "Avoid df.count() == 0; use .isEmpty()",
         "D007" => "Avoid .filter(...).count() == 0; use .filter(...).isEmpty()",
         "D008" => "Avoid .display() in production",
+        "D009" => "Avoid .count() as a boolean; use .isEmpty()",
         "F001" => "Avoid chaining withColumn() and withColumnRenamed()",
         "F002" => "Avoid drop(); use select() for explicit columns",
         "F003" => "Avoid selectExpr(); prefer select() with col()",

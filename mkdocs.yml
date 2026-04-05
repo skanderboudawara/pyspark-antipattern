@@ -99,6 +99,7 @@ nav:
       - D006: rules/driver/D006.md
       - D007: rules/driver/D007.md
       - D008: rules/driver/D008.md
+      - D009: rules/driver/D009.md
     - F — Format:
       - rules/format/index.md
       - F001: rules/format/F001.md

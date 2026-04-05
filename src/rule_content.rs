@@ -18,6 +18,7 @@ static RULE_MARKDOWN: &[(&str, &str)] = &[
     ("D006", include_str!("../docs/rules/driver/D006.md")),
     ("D007", include_str!("../docs/rules/driver/D007.md")),
     ("D008", include_str!("../docs/rules/driver/D008.md")),
+    ("D009", include_str!("../docs/rules/driver/D009.md")),
     ("F001", include_str!("../docs/rules/format/F001.md")),
     ("F002", include_str!("../docs/rules/format/F002.md")),
     ("F003", include_str!("../docs/rules/format/F003.md")),

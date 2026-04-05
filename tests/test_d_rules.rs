@@ -123,3 +123,58 @@ fn d008_fires() {
 fn d008_no_false_positive() {
     assert_no_violation(&check(d008::check, "df.show()"), "D008");
 }
+
+// ── D009: count() as boolean ──────────────────────────────────────────────────
+#[test]
+fn d009_fires_bare_if() {
+    assert_violation(&check(d009::check, "if df.count(): pass"), "D009", 1);
+}
+#[test]
+fn d009_fires_not_count() {
+    assert_violation(&check(d009::check, "if not df.count(): pass"), "D009", 1);
+}
+#[test]
+fn d009_fires_and_count() {
+    assert_violation(&check(d009::check, "if x and df.count(): pass"), "D009", 1);
+}
+#[test]
+fn d009_fires_and_not_count() {
+    assert_violation(&check(d009::check, "if x and not df.count(): pass"), "D009", 1);
+}
+#[test]
+fn d009_fires_chained_filter() {
+    assert_violation(
+        &check(d009::check, "if df.filter(col('a') > 1).count(): pass"),
+        "D009",
+        1,
+    );
+}
+#[test]
+fn d009_fires_while() {
+    assert_violation(&check(d009::check, "while df.count(): df = df.limit(10)"), "D009", 1);
+}
+#[test]
+fn d009_no_fire_count_eq_zero() {
+    // count() == 0 is a comparison — D006's domain, not D009
+    assert_no_violation(&check(d009::check, "if df.count() == 0: pass"), "D009");
+}
+#[test]
+fn d009_no_fire_count_gt_zero() {
+    assert_no_violation(&check(d009::check, "if df.count() > 0: pass"), "D009");
+}
+#[test]
+fn d009_no_fire_already_isempty() {
+    assert_no_violation(&check(d009::check, "if not df.isEmpty(): pass"), "D009");
+}
+#[test]
+fn d009_no_fire_assignment() {
+    assert_no_violation(&check(d009::check, "n = df.count()"), "D009");
+}
+#[test]
+fn d009_fires_or_not_count() {
+    assert_violation(&check(d009::check, "if x or not df.count(): pass"), "D009", 1);
+}
+#[test]
+fn d009_no_fire_str_count() {
+    assert_no_violation(&check(d009::check, r#"if "hello".count("l"): pass"#), "D009");
+}

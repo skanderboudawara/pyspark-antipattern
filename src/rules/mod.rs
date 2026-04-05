@@ -34,6 +34,7 @@ pub static ALL_RULES: &[RuleFn] = &[
     d_rules::d006::check,
     d_rules::d007::check,
     d_rules::d008::check,
+    d_rules::d009::check,
     f_rules::f001::check,
     f_rules::f002::check,
     f_rules::f003::check,

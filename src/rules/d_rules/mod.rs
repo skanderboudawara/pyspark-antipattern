@@ -1,4 +1,4 @@
-//! Driver-side anti-pattern rules (D001–D008).
+//! Driver-side anti-pattern rules (D001–D009).
 //! These rules flag operations that pull data to the driver or expose
 //! production-unsafe debugging calls such as `.collect()`, `.show()`, or `.rdd`.
 pub mod d001;
@@ -9,3 +9,4 @@ pub mod d005;
 pub mod d006;
 pub mod d007;
 pub mod d008;
+pub mod d009;

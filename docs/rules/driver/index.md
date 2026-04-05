@@ -12,3 +12,4 @@ Rules that flag operations which pull data from the distributed cluster to the d
 | [D006](D006.md) | Avoid `df.count() == 0` — use `.isEmpty()` |
 | [D007](D007.md) | Avoid `.filter(...).count() == 0` — use `.filter(...).isEmpty()` |
 | [D008](D008.md) | Avoid `.display()` in production |
+| [D009](D009.md) | Avoid `.count()` as a boolean — use `.isEmpty()` |
