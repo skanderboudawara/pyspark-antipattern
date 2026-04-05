@@ -149,12 +149,20 @@ fn main() {
 
             let mut error_count   = 0usize;
             let mut warning_count = 0usize;
+            let mut high_count    = 0usize;
+            let mut medium_count  = 0usize;
+            let mut low_count     = 0usize;
 
             let file_count = checker::check_path(&path, &config, &mut |violations| {
                 for v in &violations {
                     match v.severity {
                         violation::Severity::Error   => error_count   += 1,
                         violation::Severity::Warning => warning_count += 1,
+                    }
+                    match v.impact {
+                        violation::Impact::High   => high_count   += 1,
+                        violation::Impact::Medium => medium_count += 1,
+                        violation::Impact::Low    => low_count    += 1,
                     }
                 }
                 if !violations.is_empty() {
@@ -166,6 +174,7 @@ fn main() {
                 "Checked {} file(s). Found {} error(s), {} warning(s).",
                 file_count, error_count, warning_count,
             );
+            reporter::print_impact_summary(high_count, medium_count, low_count);
 
             if error_count > 0 {
                 process::exit(1);

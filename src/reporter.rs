@@ -265,3 +265,27 @@ pub fn rule_title(id: &str) -> &'static str {
         _ => "Unknown rule",
     }
 }
+
+pub fn print_impact_summary(high: usize, medium: usize, low: usize) {
+    let writer = BufferWriter::stderr(ColorChoice::Auto);
+    let mut out = writer.buffer();
+
+    writeln!(out, "\nImpact summary:").ok();
+
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Red)).set_bold(true)).ok();
+    write!(out, "  HIGH").ok();
+    out.reset().ok();
+    writeln!(out, "   {high} error(s)").ok();
+
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)).set_bold(true)).ok();
+    write!(out, "  MEDIUM").ok();
+    out.reset().ok();
+    writeln!(out, " {medium} error(s)").ok();
+
+    out.set_color(ColorSpec::new().set_fg(Some(Color::Green)).set_bold(true)).ok();
+    write!(out, "  LOW").ok();
+    out.reset().ok();
+    writeln!(out, "    {low} error(s)").ok();
+
+    writer.print(&out).ok();
+}
