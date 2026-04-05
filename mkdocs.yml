@@ -57,10 +57,10 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Release Notes: https://github.com/skanderboudawara/pyspark-antipattern/releases
   - Installation: installation.md
   - Configuration: configuration.md
   - CLI Reference: cli.md
-  - Versioning: versioning.md
   - Settings:
     - settings/index.md
     - select: settings/select.md
@@ -76,9 +76,6 @@ nav:
     - exclude_dirs: settings/exclude_dirs.md
     - max_shuffle_operations: settings/max_shuffle_operations.md
     - noqa: settings/noqa.md
-  - Contributing:
-    - Adding a rule: contributing/adding-a-rule.md
-    - Commit messages: contributing/commit-messages.md
   - Rules:
     - rules/index.md
     - ARR — Array:
@@ -165,3 +162,8 @@ nav:
       - U005: rules/udf/U005.md
       - U006: rules/udf/U006.md
       - U007: rules/udf/U007.md
+  - Contributing:
+    - Versioning: contributing/versioning.md
+    - Adding a rule: contributing/adding-a-rule.md
+    - Commit messages: contributing/commit-messages.md
+    - Open an Issue: https://github.com/skanderboudawara/pyspark-antipattern/issues
