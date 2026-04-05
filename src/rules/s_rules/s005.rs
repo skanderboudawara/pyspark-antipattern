@@ -26,19 +26,28 @@ impl<'a> Visitor for Check<'a> {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
             && attr.attr.as_str() == "repartition"
-            && let Some(n) = call.args.first().and_then(const_int)
-            && n > 0
-            && n < SPARK_DEFAULT_PARTITIONS
         {
-            self.violations.push(method_violation(
-                attr,
-                "repartition",
-                self.source,
-                self.file,
-                self.index,
-                self.severity,
-                ID,
-            ));
+            // Accept both positional (first arg) and keyword `numPartitions=N` forms.
+            let n = call.args.first().and_then(const_int).or_else(|| {
+                call.keywords
+                    .iter()
+                    .find(|kw| kw.arg.as_deref() == Some("numPartitions"))
+                    .and_then(|kw| const_int(&kw.value))
+            });
+            if let Some(n) = n
+                && n > 0
+                && n < SPARK_DEFAULT_PARTITIONS
+            {
+                self.violations.push(method_violation(
+                    attr,
+                    "repartition",
+                    self.source,
+                    self.file,
+                    self.index,
+                    self.severity,
+                    ID,
+                ));
+            }
         }
         walk_expr(self, expr);
     }

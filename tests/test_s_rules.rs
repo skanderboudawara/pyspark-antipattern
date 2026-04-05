@@ -120,6 +120,39 @@ fn s006_no_fire_200() {
     assert_no_violation(&check(s006::check, "df.repartition(200)"), "S006");
 }
 
+// ── S005/S006: repartition with column arguments ──────────────────────────────
+#[test]
+fn s005_fires_with_column_str() {
+    // repartition(n, "col") — partition count is still first arg
+    assert_violation(&check(s005::check, "df.repartition(50, 'id')"), "S005", 1);
+}
+#[test]
+fn s005_fires_with_multiple_columns() {
+    assert_violation(&check(s005::check, "df.repartition(50, 'id', 'name')"), "S005", 1);
+}
+#[test]
+fn s005_fires_keyword_numpartitions() {
+    // repartition(numPartitions=50) — count passed as keyword arg
+    assert_violation(&check(s005::check, "df.repartition(numPartitions=50)"), "S005", 1);
+}
+#[test]
+fn s005_no_fire_col_only() {
+    // repartition("col") — no int partition count, should not fire
+    assert_no_violation(&check(s005::check, "df.repartition('id')"), "S005");
+}
+#[test]
+fn s006_fires_with_column_str() {
+    assert_violation(&check(s006::check, "df.repartition(500, 'id')"), "S006", 1);
+}
+#[test]
+fn s006_fires_with_multiple_columns() {
+    assert_violation(&check(s006::check, "df.repartition(500, 'id', 'name')"), "S006", 1);
+}
+#[test]
+fn s006_fires_keyword_numpartitions() {
+    assert_violation(&check(s006::check, "df.repartition(numPartitions=500)"), "S006", 1);
+}
+
 // ── S007: repartition(1) or coalesce(1) ──────────────────────────────────────
 #[test]
 fn s007_fires_repartition() {
