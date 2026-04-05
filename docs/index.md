@@ -1,14 +1,35 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/pyspark-antipattern?cacheSeconds=0)](https://pypi.org/project/pyspark-antipattern/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/pyspark-antipattern)](https://pypi.org/project/pyspark-antipattern/)
 [![Release](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyspark-antipattern?cacheSeconds=0)](https://pypi.org/project/pyspark-antipattern/)
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern?cacheSeconds=0)](https://github.com/skanderboudawara/pyspark-antipattern/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/skanderboudawara/pyspark-antipattern?style=social)](https://github.com/skanderboudawara/pyspark-antipattern/stargazers)
 
 # pyspark-antipattern
 
-A fast, opinionated PySpark linter that challenges your code against antipattern rules — written in Rust, installable as a Python package, and designed to run in CI/CD pipelines.
+**A static analysis linter for PySpark — catch performance antipatterns before they reach your cluster.**
+
+Written in Rust, installable as a Python package, and designed to run in CI/CD pipelines. 67 rules across 8 categories covering driver actions, shuffle explosions, UDFs, loops, and more.
+
+![demo](img/demo.gif)
 
 !!! quote "Philosophy"
     This linter is intentionally strict. It will flag patterns that are technically valid Python but known to cause performance, scalability, or maintainability problems in PySpark. Every violation is a conversation starter — it is up to you to decide whether to fix it, downgrade it to a warning, or suppress it for a specific line.
+
+---
+
+## What it catches
+
+Real antipatterns, caught at commit time:
+
+| Code | Rule | Why it matters |
+|---|---|---|
+| `df.collect()` | D001 | Pulls all data to driver — OOM risk on large datasets |
+| `for c in cols: df.withColumn(...)` | L003 | Each call adds a projection — plan explodes exponentially |
+| `array_distinct(collect_list(x))` | ARR001 | Use `collect_set(x)` — one step instead of two |
+| `df.rdd.collect()` | PERF001 | Use `.toPandas()` — 10x faster with Arrow enabled |
+| `df.join(other)` | S011 | No condition = Cartesian product |
+| `@udf` returning `StringType` | U001 | Built-in string functions are orders of magnitude faster |
 
 ---
 
