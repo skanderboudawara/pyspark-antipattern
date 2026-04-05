@@ -1,4 +1,4 @@
-// F017: Avoid expr() — use native PySpark functions instead.
+//! F017: Avoid `expr()` — use native PySpark functions instead of SQL expression strings.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -43,6 +43,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `expr(...)` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

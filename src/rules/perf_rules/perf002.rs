@@ -1,4 +1,5 @@
-// PERF002: More than one getOrCreate() in a file — use getActiveSession() instead
+//! PERF002: More than one `getOrCreate()` call in a file — use `getActiveSession()`
+//! everywhere except the initial session bootstrap.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for multiple `getOrCreate()` calls and flag each occurrence beyond the first.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

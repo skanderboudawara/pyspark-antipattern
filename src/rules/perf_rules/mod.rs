@@ -1,3 +1,6 @@
+//! General performance rules (PERF001–PERF008).
+//! These rules detect inefficient Spark usage patterns such as excessive
+//! shuffle operations, missing checkpoints, and improper caching strategies.
 pub mod perf001;
 pub mod perf002;
 pub mod perf003;

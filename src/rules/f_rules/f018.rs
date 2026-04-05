@@ -1,18 +1,5 @@
-// F018: Use Spark native datetime functions instead of Python datetime objects
-//       inside Spark expressions.
-//
-// Python's `datetime`, `date`, `timedelta` objects are opaque to Spark's
-// optimizer.  Passing them into `lit()`, `withColumn()`, `when()`, `filter()`,
-// `where()`, or `otherwise()` forces driver-side evaluation and prevents
-// partition pruning and predicate push-down.
-//
-// Prefer Spark built-in functions:
-//   datetime.now()         → current_timestamp()
-//   date.today()           → current_date()
-//   datetime(y, m, d, ...) → to_timestamp(lit("yyyy-MM-dd HH:mm:ss"))
-//   date(y, m, d)          → to_date(lit("yyyy-MM-dd"))
-//   timedelta(days=N)      → date_add(col, N)  /  expr("interval N days")
-//
+//! F018: Use Spark native datetime functions instead of Python `datetime`/`date`/`timedelta`
+//! objects inside Spark expressions — Python datetime objects are opaque to Catalyst.
 // Detection: two passes.
 //   Pass 1 — collect names imported from the `datetime` stdlib module.
 //   Pass 2 — flag any Python datetime call found inside the argument(s) of
@@ -233,6 +220,7 @@ impl<'a> Visitor for Check<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for Python datetime objects used inside Spark column expressions and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let dt_names = collect_datetime_names(stmts);
     if dt_names.is_empty() {

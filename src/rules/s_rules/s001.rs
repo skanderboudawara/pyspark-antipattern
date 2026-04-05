@@ -1,4 +1,5 @@
-// S001: Missing .coalesce() or .repartition() after .union() / .unionByName()
+//! S001: Missing `.coalesce()` or `.repartition()` after `.union()` / `.unionByName()` —
+//! union operations double the partition count; rebalancing prevents skewed stages.
 use rustpython_parser::ast::{Expr, Stmt};
 use std::collections::HashSet;
 
@@ -126,6 +127,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.union()` / `.unionByName()` calls not immediately followed by a rebalance.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // First pass: collect union offsets that have coalesce/repartition applied.
     let mut ok_unions: HashSet<u32> = HashSet::new();

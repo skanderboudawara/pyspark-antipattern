@@ -1,4 +1,5 @@
-// F004: Avoid spark.sql(); prefer native DataFrame API
+//! F004: Avoid `spark.sql()` — prefer the native DataFrame API for
+//! better type safety and Catalyst optimizer integration.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.sql()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

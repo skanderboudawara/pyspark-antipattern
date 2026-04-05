@@ -1,18 +1,5 @@
-// F019: inferSchema=True or mergeSchema=True in Spark read options
-//
-// Both options tell Spark to infer or merge schemas at runtime by scanning the
-// data, which:
-//   - Triggers an extra full scan of the dataset before the actual job
-//   - Produces non-deterministic schemas that can silently change when the
-//     source data changes (new files, new columns, type drift)
-//   - Makes pipelines brittle and hard to debug in production
-//
-// Prefer explicit, hard-coded schemas using StructType / StructField so the
-// schema is a contract visible in code review.
-//
-// Detection covers two forms:
-//   .option("inferSchema", "true")   / .option("inferSchema", True)
-//   .option("mergeSchema", "true")   / .option("mergeSchema", True)
+//! F019: Avoid `inferSchema=True` or `mergeSchema=True` in Spark read options.
+//! These options trigger costly runtime schema inference; prefer explicit `StructType` schemas.
 //   .csv(..., inferSchema=True)      (keyword argument on any read method)
 //   .parquet(..., mergeSchema=True)  (keyword argument on any read method)
 use rustpython_parser::ast::{Constant, Expr, Keyword, Stmt};
@@ -122,6 +109,7 @@ impl<'a> Visitor for Check<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for `.option("inferSchema", ...)` / `.option("mergeSchema", ...)` calls and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

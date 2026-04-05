@@ -1,4 +1,5 @@
-// S009: Prefer mapPartitions() over map() for row-level transforms
+//! S009: Prefer `mapPartitions()` over `map()` for row-level transforms — batching
+//! operations per partition avoids repeated Python overhead per row.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -45,6 +46,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.map()` calls on RDDs and suggest `mapPartitions()` for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

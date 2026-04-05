@@ -1,4 +1,5 @@
-// L003: Avoid calling withColumn() inside a loop
+//! L003: Avoid calling `withColumn()` inside a loop — each call adds a projection to the
+//! plan; hundreds of calls can cause stack overflows and very slow planning.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -98,6 +99,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `withColumn()` calls inside for/while loops and flag each call site.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

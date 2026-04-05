@@ -1,4 +1,5 @@
-// F010: Always include otherwise() at the end of a when() chain
+//! F010: Always include `otherwise()` at the end of a `when()` chain — an incomplete
+//! chain returns `null` for unmatched rows, which is rarely the desired behaviour.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -75,6 +76,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `when()` chains used as call arguments that are missing `.otherwise()`.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

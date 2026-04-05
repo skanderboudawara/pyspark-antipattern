@@ -1,13 +1,6 @@
-// PERF004: .persist() called without an explicit StorageLevel.
-//
-// Calling .persist() with no arguments silently uses the default storage level
-// (MEMORY_AND_DISK), which may not be appropriate for the dataset size or the
-// cluster's memory pressure.  Leaving the storage level implicit means the
-// next developer — or you in six months — has no idea what caching strategy
-// was intended.
-//
-// Always pass an explicit StorageLevel so the intent is visible in code review
-// and can be tuned without guessing what the default is.
+//! PERF004: `.persist()` called without an explicit `StorageLevel`.
+//! Always pass a `StorageLevel` argument so the caching strategy is visible
+//! in code review and tunable without guessing the default.
 //
 // Available levels:
 //   StorageLevel.DISK_ONLY            StorageLevel.DISK_ONLY_2
@@ -57,6 +50,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.persist()` calls with no arguments and flag each one.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

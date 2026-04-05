@@ -1,16 +1,5 @@
-// F020: Avoid select("*") — use explicit column names.
-//
-// Passing the wildcard string "*" to select() is equivalent to SELECT * in SQL:
-// it silently pulls every column from the DataFrame without any guarantee about
-// which columns will be present at runtime.  This makes the schema implicit and
-// fragile — adding, removing, or reordering a column upstream can break
-// downstream logic without any compile-time or lint-time warning.
-//
-// Detection: flag any .select() call that contains a string-literal argument
-// whose value is exactly "*".  Matches all positions:
-//   df.select("*")
-//   df.select("*", "city")
-//   df.select("id", "*")
+//! F020: Avoid `select("*")` — use explicit column names instead of the wildcard
+//! to make the DataFrame schema a visible contract in code.
 use rustpython_parser::ast::{Constant, Expr, Stmt};
 
 use crate::{
@@ -60,6 +49,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.select("*")` calls and return a violation for each wildcard argument.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

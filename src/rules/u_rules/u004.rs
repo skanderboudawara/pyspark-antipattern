@@ -1,8 +1,5 @@
-// U004: Avoid nested UDF calls — calling one UDF from inside another UDF body.
-//
-// Each UDF boundary is opaque to Spark's optimizer and incurs Python
-// serialisation overhead.  Nesting UDFs compounds both penalties: the outer
-// UDF already de-opts the plan, and the inner call adds another round-trip
+//! U004: Avoid nested UDF calls — each UDF boundary adds Python serialisation overhead;
+//! nesting compounds the penalty. Merge logic or use plain Python helpers instead.
 // through Python instead of being fused into the same lambda.
 //
 // Detection:
@@ -78,6 +75,7 @@ impl<'a> Visitor for CallScanner<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for UDF bodies that call another known UDF and flag each nested invocation.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Pass 1: collect UDF function names.
     let mut udf_names: HashSet<String> = HashSet::new();

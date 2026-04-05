@@ -1,4 +1,5 @@
-// F015: Avoid consecutive .filter()/.where() calls — combine into one
+//! F015: Avoid consecutive `.filter()` / `.where()` calls — combine conditions
+//! into a single filter expression to reduce the number of plan stages.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -63,6 +64,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for consecutive `filter()`/`where()` chains (depth ≥ 2) and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

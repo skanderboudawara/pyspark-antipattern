@@ -1,8 +1,5 @@
-// U005: Loops inside a UDF body — use pyspark.sql.functions.transform instead.
-//
-// UDFs already pay a heavy price: every row must be serialised from the JVM
-// to Python and back.  Adding a loop (for-statement or comprehension) inside
-// the UDF body means the Python interpreter iterates over the array element-
+//! U005: Loops inside a UDF body — use `pyspark.sql.functions.transform` instead.
+//! Loops inside UDFs prevent Catalyst optimisation; higher-order functions stay on the JVM.
 // by-element on the driver/executor before returning the result, rather than
 // delegating the work to a vectorised Spark built-in.
 //
@@ -113,6 +110,7 @@ impl<'a> Visitor for BodyScanner<'a> {
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for UDF bodies containing `for` loops or list comprehensions and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

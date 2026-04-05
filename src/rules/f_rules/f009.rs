@@ -1,4 +1,5 @@
-// F009: Avoid nested when(); use stacked .when().when().otherwise()
+//! F009: Avoid nested `when()` calls — use a flat chain of `.when().when().otherwise()`
+//! for improved readability and Catalyst optimizer compatibility.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -54,6 +55,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `when(...)` calls whose arguments contain another `when(...)` call.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

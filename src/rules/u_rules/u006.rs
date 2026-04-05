@@ -1,6 +1,5 @@
-// U006: Avoid returning all() inside a UDF — use pyspark.sql.functions.forall instead.
-//
-// Python's built-in all() iterates over a collection row-by-row inside the
+//! U006: Avoid `all()` inside a UDF — use `pyspark.sql.functions.forall` instead
+//! to keep the predicate evaluation on the JVM without Python round-trips.
 // UDF, which means:
 //   - The array must be deserialised from the JVM to Python
 //   - all() runs entirely in Python with no Spark optimisation
@@ -81,6 +80,7 @@ impl<'a> Visitor for BodyScanner<'a> {
     }
 }
 
+/// Scan `stmts` for UDF bodies that call `all(...)` and return a violation for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

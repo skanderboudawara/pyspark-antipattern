@@ -1,5 +1,6 @@
-// L001: Avoid looping without .localCheckpoint() or .checkpoint()
-// Fires on For/While loops that contain DataFrame operations but no checkpoint call.
+//! L001: Avoid looping without `.localCheckpoint()` or `.checkpoint()`.
+//! For/while loops that accumulate DataFrame transformations will grow the
+//! lineage unboundedly unless a checkpoint resets it periodically.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -118,6 +119,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for loops containing DataFrame operations without a checkpoint and flag each loop.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let _ = chain_has_method; // used in other rules, suppress warning
     let mut v = Check {

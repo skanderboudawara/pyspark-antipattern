@@ -1,4 +1,4 @@
-// D001: Avoid using .collect()
+//! D001: Avoid using `.collect()` — pulls the entire distributed dataset to the driver.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +39,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.collect()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

@@ -1,4 +1,4 @@
-// ARR004: Avoid size(collect_set(...)) inside .agg() — use count_distinct() instead.
+//! ARR004: Avoid `size(collect_set(...))` inside `.agg()` — use `count_distinct()` instead.
 //
 // size(collect_set(col)) counts distinct values by first collecting every unique
 // value into an in-memory array (a full shuffle + dedup step), then counting
@@ -83,6 +83,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `size(collect_set(...))` inside `.agg()` calls and flag each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut v = Check {

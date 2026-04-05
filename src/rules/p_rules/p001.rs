@@ -1,4 +1,6 @@
-// P001: .toPandas() without enabling Arrow optimization
+//! P001: `.toPandas()` without enabling Arrow optimization.
+//! Setting `spark.sql.execution.arrow.pyspark.enabled = true` can reduce
+//! serialisation overhead by an order of magnitude for large DataFrames.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -42,6 +44,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.toPandas()` calls and flag those in files that lack Arrow configuration.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Heuristic: check if arrow is configured anywhere in the source file.
     let arrow_enabled = source.contains(ARROW_FLAG);

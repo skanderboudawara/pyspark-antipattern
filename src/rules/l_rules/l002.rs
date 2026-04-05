@@ -1,4 +1,5 @@
-// L002: Avoid while loops with DataFrames
+//! L002: Avoid while loops that contain DataFrame operations — unbounded iteration
+//! can cause lineage explosion and OOM errors on the driver.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -89,6 +90,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for while loops containing DataFrame method calls and flag each loop statement.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

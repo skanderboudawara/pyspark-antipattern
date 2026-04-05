@@ -1,8 +1,5 @@
-// S008: Overusing explode() / explode_outer() (threshold configurable)
-//
-// Loop-aware: an explode() inside range(N) counts as N occurrences;
-// inside a while loop it counts as 99 (assumed iterations).
-//
+//! S008: Overusing `explode()` / `explode_outer()` beyond the configured threshold.
+//! Loop-aware: inside `range(N)` each explode counts as N; inside a while loop as 99.
 // Function-call-aware: if a helper function contains M explode() calls,
 // every call to that helper contributes M to the file's running total.
 // Cross-file helpers are resolved via config.global_fn_explode_costs,
@@ -226,6 +223,7 @@ pub(crate) fn build_fn_explode_costs(stmts: &[Stmt], seed: &HashMap<String, i64>
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for `explode()`/`explode_outer()` usage beyond the configured threshold.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Build only the file-local function costs; the global map is passed by
     // reference so we never clone it per file.

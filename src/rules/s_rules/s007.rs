@@ -1,4 +1,5 @@
-// S007: Avoid repartition(1) or coalesce(1)
+//! S007: Avoid `repartition(1)` or `coalesce(1)` — coalescing to a single partition
+//! serialises all processing to one task and eliminates all parallelism.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -43,6 +44,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.repartition(1)` or `.coalesce(1)` calls and flag each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

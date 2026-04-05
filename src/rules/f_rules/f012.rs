@@ -1,6 +1,5 @@
-// F012: Always wrap literal values with lit()
-// Detects bare numeric/string/bool constants passed as column value arguments
-// to withColumn(), withColumns(), select(), and similar methods.
+//! F012: Always wrap literal values with `lit()` — bare numeric, string, or bool
+//! constants passed as column arguments are ambiguous and should be wrapped.
 use rustpython_parser::ast::{Constant, Expr, Stmt};
 
 use crate::{
@@ -101,6 +100,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for unwrapped literal values in column-value positions and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

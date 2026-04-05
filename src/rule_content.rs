@@ -1,3 +1,5 @@
+//! Lazy-loaded Markdown content for each rule, used to populate the
+//! `--show-information` and `--show-best-practice` terminal output.
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
@@ -71,22 +73,29 @@ static RULE_MARKDOWN: &[(&str, &str)] = &[
     ("U007", include_str!("../docs/rules/udf/U007.md")),
 ];
 
+/// Structured content extracted from a rule's Markdown documentation file.
 pub struct RuleContent {
+    /// Explanatory text from the `## Information` / `## Why` section.
     pub information: String,
+    /// Recommended alternative from the `## Best Practice` section.
     pub best_practice: String,
 }
 
 /// Parsed content cache — built once on first access, reused on every call.
 static CACHE: OnceLock<HashMap<&'static str, RuleContent>> = OnceLock::new();
 
+/// Return a reference to the global rule content cache, initialising it on first call.
 fn cache() -> &'static HashMap<&'static str, RuleContent> {
     CACHE.get_or_init(|| RULE_MARKDOWN.iter().map(|(id, md)| (*id, parse_markdown(md))).collect())
 }
 
+/// Look up the pre-parsed content for `rule_id`, or `None` if not found.
 pub fn get_content(rule_id: &str) -> Option<&'static RuleContent> {
     cache().get(rule_id)
 }
 
+/// Parse a rule Markdown file into a `RuleContent` by extracting
+/// `## Information`/`## Why` and `## Best Practice` sections.
 fn parse_markdown(md: &str) -> RuleContent {
     let mut info_lines: Vec<&str> = vec![];
     let mut bp_lines: Vec<&str> = vec![];

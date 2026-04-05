@@ -1,3 +1,5 @@
+//! Orchestrates file discovery, parallel linting, and cross-file cost
+//! pre-computation for the `pyspark-antipattern` checker.
 use std::collections::{BTreeMap, HashMap};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
@@ -142,6 +144,8 @@ fn build_all_global_costs(paths: &[String]) -> (HashMap<String, i64>, HashMap<St
 
 // ── Path collection ───────────────────────────────────────────────────────────
 
+/// Collect all `.py` file paths under `root`, skipping excluded directories.
+/// When `root` is a file, returns a single-element vector with that path.
 fn collect_paths(root: &str, config: &Config) -> Vec<String> {
     if std::path::Path::new(root).is_file() {
         return vec![root.to_string()];

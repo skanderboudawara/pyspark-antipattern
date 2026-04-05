@@ -1,4 +1,5 @@
-// S003: .groupBy() directly followed by .distinct() — redundant
+//! S003: `.groupBy()` directly followed by `.distinct()` or `.dropDuplicates()` —
+//! the dedup after an aggregation is redundant since `groupBy` already produces distinct keys.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -41,6 +42,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.groupBy()` calls directly chained with `.distinct()` / `.dropDuplicates()`.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

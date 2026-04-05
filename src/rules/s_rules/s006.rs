@@ -1,4 +1,5 @@
-// S006: .repartition() with more partitions than the Spark default (200)
+//! S006: `.repartition()` with more partitions than the Spark default (200) —
+//! excessive partition counts increase task scheduling overhead and small-file pressure.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -42,6 +43,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.repartition(N)` where N exceeds the configured threshold and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

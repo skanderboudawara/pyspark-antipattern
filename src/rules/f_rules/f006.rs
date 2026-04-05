@@ -1,4 +1,4 @@
-// F006: Avoid stacking multiple withColumnRenamed() calls; use withColumnsRenamed()
+//! F006: Avoid stacking multiple `withColumnRenamed()` calls — use `withColumnsRenamed()` instead.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -46,6 +46,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for consecutive `withColumnRenamed()` chains (depth ≥ 2) and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

@@ -1,4 +1,5 @@
-// F005: Avoid stacking multiple withColumn() calls; use withColumns()
+//! F005: Avoid stacking multiple `withColumn()` calls — use `withColumns()` to apply
+//! all transformations in a single pass and reduce plan complexity.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -46,6 +47,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for consecutive `withColumn()` chains (depth ≥ 2) and flag the outermost call.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

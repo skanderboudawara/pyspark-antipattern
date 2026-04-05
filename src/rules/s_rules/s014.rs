@@ -1,4 +1,5 @@
-// S014: .distinct() or .dropDuplicates() called before .groupBy() — redundant shuffle
+//! S014: `.distinct()` or `.dropDuplicates()` called before `.groupBy()` — the dedup
+//! is redundant because `groupBy` already produces distinct keys, causing an extra shuffle.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -43,6 +44,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.distinct()` / `.dropDuplicates()` immediately before `.groupBy()`.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

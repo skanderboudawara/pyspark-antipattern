@@ -1,4 +1,4 @@
-// ARR003: Avoid array_distinct(collect_set()) — collect_set() already returns distinct values.
+//! ARR003: Avoid `array_distinct(collect_set())` — `collect_set()` already returns distinct values.
 //
 // collect_set() deduplicates during aggregation (a shuffle).
 // Wrapping the result in array_distinct() runs a second deduplication pass
@@ -69,6 +69,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `array_distinct(collect_set(...))` patterns and flag each redundant dedup.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut v = Check {

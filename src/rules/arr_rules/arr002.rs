@@ -1,4 +1,4 @@
-// ARR002: Avoid array_except(col, None/lit(None)) — use array_compact() instead.
+//! ARR002: Avoid `array_except(col, None/lit(None))` — use `array_compact()` instead.
 use rustpython_parser::ast::{Constant, Expr, Stmt};
 
 use crate::{
@@ -68,6 +68,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `array_except(col, None)` / `array_except(col, lit(None))` and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut v = Check {

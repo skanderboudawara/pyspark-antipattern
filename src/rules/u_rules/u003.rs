@@ -1,4 +1,5 @@
-// U003: Avoid UDFs in general; prefer Spark built-in functions
+//! U003: Avoid UDFs — every UDF is opaque to Catalyst and incurs Python
+//! serialisation overhead; prefer native Spark built-in functions.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -78,6 +79,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `@udf` / `@pandas_udf` decorated functions and flag each UDF definition.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

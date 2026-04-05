@@ -1,5 +1,5 @@
-// F011: Avoid backslash line continuation; use parentheses
-// This rule works on raw source text, not the AST.
+//! F011: Avoid backslash line continuation — use parentheses for multi-line expressions.
+//! This rule operates on raw source text rather than the AST.
 use rustpython_parser::ast::Stmt;
 
 use crate::{
@@ -10,6 +10,7 @@ use crate::{
 
 const ID: &str = "F011";
 
+/// Scan `source` for trailing backslash line continuations and flag each occurrence.
 pub fn check(_stmts: &[Stmt], source: &str, file: &str, config: &Config, _index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

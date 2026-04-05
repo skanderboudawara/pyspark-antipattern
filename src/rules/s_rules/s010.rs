@@ -1,4 +1,5 @@
-// S010: Avoid crossJoin(); produces a Cartesian product
+//! S010: Avoid `crossJoin()` — produces a Cartesian product that scales as O(N×M)
+//! and can exhaust driver and executor memory on any non-trivial dataset.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.crossJoin()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

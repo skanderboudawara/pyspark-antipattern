@@ -1,4 +1,5 @@
-// D004: Avoid .count() on large DataFrames
+//! D004: Avoid `.count()` on large DataFrames — triggers a full scan and shuffle
+//! to count every row, which can be extremely expensive at scale.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -11,6 +12,8 @@ use crate::{
 
 const ID: &str = "D004";
 
+/// Returns `true` when `expr` is a non-DataFrame literal (constant, list, tuple, set, or dict).
+/// Used to suppress false positives such as `"hello".count("l")`.
 fn is_non_df_literal(expr: &Expr) -> bool {
     matches!(
         expr,
@@ -51,6 +54,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.count()` calls on non-literal receivers and return a violation for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

@@ -1,5 +1,5 @@
-// F013: Avoid reserved column names (__ prefix + __ suffix)
-// Columns like __index__ are reserved by pandas API on Spark for internal use.
+//! F013: Avoid reserved column names with `__` prefix and `__` suffix.
+//! Columns like `__index__` are reserved by the pandas API on Spark for internal use.
 use rustpython_parser::ast::{Constant, Expr, Stmt};
 
 use crate::{
@@ -95,6 +95,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for column names matching the `__name__` reserved pattern and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

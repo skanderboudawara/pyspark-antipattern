@@ -1,4 +1,5 @@
-// S005: .repartition() with fewer partitions than the Spark default (200)
+//! S005: `.repartition()` with fewer partitions than the Spark default (200) —
+//! aggressively reducing partitions can create large tasks that cause memory pressure.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -43,6 +44,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.repartition(N)` where N is below the configured threshold and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

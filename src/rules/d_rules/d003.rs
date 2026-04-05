@@ -1,4 +1,5 @@
-// D003: Avoid .show() in production
+//! D003: Avoid `.show()` in production — triggers a driver-side action that
+//! collects and prints data, unsuitable for production pipelines.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.show()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

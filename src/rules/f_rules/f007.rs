@@ -1,4 +1,5 @@
-// F007: Prefer filter() before select() — detect select().filter() pattern
+//! F007: Prefer `filter()` before `select()` — detects `select().filter()` where the
+//! filter should be applied first to reduce the data processed by the projection.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -43,6 +44,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.select().filter()` (or `.select().where()`) patterns and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

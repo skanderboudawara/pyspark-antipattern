@@ -1,3 +1,5 @@
+//! Registry of all lint rule modules and the `ALL_RULES` dispatch table.
+//! Add a new rule module here and append its `check` function to `ALL_RULES`.
 pub mod arr_rules;
 pub mod d_rules;
 pub mod f_rules;
@@ -12,8 +14,11 @@ use rustpython_parser::ast::Stmt;
 
 use crate::{config::Config, line_index::LineIndex, violation::Violation};
 
+/// Function signature that every rule's `check` entry point must satisfy.
 pub type RuleFn = fn(&[Stmt], &str, &str, &Config, &LineIndex) -> Vec<Violation>;
 
+/// Ordered slice of every rule's `check` function pointer.
+/// The checker iterates this slice for each file.
 pub static ALL_RULES: &[RuleFn] = &[
     arr_rules::arr001::check,
     arr_rules::arr002::check,

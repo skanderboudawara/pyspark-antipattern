@@ -1,13 +1,6 @@
-// PERF007: DataFrame used 2+ times in join / union operations without caching.
-//
-// When the same DataFrame appears as an input in two or more join or union
-// statements without an intervening `.cache()` or `.persist(...)` call, Spark
-// will re-execute its entire upstream DAG from scratch for each consumer.
-//
-// Example:
-//   df = df.filter(col('country') == 'US')
-//   df2 = df.join(cities, 'city_id')    # full DAG replayed
-//   df3 = df.union(fallback)            # full DAG replayed again
+//! PERF007: DataFrame used 2+ times in join/union operations without caching.
+//! Each reuse without `.cache()` / `.persist()` replays the entire upstream DAG,
+//! duplicating computation and I/O.
 //
 // Fix:
 //   df = df.filter(col('country') == 'US')
@@ -358,6 +351,7 @@ fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, ind
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for DataFrames reused 2+ times in joins/unions without caching and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

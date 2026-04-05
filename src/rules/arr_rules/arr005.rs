@@ -1,4 +1,4 @@
-// ARR005: Avoid size(collect_list(...)) inside .agg() — use count() instead.
+//! ARR005: Avoid `size(collect_list(...))` inside `.agg()` — use `count()` instead.
 //
 // size(collect_list(col)) counts all values (including duplicates) by first
 // collecting every value into an in-memory array (a full shuffle), then
@@ -82,6 +82,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `size(collect_list(...))` inside `.agg()` calls and flag each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut v = Check {

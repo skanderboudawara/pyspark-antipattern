@@ -1,18 +1,26 @@
+//! Configuration types loaded from `[tool.pyspark-antipattern]` in `pyproject.toml`.
+//! Provides rule selection, severity filtering, and cross-file cost maps used
+//! by the checker pre-pass.
 use std::collections::HashMap;
 
 use serde::Deserialize;
 
+/// Top-level `pyproject.toml` wrapper used for TOML deserialization.
 #[derive(Debug, Deserialize, Default)]
 pub struct PyprojectToml {
     pub tool: Option<ToolSection>,
 }
 
+/// The `[tool]` section of `pyproject.toml`, which may contain the
+/// `pyspark-antipattern` configuration block.
 #[derive(Debug, Deserialize, Default)]
 pub struct ToolSection {
     #[serde(rename = "pyspark-antipattern")]
     pub pyspark_antipattern: Option<Config>,
 }
 
+/// Runtime configuration for the linter, deserialized from `pyproject.toml`
+/// and enriched by the checker pre-pass with cross-file cost maps.
 #[derive(Debug, Deserialize, Clone)]
 #[serde(default)]
 pub struct Config {
@@ -42,6 +50,8 @@ pub struct Config {
     pub global_fn_explode_costs: HashMap<String, i64>,
 }
 
+/// Returns the default list of directory names that the linter skips during
+/// directory traversal (e.g. `.git`, `venv`, `node_modules`).
 pub fn default_exclude_dirs() -> Vec<String> {
     [
         ".bzr",
@@ -93,6 +103,7 @@ impl Default for Config {
 }
 
 impl Config {
+    /// Returns `true` when `dir_name` matches an entry in the exclusion list.
     pub fn is_excluded_dir(&self, dir_name: &str) -> bool {
         self.exclude_dirs.iter().any(|d| d == dir_name)
     }
@@ -127,6 +138,8 @@ impl Config {
         false
     }
 
+    /// Returns `true` when the rule `id` should be suppressed based on the
+    /// `select` and `ignore` lists in the configuration.
     pub fn is_ignored(&self, id: &str) -> bool {
         // select acts as a selector: when non-empty, only listed rules are shown
         if !self.select.is_empty() && !self.select.iter().any(|r| Self::matches(r, id)) {
@@ -135,6 +148,8 @@ impl Config {
         self.ignore.iter().any(|r| Self::matches(r, id))
     }
 
+    /// Returns the configured `Severity` for rule `id` (`Error` by default,
+    /// `Warning` when the rule appears in the `warn` list).
     pub fn severity_of(&self, id: &str) -> crate::violation::Severity {
         use crate::violation::Severity;
         if self.warn.iter().any(|r| Self::matches(r, id)) {

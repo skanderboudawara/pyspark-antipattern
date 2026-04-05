@@ -1,3 +1,5 @@
+//! Shared helper functions used by multiple lint rules to build violations,
+//! walk method chains, and classify expressions as DataFrame vs. stdlib calls.
 use rustpython_parser::ast::Expr;
 
 use crate::{

@@ -1,5 +1,11 @@
+//! Lightweight AST visitor infrastructure for the linter rules.
+//! Rules implement the `Visitor` trait and override `visit_stmt` / `visit_expr`;
+//! the provided `walk_*` functions handle recursive traversal.
 use rustpython_parser::ast::{ExceptHandler, Expr, Stmt};
 
+/// Visitor trait for walking a Python AST produced by `rustpython-parser`.
+/// Override `visit_stmt` or `visit_expr` to intercept specific node types;
+/// call the corresponding `walk_*` function to continue traversal.
 pub trait Visitor: Sized {
     fn visit_stmt(&mut self, stmt: &Stmt) {
         walk_stmt(self, stmt);
@@ -9,6 +15,7 @@ pub trait Visitor: Sized {
     }
 }
 
+/// Recursively walk a statement node, dispatching child nodes back through `v`.
 pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
     match stmt {
         Stmt::FunctionDef(f) => {
@@ -167,6 +174,7 @@ pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
     }
 }
 
+/// Recursively walk an expression node, dispatching child nodes back through `v`.
 pub fn walk_expr<V: Visitor>(v: &mut V, expr: &Expr) {
     match expr {
         Expr::BoolOp(b) => {

@@ -1,4 +1,4 @@
-// ARR001: Avoid array_distinct(collect_list()) — use collect_set() instead.
+//! ARR001: Avoid `array_distinct(collect_list())` — use `collect_set()` instead.
 // Detects two patterns:
 //   1. array_distinct(collect_list(...)) — direct nesting in a single expression
 //   2. withColumn("col", collect_list(...)) immediately followed by
@@ -193,6 +193,7 @@ fn scan_split_pattern(
 
 // ── public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for both inline and split `array_distinct(collect_list(...))` patterns.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

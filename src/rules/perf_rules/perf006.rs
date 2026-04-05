@@ -1,13 +1,5 @@
-// PERF006: .checkpoint() or .localCheckpoint() called without an explicit eager argument.
-//
-// Both methods accept an `eager` boolean parameter that controls whether the
-// checkpoint is materialised immediately (eager=True) or lazily on the first
-// action after the call (eager=False).
-//
-// The defaults differ between the two methods:
-//   .checkpoint()       defaults to eager=True  (immediate, blocks until done)
-//   .localCheckpoint()  defaults to eager=True  (immediate, blocks until done)
-//
+//! PERF006: `.checkpoint()` / `.localCheckpoint()` called without an explicit `eager` argument.
+//! Always pass `eager=True` or `eager=False` to make the materialisation behaviour explicit.
 // Leaving `eager` implicit means:
 //   - The next developer has no idea whether the checkpoint will block or not
 //   - Subtle performance differences between checkpointing strategies are invisible
@@ -58,6 +50,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for bare `.checkpoint()` / `.localCheckpoint()` calls missing the `eager` argument.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

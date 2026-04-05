@@ -1,4 +1,5 @@
-// D008: Avoid .display() in production
+//! D008: Avoid `.display()` in production — this Databricks-specific method is
+//! intended for notebook exploration only and should not appear in production code.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.display()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

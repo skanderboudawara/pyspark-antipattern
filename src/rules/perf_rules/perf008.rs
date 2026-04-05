@@ -1,13 +1,5 @@
-// PERF008: Avoid spark.read.csv(rdd) where rdd comes from sparkContext.parallelize().
-//          Use spark.createDataFrame(pd.read_csv(...)) instead.
-//
-// The antipattern:
-//   rdd = spark.sparkContext.parallelize(data.split("\n"))
-//   df  = spark.read.csv(rdd, header=True, sep=';')
-//
-// This creates an RDD from an in-memory Python object just to hand it back to
-// Spark's CSV reader, which then serialises, shuffles and deserialises the data
-// through the full Spark serialisation pipeline for no reason.
+//! PERF008: Avoid `spark.read.csv(parallelize(...))` — use `spark.createDataFrame(pd.read_csv(...))`
+//! instead to bypass the redundant RDD serialisation/deserialisation round-trip.
 //
 // spark.createDataFrame(pd.read_csv(StringIO(data), sep=";", dtype="str"))
 // parses the CSV entirely in the driver process via Pandas and creates a
@@ -103,6 +95,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `spark.read.csv(parallelize(...))` patterns and flag each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let parallelize_vars = collect_parallelize_vars(stmts);
     let severity = config.severity_of(ID);

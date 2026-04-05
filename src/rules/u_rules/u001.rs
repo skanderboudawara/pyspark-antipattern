@@ -1,4 +1,5 @@
-// U001: Avoid UDFs that return StringType
+//! U001: Avoid UDFs that return `StringType` — use built-in string functions
+//! (`regexp_replace`, `concat`, `substring`, etc.) for better performance.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -101,6 +102,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for UDFs decorated with `@udf(returnType=StringType())` and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

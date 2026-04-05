@@ -1,4 +1,5 @@
-// D005: Avoid .rdd.isEmpty(); use .isEmpty() directly on the DataFrame
+//! D005: Avoid `.rdd.isEmpty()` — use `.isEmpty()` directly on the DataFrame
+//! to avoid the unnecessary RDD conversion overhead.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -42,6 +43,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for the `.rdd.isEmpty()` pattern and return a violation for each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

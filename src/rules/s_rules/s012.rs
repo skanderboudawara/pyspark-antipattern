@@ -1,4 +1,5 @@
-// S012: Avoid inner join followed by direct filter; prefer leftSemi join
+//! S012: Avoid inner join immediately followed by a filter on the join key —
+//! use a `leftSemi` join instead to avoid materialising columns from the right table.
 use rustpython_parser::ast::{Constant, Expr, Stmt};
 
 use crate::{
@@ -73,6 +74,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for inner join → filter patterns that could be replaced with `leftSemi`.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

@@ -1,9 +1,6 @@
-// F016: Avoid long DataFrame renaming chains — more than 2 consecutive renames.
-// Fires when: a = x.m(), b = a.m(), c = b.m()  (third rename and beyond)
-//
-// Only DataFrames are tracked: a chain is started only when the RHS contains at
-// least one known Spark DataFrame method.  Plain dict/str/list calls (e.g.
-// `tokens.get(...)`, `path.split(...)`) are never counted.
+//! F016: Avoid long DataFrame renaming chains — more than 2 consecutive variable
+//! reassignments (`a = x.m()`, `b = a.m()`, `c = b.m()`). Only DataFrame method
+//! chains are tracked; plain Python calls are never flagged.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -208,6 +205,7 @@ fn scan_stmts(
     }
 }
 
+/// Scan `stmts` for DataFrame variable chains longer than 2 reassignments and flag each excess.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut violations = vec![];
     scan_stmts(

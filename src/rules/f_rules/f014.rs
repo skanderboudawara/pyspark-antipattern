@@ -1,4 +1,5 @@
-// F014: Avoid explode_outer() — handle nulls with higher-order functions instead
+//! F014: Avoid `explode_outer()` — handle nulls upstream or with higher-order
+//! functions rather than expanding null arrays into `null` rows.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -45,6 +46,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `explode_outer(...)` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

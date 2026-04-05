@@ -1,3 +1,5 @@
+//! Parsing and application of `# noqa: pap` suppression comments.
+//! Supports per-line rule suppression and whole-file suppression via `FILE`.
 use std::collections::{HashMap, HashSet};
 
 use crate::violation::Violation;

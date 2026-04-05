@@ -1,13 +1,5 @@
-// PERF005: DataFrame persisted but never unpersisted.
-//
-// Every .persist() call pins data in memory (and/or disk) for the lifetime of
-// the Spark session.  Forgetting to call .unpersist() causes:
-//   - Memory pressure that grows with each job run
-//   - Eviction of other cached data, triggering expensive recomputation
-//   - OOM errors in long-running applications
-//
-// Detection (per-scope analysis — top-level and each function body separately):
-//   1. Collect every assignment of the form  `name = ....persist(...)`
+//! PERF005: DataFrame persisted but never unpersisted — pins memory for the lifetime
+//! of the Spark session, causing memory pressure and potential OOM errors.
 //   2. Collect every `.unpersist()` call and extract the receiver variable name
 //   3. Flag any variable from step 1 that never appears in step 2
 //
@@ -171,6 +163,7 @@ fn check_scope(stmts: &[Stmt], source: &str, file: &str, severity: Severity, ind
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for `.persist()` calls whose variable is never passed to `.unpersist()`.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

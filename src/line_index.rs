@@ -1,3 +1,5 @@
+//! Byte-offset to (line, column) mapping for source diagnostics.
+
 /// Maps byte offsets to 1-based (line, column) pairs.
 pub struct LineIndex {
     /// Byte offset of the start of each line (index 0 = line 1).
@@ -5,6 +7,7 @@ pub struct LineIndex {
 }
 
 impl LineIndex {
+    /// Build a `LineIndex` from the full source text of a file.
     pub fn new(source: &str) -> Self {
         let mut starts = vec![0u32];
         for (i, b) in source.bytes().enumerate() {

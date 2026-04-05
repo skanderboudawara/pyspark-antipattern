@@ -1,4 +1,4 @@
-// F001: Avoid chaining withColumn() and withColumnRenamed() together
+//! F001: Avoid chaining `withColumn()` and `withColumnRenamed()` in the same expression.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -52,6 +52,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for chains mixing `withColumn` and `withColumnRenamed` and flag each call site.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

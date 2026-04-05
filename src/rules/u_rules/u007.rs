@@ -1,7 +1,5 @@
-// U007: Avoid any() inside a UDF body — use pyspark.sql.functions.exists instead.
-//
-// Python's built-in any() used inside a UDF iterates over a collection entirely
-// in Python, row by row, with no Spark optimisation:
+//! U007: Avoid `any()` inside a UDF body — use `pyspark.sql.functions.exists` instead
+//! to keep the short-circuit membership check on the JVM.
 //   - The array column must be deserialised from the JVM to Python
 //   - any() runs in the Python interpreter with no vectorisation
 //   - The boolean result is re-serialised back to the JVM
@@ -82,6 +80,7 @@ impl<'a> Visitor for BodyScanner<'a> {
     }
 }
 
+/// Scan `stmts` for UDF bodies that call `any(...)` and return a violation for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut violations = vec![];

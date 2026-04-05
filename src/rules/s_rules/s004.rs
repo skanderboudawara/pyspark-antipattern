@@ -1,12 +1,5 @@
-// S004: Too many .distinct() operations in one file
-//
-// Loop-aware: a .distinct() inside range(N) counts as N occurrences;
-// inside a while loop it counts as 99 (assumed iterations).
-//
-// Function-call-aware: if a helper function contains M distinct() calls,
-// every call to that helper contributes M to the file's running total.
-// Cross-file helpers are resolved via config.global_fn_distinct_costs,
-// which is populated by checker.rs before the violation scan.
+//! S004: Too many `.distinct()` operations in one file beyond the configured threshold.
+//! Loop-aware (range(N) = N, while = 99) and cross-file function-cost-aware.
 use std::collections::HashMap;
 
 use rustpython_parser::ast::{Expr, Stmt};
@@ -220,6 +213,7 @@ pub(crate) fn build_fn_distinct_costs(stmts: &[Stmt], seed: &HashMap<String, i64
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for `.distinct()` usage exceeding the configured threshold and flag call sites.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     // Build only the file-local function costs; the global map is passed by
     // reference so we never clone it per file.

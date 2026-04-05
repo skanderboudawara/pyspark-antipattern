@@ -1,4 +1,5 @@
-// S013: Avoid reduceByKey() — use DataFrame groupBy().agg() instead
+//! S013: Avoid `reduceByKey()` — use DataFrame `groupBy().agg()` instead for
+//! Catalyst optimizer benefits and better integration with the SQL planner.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +40,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.reduceByKey()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

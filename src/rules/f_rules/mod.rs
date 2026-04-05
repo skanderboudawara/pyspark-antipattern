@@ -1,3 +1,6 @@
+//! DataFrame formatting and API-style rules (F001–F020).
+//! These rules encourage idiomatic DataFrame transformations, explicit schemas,
+//! and preferred API alternatives over legacy or verbose patterns.
 pub mod f001;
 pub mod f002;
 pub mod f003;

@@ -1,4 +1,5 @@
-// D007: Avoid .filter(...).count() == 0; use .filter(...).isEmpty()
+//! D007: Avoid `.filter(...).count() == 0` — use `.filter(...).isEmpty()` for
+//! a short-circuit emptiness check that stops after finding the first matching row.
 use rustpython_parser::ast::{CmpOp, Constant, Expr, Stmt};
 
 use crate::{
@@ -64,6 +65,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.filter(...).count() == 0` patterns and return a violation for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

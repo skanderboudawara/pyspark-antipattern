@@ -1,4 +1,4 @@
-// F002: Avoid drop()
+//! F002: Avoid `drop()` — prefer `select()` with explicit column names for clarity.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -39,6 +39,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.drop()` calls and return a violation for each one found.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

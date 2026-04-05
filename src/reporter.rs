@@ -1,3 +1,5 @@
+//! Terminal output rendering for violations, impact summaries, and rule metadata.
+//! All output is written to stderr using `termcolor` for cross-platform colour support.
 use std::io::Write;
 use termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 
@@ -7,6 +9,8 @@ use crate::{
     violation::{Impact, PySparkVersion, Severity, Violation},
 };
 
+/// Render `violations` to stderr with coloured, rustc-style diagnostic output.
+/// Inline information and best-practice hints are shown when enabled in `config`.
 pub fn print_violations(violations: &[Violation], config: &Config) {
     let writer = BufferWriter::stderr(ColorChoice::Auto);
     let mut out = writer.buffer();
@@ -197,6 +201,7 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
     }
 }
 
+/// Return a short human-readable title for the given rule `id`.
 pub fn rule_title(id: &str) -> &'static str {
     match id {
         "ARR001" => "Avoid array_distinct(collect_list()); use collect_set() instead",
@@ -270,6 +275,7 @@ pub fn rule_title(id: &str) -> &'static str {
     }
 }
 
+/// Print a coloured summary table showing the count of HIGH / MEDIUM / LOW violations.
 pub fn print_impact_summary(high: usize, medium: usize, low: usize) {
     let writer = BufferWriter::stderr(ColorChoice::Auto);
     let mut out = writer.buffer();

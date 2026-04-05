@@ -1,4 +1,5 @@
-// S002: Join without a broadcast or merge hint
+//! S002: Join without a `broadcast` or `merge` hint — large joins without a strategy
+//! hint can cause expensive sort-merge shuffles that could be avoided.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -46,6 +47,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `.join()` calls that lack a `broadcast` or `merge` hint and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

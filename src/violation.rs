@@ -1,3 +1,7 @@
+//! Core diagnostic types: rule identifiers, severity levels, impact ratings,
+//! PySpark version constraints, and the `Violation` record produced by each rule.
+
+/// Newtype wrapping a rule identifier string (e.g. `"D001"`).
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RuleId(pub String);
 
@@ -7,9 +11,12 @@ impl std::fmt::Display for RuleId {
     }
 }
 
+/// Diagnostic severity of a rule violation — controls exit code and prefix label.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Severity {
+    /// Causes a non-zero exit code; shown in red.
     Error,
+    /// Informational; shown in yellow and does not affect exit code.
     Warning,
 }
 
@@ -56,6 +63,7 @@ pub struct PySparkVersion {
 }
 
 impl PySparkVersion {
+    /// Construct a `PySparkVersion` from its major, minor, and patch components.
     pub const fn new(major: u32, minor: u32, patch: u32) -> Self {
         Self { major, minor, patch }
     }
@@ -92,6 +100,7 @@ impl<'de> serde::Deserialize<'de> for PySparkVersion {
     }
 }
 
+/// A single rule violation found in a source file.
 #[derive(Debug, Clone)]
 pub struct Violation {
     pub rule_id: RuleId,

@@ -1,4 +1,5 @@
-// U002: Avoid UDFs that return ArrayType
+//! U002: Avoid UDFs that return `ArrayType` — use built-in array functions
+//! (`array_distinct`, `transform`, `filter`, etc.) for Catalyst-optimised processing.
 use rustpython_parser::ast::{Expr, Stmt};
 
 use crate::{
@@ -98,6 +99,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for UDFs decorated with `@udf(returnType=ArrayType(...))` and flag each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,

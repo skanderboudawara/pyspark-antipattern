@@ -1,10 +1,6 @@
-// PERF003: Too many shuffle operations without a checkpoint
-//
-// Fires when more than `max_shuffle_operations` shuffle-inducing calls occur
-// between two checkpoint / localCheckpoint calls (or between scope entry and
-// the first checkpoint).  Function call costs are propagated transitively: if
-// a helper function internally performs N shuffles, every call to that helper
-// contributes N to the caller's running counter.
+//! PERF003: Too many shuffle operations without a checkpoint.
+//! Fires when more than `max_shuffle_operations` shuffle-inducing calls occur
+//! between checkpoints. Function call costs propagate transitively.
 use std::collections::HashMap;
 
 use rustpython_parser::ast::{Expr, Stmt};
@@ -299,6 +295,7 @@ fn scan(
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
+/// Scan `stmts` for shuffle-heavy segments and flag any that exceed the configured threshold.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let threshold = config.max_shuffle_operations as i64;
 

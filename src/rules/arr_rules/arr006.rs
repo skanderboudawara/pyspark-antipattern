@@ -1,4 +1,4 @@
-// ARR006: Avoid size(collect_list(...).over(w)) — use count(...).over(w) instead.
+//! ARR006: Avoid `size(collect_list(...).over(w))` — use `count(...).over(w)` instead.
 //
 // size(collect_list(col).over(w)) materialises every value in the window into
 // an in-memory array and then measures its length. count(col).over(w) computes
@@ -66,6 +66,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `size(collect_list(...).over(...))` patterns and flag each occurrence.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let severity = config.severity_of(ID);
     let mut v = Check {

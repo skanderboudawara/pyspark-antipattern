@@ -1,4 +1,5 @@
-// D006: Avoid df.count() == 0; use .isEmpty()
+//! D006: Avoid `df.count() == 0` — use `.isEmpty()` for a more efficient
+//! emptiness check that avoids a full-scan count.
 use rustpython_parser::ast::{CmpOp, Constant, Expr, Stmt};
 
 use crate::{
@@ -67,6 +68,7 @@ impl<'a> Visitor for Check<'a> {
     }
 }
 
+/// Scan `stmts` for `count() == 0` / `0 == count()` comparisons and return a violation for each.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
     let mut v = Check {
         source,
