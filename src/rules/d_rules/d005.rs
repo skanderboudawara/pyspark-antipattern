@@ -22,11 +22,11 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Pattern: Call { func: Attribute { value: Attribute { attr: "rdd" }, attr: "isEmpty" } }
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(outer) = call.func.as_ref() {
-                if outer.attr.as_str() == "isEmpty" {
-                    if let Expr::Attribute(inner) = outer.value.as_ref() {
-                        if inner.attr.as_str() == "rdd" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(outer) = call.func.as_ref()
+                && outer.attr.as_str() == "isEmpty"
+                    && let Expr::Attribute(inner) = outer.value.as_ref()
+                        && inner.attr.as_str() == "rdd" {
                             self.violations.push(method_violation(
                                 outer,
                                 "isEmpty",
@@ -37,10 +37,6 @@ impl<'a> Visitor for Check<'a> {
                                 ID,
                             ));
                         }
-                    }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }

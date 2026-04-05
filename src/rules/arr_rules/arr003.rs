@@ -29,14 +29,12 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 }
 
 /// Strips a trailing `.over(...)` window call, returning the inner expression.
-fn unwrap_window<'a>(expr: &'a Expr) -> &'a Expr {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "over" {
+fn unwrap_window(expr: &Expr) -> &Expr {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref()
+            && a.attr.as_str() == "over" {
                 return a.value.as_ref();
             }
-        }
-    }
     expr
 }
 
@@ -50,11 +48,11 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(outer) = expr {
-            if is_named(&outer.func, "array_distinct") {
-                if let Some(arg) = outer.args.first() {
-                    if let Expr::Call(inner) = unwrap_window(arg) {
-                        if is_named(&inner.func, "collect_set") {
+        if let Expr::Call(outer) = expr
+            && is_named(&outer.func, "array_distinct")
+                && let Some(arg) = outer.args.first()
+                    && let Expr::Call(inner) = unwrap_window(arg)
+                        && is_named(&inner.func, "collect_set") {
                             self.violations.push(expr_violation(
                                 expr,
                                 "array_distinct".len(),
@@ -65,10 +63,6 @@ impl<'a> Visitor for Check<'a> {
                                 ID,
                             ));
                         }
-                    }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }

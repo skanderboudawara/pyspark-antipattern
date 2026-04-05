@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use rayon::prelude::*;
 use rustpython_parser::{ast::Mod, parse, Mode};
@@ -152,7 +153,7 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
             true
         })
         .filter_map(|e| e.ok())
-        .filter(|e| e.path().extension().map_or(false, |ext| ext == "py"))
+        .filter(|e| e.path().extension().is_some_and(|ext| ext == "py"))
         .map(|e| e.path().to_string_lossy().into_owned())
         .collect()
 }
@@ -163,11 +164,15 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
 ///
 /// Files are processed in sorted order.  `on_file` is called immediately after
 /// each file finishes so results stream to the terminal file by file.
+///
+/// Returns `(file_count, read_failures)`.  `read_failures` is the number of
+/// files that could not be read or parsed — callers should exit non-zero when
+/// this is > 0 so CI catches permission errors and corrupt files.
 pub fn check_path(
     root: &str,
     config: &Config,
     on_file: &mut dyn FnMut(Vec<Violation>),
-) -> usize {
+) -> (usize, usize) {
     let mut paths = collect_paths(root, config);
     paths.sort();                       // deterministic, alphabetical order
     let file_count = paths.len();
@@ -199,16 +204,25 @@ pub fn check_path(
 
     // Main pass: read each file once, lint in parallel, then deliver results
     // sequentially (on_file is not Send, so we collect first then dispatch).
+    let read_failures = AtomicUsize::new(0);
     let results: Vec<Vec<Violation>> = paths
         .par_iter()
         .map(|path| {
             let source = match std::fs::read_to_string(path) {
                 Ok(s)  => s,
-                Err(e) => { eprintln!("warning: Cannot read {path}: {e}"); return vec![]; }
+                Err(e) => {
+                    eprintln!("warning: Cannot read {path}: {e}");
+                    read_failures.fetch_add(1, Ordering::Relaxed);
+                    return vec![];
+                }
             };
             match check_file(path, &source, &config_with_global) {
                 Ok(v)    => v,
-                Err(msg) => { eprintln!("warning: {msg}"); vec![] }
+                Err(msg) => {
+                    eprintln!("warning: {msg}");
+                    read_failures.fetch_add(1, Ordering::Relaxed);
+                    vec![]
+                }
             }
         })
         .collect();
@@ -217,5 +231,5 @@ pub fn check_path(
         on_file(violations);
     }
 
-    file_count
+    (file_count, read_failures.load(Ordering::Relaxed))
 }

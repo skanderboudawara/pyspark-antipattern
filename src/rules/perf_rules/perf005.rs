@@ -48,11 +48,10 @@ fn root_name(expr: &Expr) -> Option<&str> {
 
 /// True if `expr` is a `.persist(...)` call (any arguments).
 fn is_persist_call(expr: &Expr) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             return a.attr.as_str() == "persist";
         }
-    }
     false
 }
 
@@ -95,10 +94,10 @@ impl<'a> Visitor for ScopeCollector<'a> {
         }
 
         // Detect:  name = ....persist(...)
-        if let Stmt::Assign(a) = stmt {
-            if is_persist_call(&a.value) {
-                if let Some(target) = a.targets.first() {
-                    if let Expr::Name(n) = target {
+        if let Stmt::Assign(a) = stmt
+            && is_persist_call(&a.value)
+                && let Some(target) = a.targets.first()
+                    && let Expr::Name(n) = target {
                         // Point violation at the `persist` method name.
                         let (line, col) = if let Expr::Call(c) = a.value.as_ref() {
                             if let Expr::Attribute(attr) = c.func.as_ref() {
@@ -122,24 +121,18 @@ impl<'a> Visitor for ScopeCollector<'a> {
                             },
                         );
                     }
-                }
-            }
-        }
 
         walk_stmt(self, stmt);
     }
 
     fn visit_expr(&mut self, expr: &Expr) {
         // Detect:  name.unpersist()   (anywhere in the expression tree)
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "unpersist" {
-                    if let Some(name) = root_name(attr.value.as_ref()) {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "unpersist"
+                    && let Some(name) = root_name(attr.value.as_ref()) {
                         self.unpersisted.insert(name.to_string());
                     }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }

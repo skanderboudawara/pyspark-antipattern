@@ -62,11 +62,10 @@ impl Collector {
 /// Returns true when `expr` is a method call whose method name matches `method`.
 /// Used to detect `groupBy().agg()` chains so we don't double-count the stage.
 fn receiver_is_method(expr: &Expr, method: &str) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             return a.attr.as_str() == method;
         }
-    }
     false
 }
 

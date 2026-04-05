@@ -21,22 +21,20 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref() {
                 // Only flag .map() called on something that has .rdd in the chain
                 // (to reduce false positives on non-RDD .map() calls).
-                if attr.attr.as_str() == "map" {
-                    if crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
-                        || matches!(attr.value.as_ref(), Expr::Attribute(a) if a.attr.as_str() == "rdd")
+                if attr.attr.as_str() == "map"
+                    && (crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
+                        || matches!(attr.value.as_ref(), Expr::Attribute(a) if a.attr.as_str() == "rdd"))
                     {
                         self.violations.push(method_violation(
                             attr, "map", self.source, self.file, self.index,
                             self.severity, ID,
                         ));
                     }
-                }
             }
-        }
         walk_expr(self, expr);
     }
 }

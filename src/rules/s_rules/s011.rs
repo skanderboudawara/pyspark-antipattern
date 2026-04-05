@@ -39,9 +39,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "join" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "join" {
                     // Skip str.join(...) — the receiver is a string literal or variable
                     // e.g. " ".join(...) or ",".join(...)
                     let receiver_is_str = matches!(
@@ -59,13 +59,13 @@ impl<'a> Visitor for Check<'a> {
                     // df.join(other, on="id")   → has condition via keyword → OK
                     let no_on_arg = call.args.len() <= 1;
                     let no_on_kw = !call.keywords.iter().any(|k| {
-                        k.arg.as_ref().map_or(false, |a| a.as_str() == "on")
+                        k.arg.as_ref().is_some_and(|a| a.as_str() == "on")
                     });
                     // Flag if the `on` argument is a complex expression rather than
                     // a plain column key — e.g. df[a].startswith(df[b]) or
                     // array_contains(col("a"), col("b")).
                     let complex_condition = call.args.get(1)
-                        .map_or(false, is_complex_condition);
+                        .is_some_and(is_complex_condition);
                     if (no_on_arg && no_on_kw) || complex_condition {
                         self.violations.push(method_violation(
                             attr, "join", self.source, self.file, self.index,
@@ -73,8 +73,6 @@ impl<'a> Visitor for Check<'a> {
                         ));
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

@@ -33,9 +33,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "select" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "select" {
                     let has_star = call.args.iter().any(|arg| {
                         matches!(
                             arg,
@@ -50,8 +50,6 @@ impl<'a> Visitor for Check<'a> {
                         ));
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

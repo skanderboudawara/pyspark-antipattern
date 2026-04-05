@@ -21,9 +21,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "collect" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "collect" {
                     self.violations.push(method_violation(
                         attr,
                         "collect",
@@ -34,8 +34,6 @@ impl<'a> Visitor for Check<'a> {
                         ID,
                     ));
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

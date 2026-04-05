@@ -91,18 +91,25 @@ impl Config {
             .unwrap_or_default())
     }
 
-    /// Returns true if `id` matches a rule entry exactly ("F012") or by group prefix ("F").
+    /// Returns true if `id` matches a rule entry exactly ("F012") or by group prefix ("F", "PERF", "ARR", …).
+    /// Prefix matching requires the first character after the prefix to be a digit, so "S" matches
+    /// "S001" but not "SHUFFLE001", and "PERF" matches "PERF003" but not "PERFORM".
     fn matches(entry: &str, id: &str) -> bool {
-        entry == id || (entry.len() == 1 && id.starts_with(entry))
+        if entry == id {
+            return true;
+        }
+        if let Some(rest) = id.strip_prefix(entry) {
+            return rest.starts_with(|c: char| c.is_ascii_digit());
+        }
+        false
     }
 
     pub fn is_ignored(&self, id: &str) -> bool {
         // select acts as a selector: when non-empty, only listed rules are shown
-        if !self.select.is_empty() {
-            if !self.select.iter().any(|r| Self::matches(r, id)) {
+        if !self.select.is_empty()
+            && !self.select.iter().any(|r| Self::matches(r, id)) {
                 return true;
             }
-        }
         self.ignore.iter().any(|r| Self::matches(r, id))
     }
 

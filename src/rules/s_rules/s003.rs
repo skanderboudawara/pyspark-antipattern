@@ -21,19 +21,17 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref() {
                 let method = attr.attr.as_str();
-                if matches!(method, "distinct" | "dropDuplicates") {
-                    if chain_has_method(attr.value.as_ref(), "groupBy") {
+                if matches!(method, "distinct" | "dropDuplicates")
+                    && chain_has_method(attr.value.as_ref(), "groupBy") {
                         self.violations.push(method_violation(
                             attr, method, self.source, self.file, self.index,
                             self.severity, ID,
                         ));
                     }
-                }
             }
-        }
         walk_expr(self, expr);
     }
 }

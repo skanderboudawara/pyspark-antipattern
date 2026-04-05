@@ -28,9 +28,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "count" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "count" {
                     // Skip str/list/tuple/set literals — e.g. "hello".count("l")
                     if is_non_df_literal(attr.value.as_ref()) {
                         walk_expr(self, expr);
@@ -41,8 +41,6 @@ impl<'a> Visitor for Check<'a> {
                         self.severity, ID,
                     ));
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

@@ -32,8 +32,8 @@ fn mark_ok_unions(expr: &Expr, ok: &mut HashSet<u32>) {
 }
 
 fn find_union_offsets(expr: &Expr, set: &mut HashSet<u32>) {
-    if let Expr::Call(call) = expr {
-        if let Expr::Attribute(attr) = call.func.as_ref() {
+    if let Expr::Call(call) = expr
+        && let Expr::Attribute(attr) = call.func.as_ref() {
             if matches!(attr.attr.as_str(), "union" | "unionByName") {
                 set.insert(call.range.start().into());
                 return;
@@ -41,7 +41,6 @@ fn find_union_offsets(expr: &Expr, set: &mut HashSet<u32>) {
             // Keep looking down
             find_union_offsets(attr.value.as_ref(), set);
         }
-    }
 }
 
 struct Check<'a> {
@@ -55,9 +54,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if matches!(attr.attr.as_str(), "union" | "unionByName") {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && matches!(attr.attr.as_str(), "union" | "unionByName") {
                     // Skip set/frozenset literals — e.g. {1,2}.union({3,4})
                     let receiver_is_set = match attr.value.as_ref() {
                         Expr::Set(_) => true,
@@ -79,8 +78,6 @@ impl<'a> Visitor for Check<'a> {
                         ));
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

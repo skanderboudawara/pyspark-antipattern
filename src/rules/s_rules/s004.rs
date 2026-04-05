@@ -207,7 +207,7 @@ pub fn check(
 ) -> Vec<Violation> {
     // Merge global (cross-file) costs with this file's own function definitions.
     let mut fn_costs = config.global_fn_distinct_costs.clone();
-    fn_costs.extend(build_fn_distinct_costs(stmts, &fn_costs.clone()));
+    fn_costs.extend(build_fn_distinct_costs(stmts, &fn_costs));
 
     let weighted = weighted_count(stmts, 1, &fn_costs);
     if weighted <= config.distinct_threshold as i64 {

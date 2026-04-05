@@ -38,8 +38,8 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref() {
                 let method = attr.attr.as_str();
                 if CHECKPOINT_METHODS.contains(&method)
                     && call.args.is_empty()
@@ -51,7 +51,6 @@ impl<'a> Visitor for Check<'a> {
                     ));
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

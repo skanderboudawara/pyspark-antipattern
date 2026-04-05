@@ -21,30 +21,27 @@ struct Check<'a> {
 
 /// Returns true when `expr` is a `.count()` call whose receiver chain includes `.filter()`.
 fn is_filter_count_call(expr: &Expr) -> bool {
-    if let Expr::Call(call) = expr {
-        if let Expr::Attribute(attr) = call.func.as_ref() {
-            if attr.attr.as_str() == "count" {
+    if let Expr::Call(call) = expr
+        && let Expr::Attribute(attr) = call.func.as_ref()
+            && attr.attr.as_str() == "count" {
                 return crate::rules::utils::chain_has_method(attr.value.as_ref(), "filter")
                     || crate::rules::utils::chain_has_method(attr.value.as_ref(), "where");
             }
-        }
-    }
     false
 }
 
 fn is_zero(expr: &Expr) -> bool {
-    if let Expr::Constant(c) = expr {
-        if let Constant::Int(n) = &c.value {
+    if let Expr::Constant(c) = expr
+        && let Constant::Int(n) = &c.value {
             return n.to_string() == "0";
         }
-    }
     false
 }
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Compare(cmp) = expr {
-            if cmp.ops.len() == 1
+        if let Expr::Compare(cmp) = expr
+            && cmp.ops.len() == 1
                 && matches!(cmp.ops[0], CmpOp::Eq | CmpOp::NotEq)
                 && cmp.comparators.len() == 1
             {
@@ -63,7 +60,6 @@ impl<'a> Visitor for Check<'a> {
                     ));
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

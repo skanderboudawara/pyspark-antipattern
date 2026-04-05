@@ -106,16 +106,15 @@ fn has_dataframe_method(expr: &Expr) -> bool {
 /// known DataFrame method call, plus bare `Name` arguments of CACHE_HINT_OP
 /// calls (since those arguments are almost always DataFrames).
 fn collect_df_names(expr: &Expr, out: &mut HashSet<String>) {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             let method = a.attr.as_str();
 
             // Immediate Name receiver of any DataFrame method.
-            if DATAFRAME_METHODS.contains(&method) {
-                if let Expr::Name(n) = a.value.as_ref() {
+            if DATAFRAME_METHODS.contains(&method)
+                && let Expr::Name(n) = a.value.as_ref() {
                     out.insert(n.id.to_string());
                 }
-            }
 
             // Bare Name arguments of join / union operations — but only when
             // the receiver is not a stdlib / non-DataFrame object.
@@ -135,7 +134,6 @@ fn collect_df_names(expr: &Expr, out: &mut HashSet<String>) {
                 collect_df_names(&kw.value, out);
             }
         }
-    }
 }
 
 /// Build the set of variable names that are DataFrames in this scope.
@@ -147,11 +145,10 @@ fn identify_df_vars(stmts: &[Stmt]) -> HashSet<String> {
         }
         match stmt {
             Stmt::Assign(a) => {
-                if has_dataframe_method(&a.value) {
-                    if let Some(Expr::Name(n)) = a.targets.first() {
+                if has_dataframe_method(&a.value)
+                    && let Some(Expr::Name(n)) = a.targets.first() {
                         df_vars.insert(n.id.to_string());
                     }
-                }
                 collect_df_names(&a.value, &mut df_vars);
             }
             Stmt::Expr(e) => {
@@ -167,11 +164,10 @@ fn identify_df_vars(stmts: &[Stmt]) -> HashSet<String> {
 
 /// True when `expr` is a `.cache()` or `.persist(…)` call.
 fn is_cache_or_persist(expr: &Expr) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             return matches!(a.attr.as_str(), "cache" | "persist");
         }
-    }
     false
 }
 
@@ -208,8 +204,8 @@ fn root_df_ref(expr: &Expr, df_vars: &HashSet<String>) -> Option<(String, u32)> 
 /// Results are later deduplicated per statement so that chained expressions
 /// such as `df.union(df2).join(df3, 'id')` do not count `df` twice.
 fn collect_refs(expr: &Expr, df_vars: &HashSet<String>, out: &mut Vec<(String, u32)>) {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             if CACHE_HINT_OPS.contains(&a.attr.as_str()) && !receiver_is_non_df(&a.value) {
                 // Collect the root of the receiver chain.
                 if let Some(entry) = root_df_ref(a.value.as_ref(), df_vars) {
@@ -231,7 +227,6 @@ fn collect_refs(expr: &Expr, df_vars: &HashSet<String>, out: &mut Vec<(String, u
                 collect_refs(&kw.value, df_vars, out);
             }
         }
-    }
 }
 
 // ── Per-variable tracking state ───────────────────────────────────────────────

@@ -22,23 +22,18 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 /// Returns true if expr is `None` (Python keyword) or `lit(None)`.
 fn is_none_expr(expr: &Expr) -> bool {
     // bare None
-    if let Expr::Constant(c) = expr {
-        if matches!(c.value, Constant::None) {
+    if let Expr::Constant(c) = expr
+        && matches!(c.value, Constant::None) {
             return true;
         }
-    }
     // lit(None)
-    if let Expr::Call(c) = expr {
-        if is_named(&c.func, "lit") {
-            if let Some(arg) = c.args.first() {
-                if let Expr::Constant(ac) = arg {
-                    if matches!(ac.value, Constant::None) {
+    if let Expr::Call(c) = expr
+        && is_named(&c.func, "lit")
+            && let Some(arg) = c.args.first()
+                && let Expr::Constant(ac) = arg
+                    && matches!(ac.value, Constant::None) {
                         return true;
                     }
-                }
-            }
-        }
-    }
     false
 }
 
@@ -52,9 +47,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(c) = expr {
-            if is_named(&c.func, "array_except") && c.args.len() >= 2 {
-                if is_none_expr(&c.args[1]) {
+        if let Expr::Call(c) = expr
+            && is_named(&c.func, "array_except") && c.args.len() >= 2
+                && is_none_expr(&c.args[1]) {
                     self.violations.push(expr_violation(
                         expr,
                         "array_except".len(),
@@ -65,8 +60,6 @@ impl<'a> Visitor for Check<'a> {
                         ID,
                     ));
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

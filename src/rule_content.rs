@@ -99,8 +99,8 @@ fn parse_markdown(md: &str) -> RuleContent {
 
     for line in md.lines() {
         let trimmed = line.trim();
-        if trimmed.starts_with("## ") {
-            let header = trimmed[3..].to_lowercase();
+        if let Some(rest) = trimmed.strip_prefix("## ") {
+            let header = rest.to_lowercase();
             if header.starts_with("information") || header.starts_with("why") {
                 current = Some("info");
             } else if header.starts_with("best practice") {

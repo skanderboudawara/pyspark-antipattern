@@ -21,16 +21,14 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "reduceByKey" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "reduceByKey" {
                     self.violations.push(method_violation(
                         attr, "reduceByKey", self.source, self.file,
                         self.index, self.severity, ID,
                     ));
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

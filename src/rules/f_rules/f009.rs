@@ -33,8 +33,8 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Detect a `when(...)` call whose arguments contain another `when(...)` call.
-        if is_when_call(expr) {
-            if let Expr::Call(c) = expr {
+        if is_when_call(expr)
+            && let Expr::Call(c) = expr {
                 for arg in &c.args {
                     if is_when_call(arg) {
                         self.violations.push(expr_violation(
@@ -44,7 +44,6 @@ impl<'a> Visitor for Check<'a> {
                     }
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

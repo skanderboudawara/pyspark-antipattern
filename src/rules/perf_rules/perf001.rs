@@ -22,23 +22,20 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Detect .collect() whose receiver chain contains .rdd
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "collect" {
-                    if crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "collect"
+                    && (crate::rules::utils::chain_has_method(attr.value.as_ref(), "rdd")
                         || matches!(
                             attr.value.as_ref(),
                             Expr::Attribute(a) if a.attr.as_str() == "rdd"
-                        )
+                        ))
                     {
                         self.violations.push(method_violation(
                             attr, "collect", self.source, self.file,
                             self.index, self.severity, ID,
                         ));
                     }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }

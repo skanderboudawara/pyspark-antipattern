@@ -25,8 +25,8 @@ struct BodyScanner {
 
 impl Visitor for BodyScanner {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref() {
                 let name = attr.attr.as_str();
                 if name == "checkpoint" || name == "localCheckpoint" {
                     self.has_checkpoint = true;
@@ -35,7 +35,6 @@ impl Visitor for BodyScanner {
                     self.has_df_op = true;
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

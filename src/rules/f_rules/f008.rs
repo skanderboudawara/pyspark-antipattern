@@ -21,16 +21,14 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Name(name) = call.func.as_ref() {
-                if name.id.as_str() == "print" {
+        if let Expr::Call(call) = expr
+            && let Expr::Name(name) = call.func.as_ref()
+                && name.id.as_str() == "print" {
                     self.violations.push(expr_violation(
                         expr, "print()".len(), self.source, self.file, self.index,
                         self.severity, ID,
                     ));
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

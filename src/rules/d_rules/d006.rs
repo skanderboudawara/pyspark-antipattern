@@ -20,34 +20,31 @@ struct Check<'a> {
 }
 
 fn is_count_call(expr: &Expr) -> bool {
-    if let Expr::Call(call) = expr {
-        if let Expr::Attribute(attr) = call.func.as_ref() {
-            if attr.attr.as_str() == "count" {
+    if let Expr::Call(call) = expr
+        && let Expr::Attribute(attr) = call.func.as_ref()
+            && attr.attr.as_str() == "count" {
                 // Skip str/list/tuple/set literals — e.g. "hello".count("x") == 0
                 return !matches!(
                     attr.value.as_ref(),
                     Expr::Constant(_) | Expr::List(_) | Expr::Tuple(_) | Expr::Set(_) | Expr::Dict(_)
                 );
             }
-        }
-    }
     false
 }
 
 fn is_zero(expr: &Expr) -> bool {
-    if let Expr::Constant(c) = expr {
-        if let Constant::Int(n) = &c.value {
+    if let Expr::Constant(c) = expr
+        && let Constant::Int(n) = &c.value {
             return n.to_string() == "0";
         }
-    }
     false
 }
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Pattern: Compare { left: count(), ops: [Eq | NotEq], comparators: [0] }
-        if let Expr::Compare(cmp) = expr {
-            if cmp.ops.len() == 1
+        if let Expr::Compare(cmp) = expr
+            && cmp.ops.len() == 1
                 && matches!(cmp.ops[0], CmpOp::Eq | CmpOp::NotEq)
                 && cmp.comparators.len() == 1
             {
@@ -66,7 +63,6 @@ impl<'a> Visitor for Check<'a> {
                     ));
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

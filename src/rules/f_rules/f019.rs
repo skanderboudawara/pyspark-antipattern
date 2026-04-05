@@ -32,11 +32,10 @@ const FLAGGED_OPTIONS: &[&str] = &["inferSchema", "mergeSchema"];
 
 /// True if `expr` is the string literal "inferSchema" or "mergeSchema".
 fn is_flagged_key(expr: &Expr) -> bool {
-    if let Expr::Constant(c) = expr {
-        if let Constant::Str(s) = &c.value {
+    if let Expr::Constant(c) = expr
+        && let Constant::Str(s) = &c.value {
             return FLAGGED_OPTIONS.contains(&s.as_str());
         }
-    }
     false
 }
 
@@ -84,32 +83,28 @@ impl<'a> Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref() {
                 let method = attr.attr.as_str();
 
                 // .option("inferSchema", "true") / .option("mergeSchema", True)
-                if method == "option" {
-                    if let (Some(key), Some(val)) = (call.args.first(), call.args.get(1)) {
-                        if is_flagged_key(key) && is_truthy(val) {
+                if method == "option"
+                    && let (Some(key), Some(val)) = (call.args.first(), call.args.get(1))
+                        && is_flagged_key(key) && is_truthy(val) {
                             self.violations.push(method_violation(
                                 attr, "option", self.source, self.file,
                                 self.index, self.severity, ID,
                             ));
                         }
-                    }
-                }
 
                 // inferSchema=True / mergeSchema=True as keyword args
                 for kw in &call.keywords {
-                    if let Some(arg_name) = &kw.arg {
-                        if FLAGGED_OPTIONS.contains(&arg_name.as_str()) && is_truthy(&kw.value) {
+                    if let Some(arg_name) = &kw.arg
+                        && FLAGGED_OPTIONS.contains(&arg_name.as_str()) && is_truthy(&kw.value) {
                             self.flag_keyword(kw);
                         }
-                    }
                 }
             }
-        }
         walk_expr(self, expr);
     }
 }

@@ -25,20 +25,16 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 
 /// Returns `true` when `expr` is `size(collect_list(...).over(...))`.
 fn is_size_of_windowed_collect_list(expr: &Expr) -> bool {
-    if let Expr::Call(outer) = expr {
-        if is_named(&outer.func, "size") && !outer.args.is_empty() {
+    if let Expr::Call(outer) = expr
+        && is_named(&outer.func, "size") && !outer.args.is_empty() {
             // The sole argument must be collect_list(...).over(...)
-            if let Expr::Call(over_call) = &outer.args[0] {
-                if let Expr::Attribute(a) = over_call.func.as_ref() {
-                    if a.attr.as_str() == "over" {
-                        if let Expr::Call(inner) = a.value.as_ref() {
+            if let Expr::Call(over_call) = &outer.args[0]
+                && let Expr::Attribute(a) = over_call.func.as_ref()
+                    && a.attr.as_str() == "over"
+                        && let Expr::Call(inner) = a.value.as_ref() {
                             return is_named(&inner.func, "collect_list");
                         }
-                    }
-                }
-            }
         }
-    }
     false
 }
 

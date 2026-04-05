@@ -168,10 +168,8 @@ pub fn walk_expr<V: Visitor>(v: &mut V, expr: &Expr) {
             v.visit_expr(&i.orelse);
         }
         Expr::Dict(d) => {
-            for k in &d.keys {
-                if let Some(k) = k {
-                    v.visit_expr(k);
-                }
+            for k in d.keys.iter().flatten() {
+                v.visit_expr(k);
             }
             for val in &d.values {
                 v.visit_expr(val);

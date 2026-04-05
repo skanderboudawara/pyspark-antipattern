@@ -21,9 +21,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if attr.attr.as_str() == "groupBy" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && attr.attr.as_str() == "groupBy" {
                     let dedup_before = chain_has_method(attr.value.as_ref(), "distinct")
                         || chain_has_method(attr.value.as_ref(), "dropDuplicates");
                     if dedup_before {
@@ -38,8 +38,6 @@ impl<'a> Visitor for Check<'a> {
                         ));
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

@@ -20,8 +20,8 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Attribute(attr) = expr {
-            if attr.attr.as_str() == "rdd" {
+        if let Expr::Attribute(attr) = expr
+            && attr.attr.as_str() == "rdd" {
                 let end: u32 = attr.range.end().into();
                 let start = end.saturating_sub("rdd".len() as u32);
                 let (line, col) = self.index.line_col(start);
@@ -37,7 +37,6 @@ impl<'a> Visitor for Check<'a> {
                     span_len: 3, // "rdd"
                 });
             }
-        }
         walk_expr(self, expr);
     }
 }

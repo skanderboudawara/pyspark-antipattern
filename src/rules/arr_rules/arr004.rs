@@ -27,26 +27,22 @@ fn is_named(expr: &Expr, name: &str) -> bool {
 /// Returns `true` when `expr` is `size(collect_set(...))` (with or without
 /// module qualification, e.g. `F.size(F.collect_set(...))`).
 fn is_size_of_collect_set(expr: &Expr) -> bool {
-    if let Expr::Call(outer) = expr {
-        if is_named(&outer.func, "size") && !outer.args.is_empty() {
-            if let Expr::Call(inner) = &outer.args[0] {
+    if let Expr::Call(outer) = expr
+        && is_named(&outer.func, "size") && !outer.args.is_empty()
+            && let Expr::Call(inner) = &outer.args[0] {
                 return is_named(&inner.func, "collect_set");
             }
-        }
-    }
     false
 }
 
 /// Strip a trailing `.alias(...)` call, returning the inner expression.
 /// `size(collect_set(...)).alias("cnt")` → `size(collect_set(...))`.
-fn strip_alias<'a>(expr: &'a Expr) -> &'a Expr {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "alias" {
+fn strip_alias(expr: &Expr) -> &Expr {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref()
+            && a.attr.as_str() == "alias" {
                 return a.value.as_ref();
             }
-        }
-    }
     expr
 }
 
@@ -61,9 +57,9 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Only look inside .agg(...) calls.
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(a) = call.func.as_ref() {
-                if a.attr.as_str() == "agg" {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(a) = call.func.as_ref()
+                && a.attr.as_str() == "agg" {
                     for arg in &call.args {
                         let inner = strip_alias(arg);
                         if is_size_of_collect_set(inner) {
@@ -79,8 +75,6 @@ impl<'a> Visitor for Check<'a> {
                         }
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

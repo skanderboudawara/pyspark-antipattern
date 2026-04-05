@@ -1,6 +1,5 @@
-/// Single source of truth for all Spark operation classifications.
-///
-/// Rules reference these constants instead of maintaining their own lists.
+// Single source of truth for all Spark operation classifications.
+// Rules reference these constants instead of maintaining their own lists.
 
 // ── Shuffle-inducing operations ───────────────────────────────────────────────
 

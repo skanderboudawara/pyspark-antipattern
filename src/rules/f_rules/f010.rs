@@ -31,11 +31,10 @@ fn is_when_chain(expr: &Expr) -> bool {
 
 /// Returns true if the topmost call in this chain is `.otherwise(...)`.
 fn top_is_otherwise(expr: &Expr) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             return a.attr.as_str() == "otherwise";
         }
-    }
     false
 }
 

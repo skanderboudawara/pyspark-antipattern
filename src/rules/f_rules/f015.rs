@@ -18,13 +18,11 @@ fn is_filter(name: &str) -> bool {
 /// Returns true when the expression is a .filter()/.where() call whose
 /// receiver is itself a .filter()/.where() call (consecutive chain of 2+).
 fn consecutive_filter_depth(expr: &Expr) -> usize {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if is_filter(a.attr.as_str()) {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref()
+            && is_filter(a.attr.as_str()) {
                 return 1 + consecutive_filter_depth(a.value.as_ref());
             }
-        }
-    }
     0
 }
 
@@ -39,9 +37,9 @@ struct Check<'a> {
 
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if is_filter(attr.attr.as_str())
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && is_filter(attr.attr.as_str())
                     && consecutive_filter_depth(expr) >= 2
                 {
                     let end: u32 = attr.range.end().into();
@@ -55,8 +53,6 @@ impl<'a> Visitor for Check<'a> {
                         ));
                     }
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

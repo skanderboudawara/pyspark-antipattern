@@ -54,8 +54,8 @@ impl<'a> Visitor for CallScanner<'a> {
                 Expr::Name(n) => Some(n.id.as_str()),
                 _ => None,
             };
-            if let Some(name) = callee_name {
-                if self.udf_names.contains(name) {
+            if let Some(name) = callee_name
+                && self.udf_names.contains(name) {
                     let start: u32 = call.range.start().into();
                     let (line, col) = self.index.line_col(start);
                     let source_line = self.index.line_text(self.source, line).to_string();
@@ -70,7 +70,6 @@ impl<'a> Visitor for CallScanner<'a> {
                         span_len: name.len() + 2,
                     });
                 }
-            }
         }
         walk_expr(self, expr);
     }

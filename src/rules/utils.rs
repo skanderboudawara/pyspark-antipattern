@@ -95,17 +95,16 @@ pub fn expr_start(expr: &Expr) -> u32 {
 
 /// Walk an expression's method chain and collect each method name called.
 /// Returns names from innermost to outermost.
-pub fn method_chain<'a>(expr: &'a Expr) -> Vec<&'a str> {
+pub fn method_chain(expr: &Expr) -> Vec<&str> {
     let mut chain = vec![];
     let mut cur = expr;
     loop {
-        if let Expr::Call(c) = cur {
-            if let Expr::Attribute(a) = c.func.as_ref() {
+        if let Expr::Call(c) = cur
+            && let Expr::Attribute(a) = c.func.as_ref() {
                 chain.push(a.attr.as_str());
                 cur = a.value.as_ref();
                 continue;
             }
-        }
         break;
     }
     chain
@@ -113,13 +112,11 @@ pub fn method_chain<'a>(expr: &'a Expr) -> Vec<&'a str> {
 
 /// Return the number of consecutive calls to `method` at the top of the chain.
 pub fn consecutive_method_depth(expr: &Expr, method: &str) -> usize {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == method {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref()
+            && a.attr.as_str() == method {
                 return 1 + consecutive_method_depth(a.value.as_ref(), method);
             }
-        }
-    }
     0
 }
 
@@ -147,14 +144,13 @@ pub fn is_non_dataframe_receiver(expr: &Expr) -> bool {
 
 /// Check whether a method name appears anywhere in the call chain.
 pub fn chain_has_method(expr: &Expr, method: &str) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
             if a.attr.as_str() == method {
                 return true;
             }
             return chain_has_method(a.value.as_ref(), method);
         }
-    }
     false
 }
 
@@ -197,10 +193,9 @@ pub fn for_loop_iters(iter_expr: &Expr) -> Option<i64> {
 
 /// Try to extract a small integer literal value from an expression.
 pub fn const_int(expr: &Expr) -> Option<i64> {
-    if let Expr::Constant(c) = expr {
-        if let rustpython_parser::ast::Constant::Int(n) = &c.value {
+    if let Expr::Constant(c) = expr
+        && let rustpython_parser::ast::Constant::Int(n) = &c.value {
             return n.to_string().parse::<i64>().ok();
         }
-    }
     None
 }

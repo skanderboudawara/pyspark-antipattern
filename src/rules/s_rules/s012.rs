@@ -15,21 +15,17 @@ const ID: &str = "S012";
 /// (default is inner when not specified).
 fn is_inner_join(call_args: &[Expr], call_keywords: &[rustpython_parser::ast::Keyword]) -> bool {
     // Explicit "inner" as third positional arg or how="inner" keyword
-    if let Some(how_arg) = call_args.get(2) {
-        if let Expr::Constant(c) = how_arg {
-            if let Constant::Str(s) = &c.value {
+    if let Some(how_arg) = call_args.get(2)
+        && let Expr::Constant(c) = how_arg
+            && let Constant::Str(s) = &c.value {
                 return s == "inner";
             }
-        }
-    }
     for kw in call_keywords {
-        if kw.arg.as_ref().map_or(false, |a| a.as_str() == "how") {
-            if let Expr::Constant(c) = &kw.value {
-                if let Constant::Str(s) = &c.value {
+        if kw.arg.as_ref().is_some_and(|a| a.as_str() == "how")
+            && let Expr::Constant(c) = &kw.value
+                && let Constant::Str(s) = &c.value {
                     return s == "inner";
                 }
-            }
-        }
     }
     // No explicit how → defaults to inner
     true
@@ -46,11 +42,11 @@ struct Check<'a> {
 impl<'a> Visitor for Check<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
         // Pattern: filter()/where() called on result of inner join()
-        if let Expr::Call(outer_call) = expr {
-            if let Expr::Attribute(outer_attr) = outer_call.func.as_ref() {
-                if matches!(outer_attr.attr.as_str(), "filter" | "where") {
-                    if let Expr::Call(inner_call) = outer_attr.value.as_ref() {
-                        if let Expr::Attribute(inner_attr) = inner_call.func.as_ref() {
+        if let Expr::Call(outer_call) = expr
+            && let Expr::Attribute(outer_attr) = outer_call.func.as_ref()
+                && matches!(outer_attr.attr.as_str(), "filter" | "where")
+                    && let Expr::Call(inner_call) = outer_attr.value.as_ref()
+                        && let Expr::Attribute(inner_attr) = inner_call.func.as_ref() {
                             let inner_receiver_is_str = matches!(
                                 inner_attr.value.as_ref(),
                                 Expr::Constant(c) if matches!(c.value, Constant::Str(_))
@@ -66,10 +62,6 @@ impl<'a> Visitor for Check<'a> {
                                 ));
                             }
                         }
-                    }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }

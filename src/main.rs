@@ -153,7 +153,7 @@ fn main() {
             let mut medium_count  = 0usize;
             let mut low_count     = 0usize;
 
-            let file_count = checker::check_path(&path, &config, &mut |violations| {
+            let (file_count, read_failures) = checker::check_path(&path, &config, &mut |violations| {
                 for v in &violations {
                     match v.severity {
                         violation::Severity::Error   => error_count   += 1,
@@ -176,7 +176,11 @@ fn main() {
             );
             reporter::print_impact_summary(high_count, medium_count, low_count);
 
-            if error_count > 0 {
+            if read_failures > 0 {
+                eprintln!("error: {read_failures} file(s) could not be read or parsed.");
+            }
+
+            if error_count > 0 || read_failures > 0 {
                 process::exit(1);
             }
         }

@@ -26,43 +26,38 @@ fn fn_name(expr: &Expr) -> Option<&str> {
 }
 
 fn is_named(expr: &Expr, name: &str) -> bool {
-    fn_name(expr).map_or(false, |n| n == name)
+    fn_name(expr) == Some(name)
 }
 
 /// Returns the string value if expr is a string constant, else None.
 fn str_const(expr: &Expr) -> Option<&str> {
-    if let Expr::Constant(c) = expr {
-        if let Constant::Str(s) = &c.value {
+    if let Expr::Constant(c) = expr
+        && let Constant::Str(s) = &c.value {
             return Some(s.as_str());
         }
-    }
     None
 }
 
 /// Returns the column name referenced by col("x") or "x" (bare string).
 fn col_ref_name(expr: &Expr) -> Option<&str> {
     // col("x")
-    if let Expr::Call(c) = expr {
-        if is_named(&c.func, "col") {
-            if let Some(arg) = c.args.first() {
+    if let Expr::Call(c) = expr
+        && is_named(&c.func, "col")
+            && let Some(arg) = c.args.first() {
                 return str_const(arg);
             }
-        }
-    }
     // bare "x"
     str_const(expr)
 }
 
 /// Strips a trailing `.over(...)` window call, returning the inner expression.
 /// `collect_list(...).over(w)` → the `collect_list(...)` Call.
-fn unwrap_window<'a>(expr: &'a Expr) -> &'a Expr {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "over" {
+fn unwrap_window(expr: &Expr) -> &Expr {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref()
+            && a.attr.as_str() == "over" {
                 return a.value.as_ref();
             }
-        }
-    }
     expr
 }
 
@@ -78,11 +73,11 @@ struct InlineCheck<'a> {
 
 impl<'a> Visitor for InlineCheck<'a> {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(outer) = expr {
-            if is_named(&outer.func, "array_distinct") {
-                if let Some(arg) = outer.args.first() {
-                    if let Expr::Call(inner) = unwrap_window(arg) {
-                        if is_named(&inner.func, "collect_list") {
+        if let Expr::Call(outer) = expr
+            && is_named(&outer.func, "array_distinct")
+                && let Some(arg) = outer.args.first()
+                    && let Expr::Call(inner) = unwrap_window(arg)
+                        && is_named(&inner.func, "collect_list") {
                             self.violations.push(expr_violation(
                                 expr,
                                 "array_distinct".len(),
@@ -90,10 +85,6 @@ impl<'a> Visitor for InlineCheck<'a> {
                                 self.severity, ID,
                             ));
                         }
-                    }
-                }
-            }
-        }
         walk_expr(self, expr);
     }
 }
@@ -104,43 +95,33 @@ impl<'a> Visitor for InlineCheck<'a> {
 
 fn collect_list_col_name(expr: &Expr) -> Option<&str> {
     // Matches any depth of chained calls whose outermost withColumn arg is collect_list
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "withColumn" && c.args.len() >= 2 {
-                if let Expr::Call(inner) = unwrap_window(&c.args[1]) {
-                    if is_named(&inner.func, "collect_list") {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
+            if a.attr.as_str() == "withColumn" && c.args.len() >= 2
+                && let Expr::Call(inner) = unwrap_window(&c.args[1])
+                    && is_named(&inner.func, "collect_list") {
                         return str_const(&c.args[0]);
                     }
-                }
-            }
             // recurse into chained receiver
             return collect_list_col_name(a.value.as_ref());
         }
-    }
     None
 }
 
 fn is_array_distinct_of(expr: &Expr, col_name: &str) -> bool {
-    if let Expr::Call(c) = expr {
-        if let Expr::Attribute(a) = c.func.as_ref() {
-            if a.attr.as_str() == "withColumn" && c.args.len() >= 2 {
-                if let Some(target) = str_const(&c.args[0]) {
-                    if target == col_name {
-                        if let Expr::Call(inner) = &c.args[1] {
-                            if is_named(&inner.func, "array_distinct") {
-                                if let Some(arg) = inner.args.first() {
-                                    if let Some(ref_name) = col_ref_name(arg) {
+    if let Expr::Call(c) = expr
+        && let Expr::Attribute(a) = c.func.as_ref() {
+            if a.attr.as_str() == "withColumn" && c.args.len() >= 2
+                && let Some(target) = str_const(&c.args[0])
+                    && target == col_name
+                        && let Expr::Call(inner) = &c.args[1]
+                            && is_named(&inner.func, "array_distinct")
+                                && let Some(arg) = inner.args.first()
+                                    && let Some(ref_name) = col_ref_name(arg) {
                                         return ref_name == col_name;
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             return is_array_distinct_of(a.value.as_ref(), col_name);
         }
-    }
     false
 }
 
@@ -166,8 +147,8 @@ fn scan_split_pattern(
         if let Some(e) = expr {
             // Check if this statement's expression contains the second pattern
             // given the previous statement set up a collect_list column.
-            if let Some((prev_col, _)) = prev {
-                if is_array_distinct_of(e, prev_col) {
+            if let Some((prev_col, _)) = prev
+                && is_array_distinct_of(e, prev_col) {
                     violations.push(expr_violation(
                         e,
                         "array_distinct".len(),
@@ -176,12 +157,11 @@ fn scan_split_pattern(
                     prev = None;
                     continue;
                 }
-            }
             // Check if this statement sets up a collect_list column.
             if let Some(col_name) = collect_list_col_name(e) {
-                // SAFETY: col_name lifetime is tied to the stmt/expr borrow which
-                // lives as long as `stmts`. We transmute to 'a = 'stmts here by
-                // keeping both in scope together.
+                // `col_name` is a &str pointing into a Constant::Str node inside `e`,
+                // and `e` is borrowed from `stmt` inside `stmts`.  Both lifetimes are
+                // bound to `stmts`, so storing them together in `prev` is sound.
                 prev = Some((col_name, e));
             } else {
                 prev = None;

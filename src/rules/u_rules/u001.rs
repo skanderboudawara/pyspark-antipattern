@@ -23,18 +23,16 @@ fn decorator_returns_string_type(expr: &Expr) -> bool {
             return false;
         }
         // Check positional arg
-        if let Some(first) = call.args.first() {
-            if is_string_type_call(first) {
+        if let Some(first) = call.args.first()
+            && is_string_type_call(first) {
                 return true;
             }
-        }
         // Check keyword arg returnType
         for kw in &call.keywords {
-            if kw.arg.as_ref().map_or(false, |a| a.as_str() == "returnType") {
-                if is_string_type_call(&kw.value) {
+            if kw.arg.as_ref().is_some_and(|a| a.as_str() == "returnType")
+                && is_string_type_call(&kw.value) {
                     return true;
                 }
-            }
         }
     }
     false

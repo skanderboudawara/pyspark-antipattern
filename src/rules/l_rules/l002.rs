@@ -23,13 +23,11 @@ struct BodyScanner {
 
 impl Visitor for BodyScanner {
     fn visit_expr(&mut self, expr: &Expr) {
-        if let Expr::Call(call) = expr {
-            if let Expr::Attribute(attr) = call.func.as_ref() {
-                if DF_METHODS.contains(&attr.attr.as_str()) {
+        if let Expr::Call(call) = expr
+            && let Expr::Attribute(attr) = call.func.as_ref()
+                && DF_METHODS.contains(&attr.attr.as_str()) {
                     self.has_df_op = true;
                 }
-            }
-        }
         walk_expr(self, expr);
     }
 }

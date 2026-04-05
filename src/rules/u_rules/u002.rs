@@ -21,17 +21,15 @@ fn decorator_returns_array_type(expr: &Expr) -> bool {
         if !is_udf {
             return false;
         }
-        if let Some(first) = call.args.first() {
-            if is_array_type_call(first) {
+        if let Some(first) = call.args.first()
+            && is_array_type_call(first) {
                 return true;
             }
-        }
         for kw in &call.keywords {
-            if kw.arg.as_ref().map_or(false, |a| a.as_str() == "returnType") {
-                if is_array_type_call(&kw.value) {
+            if kw.arg.as_ref().is_some_and(|a| a.as_str() == "returnType")
+                && is_array_type_call(&kw.value) {
                     return true;
                 }
-            }
         }
     }
     false
