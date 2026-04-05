@@ -201,6 +201,22 @@ fn arr004_no_outside_agg() {
         "ARR004",
     );
 }
+#[test]
+fn arr004_fires_keyword_agg_arg() {
+    assert_violation(
+        &check(arr004::check, "df.agg(total=size(collect_set(col('x'))))"),
+        "ARR004",
+        1,
+    );
+}
+#[test]
+fn arr004_fires_keyword_agg_with_alias() {
+    assert_violation(
+        &check(arr004::check, "df.agg(total=size(collect_set(col('x'))).alias('cnt'))"),
+        "ARR004",
+        1,
+    );
+}
 
 // ── ARR005: size(collect_list()) inside .agg() → count() ─────────────────────
 
@@ -259,6 +275,23 @@ fn arr005_no_outside_agg() {
 fn arr005_no_collect_set() {
     // collect_set variant is ARR004's concern
     assert_no_violation(&check(arr005::check, "df.agg(size(collect_set(col('x'))))"), "ARR005");
+}
+#[test]
+fn arr005_fires_keyword_agg_arg() {
+    // df.agg(total=size(collect_list(col("x")))) — keyword form of .agg()
+    assert_violation(
+        &check(arr005::check, "df.agg(total=size(collect_list(col('x'))))"),
+        "ARR005",
+        1,
+    );
+}
+#[test]
+fn arr005_fires_keyword_agg_with_alias() {
+    assert_violation(
+        &check(arr005::check, "df.agg(total=size(collect_list(col('x'))).alias('cnt'))"),
+        "ARR005",
+        1,
+    );
 }
 
 // ── ARR006: size(collect_list().over(w)) → count().over(w) ───────────────────

@@ -64,7 +64,8 @@ impl<'a> Visitor for Check<'a> {
             && let Expr::Attribute(a) = call.func.as_ref()
             && a.attr.as_str() == "agg"
         {
-            for arg in &call.args {
+            let exprs = call.args.iter().chain(call.keywords.iter().map(|kw| &kw.value));
+            for arg in exprs {
                 let inner = strip_alias(arg);
                 if is_size_of_collect_set(inner) {
                     self.violations.push(expr_violation(
