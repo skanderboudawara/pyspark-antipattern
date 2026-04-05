@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A fast, opinionated PySpark linter written in Rust">
+        <meta name="description" content="A static analysis linter for PySpark +60 rules that catch performance antipatterns (collect, UDFs, shuffle explosions, loops) before they reach your cluster. Written in Rust, runs in CI/CD.">
       
       
         <meta name="author" content="Skander Boudawara">
@@ -320,6 +320,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-catches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it catches
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#quick-start" class="md-nav__link">
@@ -3719,6 +3730,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-it-catches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it catches
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3794,15 +3816,63 @@
 
 
 <p><a href="https://pypi.org/project/pyspark-antipattern/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/pyspark-antipattern?cacheSeconds=0" /></a>
+<a href="https://pypi.org/project/pyspark-antipattern/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/pyspark-antipattern" /></a>
 <a href="https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml"><img alt="Release" src="https://github.com/skanderboudawara/pyspark-antipattern/actions/workflows/release.yml/badge.svg?cacheSeconds=0" /></a>
 <a href="https://pypi.org/project/pyspark-antipattern/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/pyspark-antipattern?cacheSeconds=0" /></a>
-<a href="https://github.com/skanderboudawara/pyspark-antipattern/issues"><img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern?cacheSeconds=0" /></a></p>
+<a href="https://github.com/skanderboudawara/pyspark-antipattern/issues"><img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/skanderboudawara/pyspark-antipattern?cacheSeconds=0" /></a>
+<a href="https://github.com/skanderboudawara/pyspark-antipattern/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/skanderboudawara/pyspark-antipattern?style=social" /></a></p>
 <h1 id="pyspark-antipattern">pyspark-antipattern</h1>
-<p>A fast, opinionated PySpark linter that challenges your code against antipattern rules — written in Rust, installable as a Python package, and designed to run in CI/CD pipelines.</p>
+<p><strong>A static analysis linter for PySpark — catch performance antipatterns before they reach your cluster.</strong></p>
+<p>Written in Rust, installable as a Python package, and designed to run in CI/CD pipelines. 67 rules across 8 categories covering driver actions, shuffle explosions, UDFs, loops, and more.</p>
+<p><img alt="demo" src="img/demo.gif" /></p>
 <div class="admonition quote">
 <p class="admonition-title">Philosophy</p>
 <p>This linter is intentionally strict. It will flag patterns that are technically valid Python but known to cause performance, scalability, or maintainability problems in PySpark. Every violation is a conversation starter — it is up to you to decide whether to fix it, downgrade it to a warning, or suppress it for a specific line.</p>
 </div>
+<hr />
+<h2 id="what-it-catches">What it catches</h2>
+<p>Real antipatterns, caught at commit time:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Rule</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>df.collect()</code></td>
+<td>D001</td>
+<td>Pulls all data to driver — OOM risk on large datasets</td>
+</tr>
+<tr>
+<td><code>for c in cols: df.withColumn(...)</code></td>
+<td>L003</td>
+<td>Each call adds a projection — plan explodes exponentially</td>
+</tr>
+<tr>
+<td><code>array_distinct(collect_list(x))</code></td>
+<td>ARR001</td>
+<td>Use <code>collect_set(x)</code> — one step instead of two</td>
+</tr>
+<tr>
+<td><code>df.rdd.collect()</code></td>
+<td>PERF001</td>
+<td>Use <code>.toPandas()</code> — 10x faster with Arrow enabled</td>
+</tr>
+<tr>
+<td><code>df.join(other)</code></td>
+<td>S011</td>
+<td>No condition = Cartesian product</td>
+</tr>
+<tr>
+<td><code>@udf</code> returning <code>StringType</code></td>
+<td>U001</td>
+<td>Built-in string functions are orders of magnitude faster</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="quick-start">Quick start</h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pyspark-antipattern

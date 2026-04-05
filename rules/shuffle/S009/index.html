@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A fast, opinionated PySpark linter written in Rust">
+        <meta name="description" content="A static analysis linter for PySpark +60 rules that catch performance antipatterns (collect, UDFs, shuffle explosions, loops) before they reach your cluster. Written in Rust, runs in CI/CD.">
       
       
         <meta name="author" content="Skander Boudawara">
@@ -3816,7 +3816,7 @@
 <h2 id="severity">Severity</h2>
 <p>🟡 <strong>MEDIUM</strong> — Moderate performance impact.</p>
 <h2 id="pyspark-version">PySpark version</h2>
-<p>Compatible with <strong>PySpark 3.0</strong> and later.</p>
+<p>Compatible with <strong>PySpark 1.0</strong> and later.</p>
 <h2 id="information">Information</h2>
 <p>Using <code>map()</code> applies a function to each row individually, which can lead to:  </p>
 <ul>
