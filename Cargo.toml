@@ -29,6 +29,7 @@ mimalloc    = { version = "0.1", default-features = false }
 
 [dev-dependencies]
 pretty_assertions = "1"
+tempfile = "3.27.0"
 
 [profile.release]
 opt-level = 3

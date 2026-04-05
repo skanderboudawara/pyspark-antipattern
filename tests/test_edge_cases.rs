@@ -201,3 +201,78 @@ fn line_col_multiline_unicode() {
     let (line, _col) = index.line_col(6, source); // start of line 2
     assert_eq!(line, 2);
 }
+
+// ── Fix 5: File-level noqa suppression ───────────────────────────────────────
+
+#[test]
+fn noqa_file_suppresses_all_violations() {
+    use pyspark_antipattern::{config::Config, line_index::LineIndex, noqa, rules::RuleFn};
+    use rustpython_parser::{Mode, ast::Mod, parse};
+
+    fn check_with_noqa(rule_fn: RuleFn, source: &str) -> Vec<pyspark_antipattern::violation::Violation> {
+        let parsed = parse(source, Mode::Module, "<test>").unwrap();
+        let stmts = match parsed {
+            Mod::Module(m) => m.body,
+            _ => vec![],
+        };
+        let index = LineIndex::new(source);
+        let suppressions = noqa::parse_suppressions(source);
+        let violations = rule_fn(&stmts, source, "<test>", &Config::default(), &index);
+        noqa::filter_suppressed(violations, &suppressions)
+    }
+
+    // `# noqa: pap: FILE` on any line suppresses the entire file
+    let src = "# noqa: pap: FILE\nresult = df.collect()\nresult2 = df.collect()";
+    assert!(
+        check_with_noqa(d001::check, src).is_empty(),
+        "file-level noqa should suppress all violations"
+    );
+
+    // Without FILE keyword, only the annotated line is suppressed
+    let src2 = "result = df.collect()  # noqa: pap: D001\nresult2 = df.collect()";
+    let v = check_with_noqa(d001::check, src2);
+    assert_eq!(v.len(), 1, "line-level noqa should suppress only that line");
+    assert_eq!(v[0].line, 2);
+}
+
+#[test]
+fn noqa_file_keyword_mid_file() {
+    use pyspark_antipattern::{config::Config, line_index::LineIndex, noqa, rules::RuleFn};
+    use rustpython_parser::{Mode, ast::Mod, parse};
+
+    fn check_with_noqa(rule_fn: RuleFn, source: &str) -> Vec<pyspark_antipattern::violation::Violation> {
+        let parsed = parse(source, Mode::Module, "<test>").unwrap();
+        let stmts = match parsed {
+            Mod::Module(m) => m.body,
+            _ => vec![],
+        };
+        let index = LineIndex::new(source);
+        let suppressions = noqa::parse_suppressions(source);
+        let violations = rule_fn(&stmts, source, "<test>", &Config::default(), &index);
+        noqa::filter_suppressed(violations, &suppressions)
+    }
+
+    // FILE keyword can appear anywhere in the file (e.g. end of a header block)
+    let src = "import pyspark\n# noqa: pap: FILE\nresult = df.collect()";
+    assert!(check_with_noqa(d001::check, src).is_empty());
+}
+
+// ── Fix 1: Config hard error on malformed TOML ────────────────────────────────
+
+#[test]
+fn config_load_returns_none_for_missing_file() {
+    use pyspark_antipattern::config::Config;
+    let result = Config::load(std::path::Path::new("/nonexistent/pyproject.toml"));
+    assert!(result.is_ok());
+    assert!(result.unwrap().is_none(), "missing file should return Ok(None)");
+}
+
+#[test]
+fn config_load_returns_err_for_invalid_toml() {
+    use pyspark_antipattern::config::Config;
+    use std::io::Write;
+    let mut f = tempfile::NamedTempFile::new().unwrap();
+    writeln!(f, "[tool.pyspark-antipattern]\ndistinct_threshold = \"not_a_number\"").unwrap();
+    let result = Config::load(f.path());
+    assert!(result.is_err(), "malformed TOML should return Err");
+}

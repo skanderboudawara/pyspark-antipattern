@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use rayon::prelude::*;
@@ -19,7 +19,7 @@ use crate::{
 
 /// All costs extracted from a single file in one parse.
 struct FileCosts {
-    fn_costs: HashMap<String, usize>,
+    fn_costs: HashMap<String, i64>,
     fn_distinct_costs: HashMap<String, i64>,
     fn_explode_costs: HashMap<String, i64>,
     /// `local_alias → original_name` from `from X import Y as Z`
@@ -98,12 +98,12 @@ fn extract_file_costs(path: &str) -> Option<FileCosts> {
 /// Each file is parsed **once** (in parallel via rayon).  After merging, a
 /// single alias-resolution pass propagates costs through `from X import Y as Z`
 /// imports.
-fn build_all_global_costs(paths: &[String]) -> (HashMap<String, usize>, HashMap<String, i64>, HashMap<String, i64>) {
+fn build_all_global_costs(paths: &[String]) -> (HashMap<String, i64>, HashMap<String, i64>, HashMap<String, i64>) {
     // Phase 1 — parse all files in parallel.
     let all_costs: Vec<FileCosts> = paths.par_iter().filter_map(|p| extract_file_costs(p)).collect();
 
     // Phase 2 — sequential merge (last-writer wins on name collisions).
-    let mut global_fn: HashMap<String, usize> = HashMap::new();
+    let mut global_fn: HashMap<String, i64> = HashMap::new();
     let mut global_distinct: HashMap<String, i64> = HashMap::new();
     let mut global_explode: HashMap<String, i64> = HashMap::new();
 
@@ -115,7 +115,7 @@ fn build_all_global_costs(paths: &[String]) -> (HashMap<String, usize>, HashMap<
 
     // Phase 3 — alias resolution: `from lib import helper as h` → h gets
     // the same cost as helper, for every cost map.
-    let mut fn_aliases: Vec<(String, usize)> = vec![];
+    let mut fn_aliases: Vec<(String, i64)> = vec![];
     let mut distinct_aliases: Vec<(String, i64)> = vec![];
     let mut explode_aliases: Vec<(String, i64)> = vec![];
 
@@ -168,8 +168,9 @@ fn collect_paths(root: &str, config: &Config) -> Vec<String> {
 
 /// Lint a file or recursively scan a directory for .py files.
 ///
-/// Files are processed in sorted order.  `on_file` is called immediately after
-/// each file finishes so results stream to the terminal file by file.
+/// Files are processed in sorted order.  `on_file` is called in path-sorted
+/// order as results become available (streaming dispatch via mpsc channel +
+/// BTreeMap reorder buffer).
 ///
 /// Returns `(file_count, read_failures)`.  `read_failures` is the number of
 /// files that could not be read or parsed — callers should exit non-zero when
@@ -179,58 +180,84 @@ pub fn check_path(root: &str, config: &Config, on_file: &mut dyn FnMut(Vec<Viola
     paths.sort(); // deterministic, alphabetical order
     let file_count = paths.len();
 
-    eprintln!("Scanning {} file(s) — building cross-file cost maps…", file_count);
+    // Only print progress when scanning more than one file (single-file checks
+    // are common in editor integrations and the noise is unwanted there).
+    if file_count > 1 {
+        eprintln!("Scanning {} file(s) — building cross-file cost maps…", file_count);
+    }
 
-    // Pre-pass: build a project-wide function cost map so PERF003 can price
-    // calls to helpers defined in other files.
+    // Pre-pass: build a project-wide function cost map so PERF003, S004, S008
+    // can price calls to helpers defined in other files.
     //
     // When a single file is given we still scan its parent directory so that
     // cross-file helpers (e.g. `from lib import helper`) have a known cost.
-    let scan_paths = if std::path::Path::new(root).is_file() {
+    // Avoid cloning `paths` when root is already a directory.
+    let parent_paths;
+    let scan_paths: &[String] = if std::path::Path::new(root).is_file() {
         let parent = std::path::Path::new(root)
             .parent()
             .map(|p| p.to_string_lossy().into_owned())
             .unwrap_or_else(|| ".".to_string());
-        collect_paths(&parent, config)
+        parent_paths = collect_paths(&parent, config);
+        &parent_paths
     } else {
-        paths.clone()
+        &paths
     };
 
-    let (gfn, gdistinct, gexplode) = build_all_global_costs(&scan_paths);
+    let (gfn, gdistinct, gexplode) = build_all_global_costs(scan_paths);
     let mut config_with_global = config.clone();
     config_with_global.global_fn_costs = gfn;
     config_with_global.global_fn_distinct_costs = gdistinct;
     config_with_global.global_fn_explode_costs = gexplode;
 
-    eprintln!("Linting {} file(s)…", file_count);
+    if file_count > 1 {
+        eprintln!("Linting {} file(s)…", file_count);
+    }
 
-    // Main pass: read each file once, lint in parallel, then deliver results
-    // sequentially (on_file is not Send, so we collect first then dispatch).
+    // Main pass: read and lint files in parallel, stream results to `on_file`
+    // in path-sorted order using an mpsc channel + BTreeMap reorder buffer.
+    //
+    // `on_file` is not Send (mutable reference), so workers send results via
+    // channel and the main thread dispatches them in order.
     let read_failures = AtomicUsize::new(0);
-    let results: Vec<Vec<Violation>> = paths
-        .par_iter()
-        .map(|path| {
-            let source = match std::fs::read_to_string(path) {
-                Ok(s) => s,
-                Err(e) => {
-                    eprintln!("warning: Cannot read {path}: {e}");
-                    read_failures.fetch_add(1, Ordering::Relaxed);
-                    return vec![];
-                }
-            };
-            match check_file(path, &source, &config_with_global) {
-                Ok(v) => v,
-                Err(msg) => {
-                    eprintln!("warning: {msg}");
-                    read_failures.fetch_add(1, Ordering::Relaxed);
-                    vec![]
-                }
-            }
-        })
-        .collect();
+    let (tx, rx) = std::sync::mpsc::channel::<(usize, Vec<Violation>)>();
 
-    for violations in results {
-        on_file(violations);
+    paths.par_iter().enumerate().for_each_with(tx, |tx, (idx, path)| {
+        let source = match std::fs::read_to_string(path) {
+            Ok(s) => s,
+            Err(e) => {
+                eprintln!("warning: Cannot read {path}: {e}");
+                read_failures.fetch_add(1, Ordering::Relaxed);
+                tx.send((idx, vec![])).ok();
+                return;
+            }
+        };
+        let violations = match check_file(path, &source, &config_with_global) {
+            Ok(v) => v,
+            Err(msg) => {
+                eprintln!("warning: {msg}");
+                read_failures.fetch_add(1, Ordering::Relaxed);
+                vec![]
+            }
+        };
+        tx.send((idx, violations)).ok();
+    });
+
+    // Ordered dispatch: results arrive out-of-order; hold them in a BTreeMap
+    // and call `on_file` as soon as the next expected index is ready.
+    let mut pending: BTreeMap<usize, Vec<Violation>> = BTreeMap::new();
+    let mut next = 0usize;
+    for (idx, violations) in rx {
+        pending.insert(idx, violations);
+        while let Some(v) = pending.remove(&next) {
+            on_file(v);
+            next += 1;
+        }
+    }
+    // Flush any tail (defensive — should not occur with for_each_with).
+    while let Some(v) = pending.remove(&next) {
+        on_file(v);
+        next += 1;
     }
 
     (file_count, read_failures.load(Ordering::Relaxed))

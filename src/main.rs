@@ -107,10 +107,14 @@ fn main() {
             severity,
             pyspark_version,
         } => {
-            let mut config = config::Config::load(std::path::Path::new(&config_path)).unwrap_or_else(|e| {
-                eprintln!("Config warning: {e} — using defaults");
-                config::Config::default()
-            });
+            let mut config = match config::Config::load(std::path::Path::new(&config_path)) {
+                Ok(Some(c)) => c,
+                Ok(None) => config::Config::default(), // file not found → use defaults silently
+                Err(e) => {
+                    eprintln!("error: {e}");
+                    process::exit(2);
+                }
+            };
 
             // CLI flags override pyproject.toml values.
             // When --warn is given without --select, implicitly restrict to only

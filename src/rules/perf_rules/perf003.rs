@@ -127,8 +127,8 @@ impl Visitor for Collector {
 /// Compute the number of shuffle operations that "escape" from `body`
 /// (counter value at the end of the body after resetting on checkpoints and
 /// adding transitive fn_costs for called helpers).
-fn body_export_cost(body: &[Stmt], fn_costs: &HashMap<String, usize>) -> usize {
-    let mut counter: usize = 0;
+fn body_export_cost(body: &[Stmt], fn_costs: &HashMap<String, i64>) -> i64 {
+    let mut counter: i64 = 0;
     for stmt in body {
         let mut coll = Collector::new();
         coll.visit_stmt(stmt);
@@ -150,7 +150,7 @@ fn body_export_cost(body: &[Stmt], fn_costs: &HashMap<String, usize>) -> usize {
 /// rounds) to handle transitive / mutually-recursive calls.
 ///
 /// `pub(crate)` so `checker.rs` can call this during the global pre-pass.
-pub(crate) fn build_fn_costs(stmts: &[Stmt]) -> HashMap<String, usize> {
+pub(crate) fn build_fn_costs(stmts: &[Stmt]) -> HashMap<String, i64> {
     let mut fn_bodies: Vec<(String, &[Stmt])> = vec![];
     for stmt in stmts {
         match stmt {
@@ -160,7 +160,7 @@ pub(crate) fn build_fn_costs(stmts: &[Stmt]) -> HashMap<String, usize> {
         }
     }
 
-    let mut fn_costs: HashMap<String, usize> = HashMap::new();
+    let mut fn_costs: HashMap<String, i64> = HashMap::new();
     for _ in 0..10 {
         let mut changed = false;
         for (name, body) in &fn_bodies {
@@ -202,31 +202,58 @@ fn make_violation(
     }
 }
 
+/// Look up the cost of `key` in `local` first, then `global`.
+#[inline]
+fn lookup_cost(local: &HashMap<String, i64>, global: &HashMap<String, i64>, key: &str) -> i64 {
+    local.get(key).or_else(|| global.get(key)).copied().unwrap_or(0)
+}
+
 /// Scan `stmts` linearly, maintaining a running shuffle counter.  Each
 /// function-def body is scanned independently (its own counter starting at 0).
 /// Bare function calls whose cost is known are added to the caller's counter.
 #[allow(clippy::too_many_arguments)]
 fn scan(
     stmts: &[Stmt],
-    fn_costs: &HashMap<String, usize>,
-    threshold: usize,
+    local_costs: &HashMap<String, i64>,
+    global_costs: &HashMap<String, i64>,
+    threshold: i64,
     source: &str,
     file: &str,
     index: &LineIndex,
     severity: Severity,
     violations: &mut Vec<Violation>,
 ) {
-    let mut counter: usize = 0;
+    let mut counter: i64 = 0;
 
     for stmt in stmts {
         // Function definitions → scan body independently with a fresh counter.
         match stmt {
             Stmt::FunctionDef(f) => {
-                scan(&f.body, fn_costs, threshold, source, file, index, severity, violations);
+                scan(
+                    &f.body,
+                    local_costs,
+                    global_costs,
+                    threshold,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    violations,
+                );
                 continue;
             }
             Stmt::AsyncFunctionDef(f) => {
-                scan(&f.body, fn_costs, threshold, source, file, index, severity, violations);
+                scan(
+                    &f.body,
+                    local_costs,
+                    global_costs,
+                    threshold,
+                    source,
+                    file,
+                    index,
+                    severity,
+                    violations,
+                );
                 continue;
             }
             _ => {}
@@ -256,7 +283,7 @@ fn scan(
                     counter = 0;
                 }
                 EventKind::CallFn(name) => {
-                    let cost = fn_costs.get(&name).copied().unwrap_or(0);
+                    let cost = lookup_cost(local_costs, global_costs, &name);
                     if cost > 0 {
                         counter += cost;
                         if counter > threshold {
@@ -273,17 +300,18 @@ fn scan(
 // ── Public entry point ────────────────────────────────────────────────────────
 
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
-    let threshold = config.max_shuffle_operations;
+    let threshold = config.max_shuffle_operations as i64;
 
-    // Start with the project-wide costs (functions defined in other files),
-    // then overlay with this file's own definitions (local wins on collision).
-    let mut fn_costs = config.global_fn_costs.clone();
-    fn_costs.extend(build_fn_costs(stmts));
+    // Build file-local function costs; the global map is passed by reference
+    // so we never clone it per file.
+    let local_costs = build_fn_costs(stmts);
+    let global_costs = &config.global_fn_costs;
 
     let mut violations = vec![];
     scan(
         stmts,
-        &fn_costs,
+        &local_costs,
+        global_costs,
         threshold,
         source,
         file,

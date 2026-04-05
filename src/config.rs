@@ -31,8 +31,9 @@ pub struct Config {
     /// Cluster PySpark version — silences rules that require a newer version (default: show all).
     pub pyspark_version: Option<crate::violation::PySparkVersion>,
     /// Populated at check time by the pre-pass in checker.rs — not read from pyproject.toml.
+    /// Uses i64 (same as distinct/explode costs) so all three cost maps share one type.
     #[serde(skip)]
-    pub global_fn_costs: HashMap<String, usize>,
+    pub global_fn_costs: HashMap<String, i64>,
     /// Per-function weighted distinct() cost — populated by the pre-pass.
     #[serde(skip)]
     pub global_fn_distinct_costs: HashMap<String, i64>,
@@ -96,10 +97,21 @@ impl Config {
         self.exclude_dirs.iter().any(|d| d == dir_name)
     }
 
-    pub fn load(path: &std::path::Path) -> Result<Self, String> {
-        let raw = std::fs::read_to_string(path).map_err(|e| format!("Cannot read {}: {e}", path.display()))?;
-        let parsed: PyprojectToml = toml::from_str(&raw).map_err(|e| format!("TOML parse error: {e}"))?;
-        Ok(parsed.tool.and_then(|t| t.pyspark_antipattern).unwrap_or_default())
+    /// Load config from `path`.
+    ///
+    /// Returns:
+    /// - `Ok(Some(config))` — file found and parsed successfully
+    /// - `Ok(None)`         — file not found (caller should use `Config::default()`)
+    /// - `Err(msg)`         — file found but contains invalid TOML or malformed config
+    pub fn load(path: &std::path::Path) -> Result<Option<Self>, String> {
+        let raw = match std::fs::read_to_string(path) {
+            Ok(s) => s,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+            Err(e) => return Err(format!("Cannot read {}: {e}", path.display())),
+        };
+        let parsed: PyprojectToml =
+            toml::from_str(&raw).map_err(|e| format!("TOML parse error in {}: {e}", path.display()))?;
+        Ok(parsed.tool.and_then(|t| t.pyspark_antipattern))
     }
 
     /// Returns true if `id` matches a rule entry exactly ("F012") or by group prefix ("F", "PERF", "ARR", …).

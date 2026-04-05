@@ -122,14 +122,34 @@ The minimum version of each rule is documented in its `## PySpark version` secti
 
 ---
 
-## Line suppression
+## Inline suppression
 
-To suppress a rule on one specific line, add a `# noqa: pap:` comment:
+Violations can be suppressed directly in source files using `# noqa: pap:` comments — no `pyproject.toml` change needed.
+
+### Line-level
+
+Suppress one or more rules on a single line:
 
 ```python
 result = df.collect()                  # noqa: pap: D001
 bad_join = df.crossJoin(other)         # noqa: pap: S010, S002
-df = df.withColumn("x", expr("a+b"))   # noqa: pap: F017
+df = df.withColumn("x", expr("a+b"))   # noqa: pap
 ```
 
-Multiple rules can be suppressed on the same line by comma-separating them.
+Suppress all pap rules on a line by omitting the rule ID (`# noqa: pap`).
+
+### File-level
+
+To suppress every violation in an entire file, add `# noqa: pap: FILE` anywhere in the file — typically at the top:
+
+```python
+# noqa: pap: FILE
+# This file is auto-generated — do not edit by hand.
+
+from pyspark.sql import functions as F
+
+def build_report(df):
+    return df.collect()
+```
+
+See [noqa](settings/noqa.md) for full details, examples, and precedence rules.

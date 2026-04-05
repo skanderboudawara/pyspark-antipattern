@@ -16,3 +16,18 @@ All settings live under `[tool.pyspark-antipattern]` in your `pyproject.toml`.
 | [`loop_threshold`](loop_threshold.md) | `int` | `10` | Max loop iterations before L001/L002/L003 fire |
 | [`exclude_dirs`](exclude_dirs.md) | `list[str]` | built-in list | Directories skipped during recursive scan |
 | [`max_shuffle_operations`](max_shuffle_operations.md) | `int` | `9` | Max shuffle ops between checkpoints before PERF003 fires |
+
+---
+
+## Inline suppression
+
+Violations can also be suppressed directly in source files using `# noqa` comments — no `pyproject.toml` change needed.
+
+| Form | Scope |
+|---|---|
+| `# noqa: pap: D001` | Suppress rule D001 on this line |
+| `# noqa: pap: D001, S004` | Suppress multiple rules on this line |
+| `# noqa: pap` | Suppress all pap rules on this line |
+| `# noqa: pap: FILE` | Suppress all violations in the entire file |
+
+See [noqa](noqa.md) for full details and examples.
