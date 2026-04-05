@@ -81,3 +81,11 @@ jobs:
           git tag "v${{ steps.version.outputs.new }}"
           git push origin HEAD --tags
 
+  release:
+    name: Release
+    needs: bump
+    uses: ./.github/workflows/release.yml
+    permissions:
+      contents: write
+      id-token: write
+
