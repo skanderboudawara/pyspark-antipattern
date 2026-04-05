@@ -14,7 +14,7 @@ DataFrame used 2 or more times without caching
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 1.3** and later.
 
 ## Information
 Spark uses **lazy evaluation**: every time you trigger an action on a DataFrame,

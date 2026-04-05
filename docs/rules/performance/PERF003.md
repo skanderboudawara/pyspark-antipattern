@@ -11,7 +11,7 @@
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 2.3** and later.
 
 ## Information
 

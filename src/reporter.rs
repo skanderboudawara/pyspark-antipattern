@@ -132,6 +132,63 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
         // ARR004 recommends count_distinct() — added in PySpark 3.2.0
         "ARR004" => PySparkVersion::new(3, 2, 0),
 
+        // ARR001/ARR003 — available since PySpark 2.4.0
+        "ARR001" | "ARR003" => PySparkVersion::new(2, 4, 0),
+
+        // ARR005/ARR006 — available since PySpark 1.6.0
+        "ARR005" | "ARR006" => PySparkVersion::new(1, 6, 0),
+
+        // D001/D002/D003/D004 — available since PySpark 1.3.0
+        "D001" | "D002" | "D003" | "D004" => PySparkVersion::new(1, 3, 0),
+
+        // F001/F003/F007 — available since PySpark 1.3.0
+        "F001" | "F003" | "F007" => PySparkVersion::new(1, 3, 0),
+
+        // F002 — available since PySpark 1.4.0
+        "F002" => PySparkVersion::new(1, 4, 0),
+
+        // F004/F019 — available since PySpark 2.0.0
+        "F004" | "F019" => PySparkVersion::new(2, 0, 0),
+
+        // F014 — available since PySpark 2.3.0
+        "F014" => PySparkVersion::new(2, 3, 0),
+
+        // F009/F010 — available since PySpark 1.4.0
+        "F009" | "F010" => PySparkVersion::new(1, 4, 0),
+
+        // F017/F018 — available since PySpark 1.5.0
+        "F017" | "F018" => PySparkVersion::new(1, 5, 0),
+
+        // F012/F015/F020 — available since PySpark 1.3.0
+        "F012" | "F015" | "F020" => PySparkVersion::new(1, 3, 0),
+
+        // F008/F011/F013/F016 — available since PySpark 1.0.0
+        "F008" | "F011" | "F013" | "F016" => PySparkVersion::new(1, 0, 0),
+
+        // L001/PERF003/PERF006/S008 — available since PySpark 2.3.0
+        "L001" | "PERF003" | "PERF006" | "S008" => PySparkVersion::new(2, 3, 0),
+
+        // PERF008 — available since PySpark 2.0.0
+        "PERF008" => PySparkVersion::new(2, 0, 0),
+
+        // S010 — available since PySpark 2.1.0
+        "S010" => PySparkVersion::new(2, 1, 0),
+
+        // S013 — available since PySpark 1.6.0
+        "S013" => PySparkVersion::new(1, 6, 0),
+
+        // S001/S003/S007/S014 — available since PySpark 1.4.0
+        "S001" | "S003" | "S007" | "S014" => PySparkVersion::new(1, 4, 0),
+
+        // L003/PERF001/PERF004/PERF005/PERF007/S002/S004/S005/S006/S011/S012 — available since PySpark 1.3.0
+        "L003" | "PERF001" | "PERF004" | "PERF005" | "PERF007" | "S002" | "S004" | "S005" | "S006" | "S011" | "S012" => PySparkVersion::new(1, 3, 0),
+
+        // L002/S009 — available since PySpark 1.0.0
+        "L002" | "S009" => PySparkVersion::new(1, 0, 0),
+
+        // U001/U002/U003/U004 — available since PySpark 1.3.0
+        "U001" | "U002" | "U003" | "U004" => PySparkVersion::new(1, 3, 0),
+
         _ => PySparkVersion::new(3, 0, 0),
     }
 }

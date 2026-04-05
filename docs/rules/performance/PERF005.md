@@ -7,7 +7,7 @@ DataFrame persisted but never unpersisted
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 1.3** and later.
 
 ## Information
 Every `.persist()` call pins the DataFrame's partitions in memory (and/or disk)

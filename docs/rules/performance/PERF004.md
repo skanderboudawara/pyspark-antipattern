@@ -7,7 +7,7 @@ Avoid bare `.persist()` — always pass an explicit `StorageLevel`
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 1.3** and later.
 
 ## Information
 Calling `.persist()` with no arguments silently applies the default storage

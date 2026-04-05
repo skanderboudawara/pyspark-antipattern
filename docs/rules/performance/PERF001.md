@@ -7,7 +7,7 @@ Avoid `.rdd.collect()` — use `.toPandas()` instead
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 1.3** and later.
 
 ## Information
 Calling `.rdd.collect()` to bring data to the driver and then manually converting to Python objects bypasses Spark's optimized data transfer path.

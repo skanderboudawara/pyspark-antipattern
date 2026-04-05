@@ -7,7 +7,7 @@ Avoid bare `.checkpoint()` / `.localCheckpoint()` — always pass an explicit `e
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 2.3** and later.
 
 ## Information
 Both checkpoint methods accept an `eager` boolean that controls when the

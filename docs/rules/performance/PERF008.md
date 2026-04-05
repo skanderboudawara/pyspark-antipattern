@@ -7,7 +7,7 @@ Avoid `spark.read.csv(parallelize())` — use `spark.createDataFrame(pd.read_csv
 
 ## PySpark version
 
-Compatible with **PySpark 3.0** and later.
+Compatible with **PySpark 2.0** and later.
 
 ## Information
 Using `sparkContext.parallelize()` to convert an in-memory Python object into an RDD, only
