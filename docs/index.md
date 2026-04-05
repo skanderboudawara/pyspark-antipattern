@@ -11,7 +11,7 @@
 
 Written in Rust, installable as a Python package, and designed to run in CI/CD pipelines. 67 rules across 8 categories covering driver actions, shuffle explosions, UDFs, loops, and more.
 
-![demo](img/demo.gif)
+![demo.gif](https://s13.gifyu.com/images/bqMHC.gif)
 
 !!! quote "Philosophy"
     This linter is intentionally strict. It will flag patterns that are technically valid Python but known to cause performance, scalability, or maintainability problems in PySpark. Every violation is a conversation starter — it is up to you to decide whether to fix it, downgrade it to a warning, or suppress it for a specific line.
