@@ -257,6 +257,50 @@ fn noqa_file_keyword_mid_file() {
     assert!(check_with_noqa(d001::check, src).is_empty());
 }
 
+// ── Fix 6: visitor traversal gaps ────────────────────────────────────────────
+
+#[test]
+fn d001_in_listcomp_iterator() {
+    // violation in the `for x in <here>` part of a list comprehension
+    let src = "rows = [x for x in df.collect()]";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_listcomp_filter() {
+    // violation in the `if <here>` filter of a list comprehension
+    let src = "rows = [x for x in items if df.collect()]";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_dictcomp_value() {
+    // violation in the value expression of a dict comprehension
+    let src = "d = {k: df.collect() for k in keys}";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_dictcomp_iterator() {
+    // violation in the iterator of a dict comprehension
+    let src = "d = {k: v for k, v in df.collect()}";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_genexp_iterator() {
+    // violation in the iterator of a generator expression
+    let src = "total = sum(x for x in df.collect())";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
+#[test]
+fn d001_in_with_context_expr() {
+    // violation in the `with <here> as v:` context manager expression
+    let src = "with df.collect() as rows:\n    pass";
+    assert_violation(&check(d001::check, src), "D001", 1);
+}
+
 // ── Fix 1: Config hard error on malformed TOML ────────────────────────────────
 
 #[test]

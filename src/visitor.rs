@@ -85,11 +85,17 @@ pub fn walk_stmt<V: Visitor>(v: &mut V, stmt: &Stmt) {
             }
         }
         Stmt::With(w) => {
+            for item in &w.items {
+                v.visit_expr(&item.context_expr);
+            }
             for s in &w.body {
                 v.visit_stmt(s);
             }
         }
         Stmt::AsyncWith(w) => {
+            for item in &w.items {
+                v.visit_expr(&item.context_expr);
+            }
             for s in &w.body {
                 v.visit_stmt(s);
             }
@@ -182,12 +188,40 @@ pub fn walk_expr<V: Visitor>(v: &mut V, expr: &Expr) {
         }
         Expr::ListComp(lc) => {
             v.visit_expr(&lc.elt);
+            for comp in &lc.generators {
+                v.visit_expr(&comp.iter);
+                for cond in &comp.ifs {
+                    v.visit_expr(cond);
+                }
+            }
         }
         Expr::SetComp(sc) => {
             v.visit_expr(&sc.elt);
+            for comp in &sc.generators {
+                v.visit_expr(&comp.iter);
+                for cond in &comp.ifs {
+                    v.visit_expr(cond);
+                }
+            }
+        }
+        Expr::DictComp(dc) => {
+            v.visit_expr(&dc.key);
+            v.visit_expr(&dc.value);
+            for comp in &dc.generators {
+                v.visit_expr(&comp.iter);
+                for cond in &comp.ifs {
+                    v.visit_expr(cond);
+                }
+            }
         }
         Expr::GeneratorExp(g) => {
             v.visit_expr(&g.elt);
+            for comp in &g.generators {
+                v.visit_expr(&comp.iter);
+                for cond in &comp.ifs {
+                    v.visit_expr(cond);
+                }
+            }
         }
         Expr::Await(a) => {
             v.visit_expr(&a.value);
