@@ -166,6 +166,19 @@ fn s007_fires_coalesce() {
 fn s007_no_fire() {
     assert_no_violation(&check(s007::check, "df.coalesce(4)"), "S007");
 }
+#[test]
+fn s007_fires_repartition_with_column() {
+    // repartition(1, "col") — single partition even when column specified
+    assert_violation(&check(s007::check, "df.repartition(1, 'id')"), "S007", 1);
+}
+#[test]
+fn s007_fires_repartition_keyword() {
+    assert_violation(&check(s007::check, "df.repartition(numPartitions=1)"), "S007", 1);
+}
+#[test]
+fn s007_no_fire_repartition_keyword_safe() {
+    assert_no_violation(&check(s007::check, "df.repartition(numPartitions=4)"), "S007");
+}
 
 // ── S008: too many explode() ──────────────────────────────────────────────────
 #[test]

@@ -26,18 +26,25 @@ impl<'a> Visitor for Check<'a> {
             && let Expr::Attribute(attr) = call.func.as_ref()
         {
             let name = attr.attr.as_str();
-            if matches!(name, "repartition" | "coalesce")
-                && let Some(1) = call.args.first().and_then(const_int)
-            {
-                self.violations.push(method_violation(
-                    attr,
-                    name,
-                    self.source,
-                    self.file,
-                    self.index,
-                    self.severity,
-                    ID,
-                ));
+            if matches!(name, "repartition" | "coalesce") {
+                // Accept both positional (first arg) and keyword `numPartitions=N` forms.
+                let n = call.args.first().and_then(const_int).or_else(|| {
+                    call.keywords
+                        .iter()
+                        .find(|kw| kw.arg.as_deref() == Some("numPartitions"))
+                        .and_then(|kw| const_int(&kw.value))
+                });
+                if let Some(1) = n {
+                    self.violations.push(method_violation(
+                        attr,
+                        name,
+                        self.source,
+                        self.file,
+                        self.index,
+                        self.severity,
+                        ID,
+                    ));
+                }
             }
         }
         walk_expr(self, expr);
