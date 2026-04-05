@@ -22,6 +22,15 @@ struct BodyScanner<'a> {
 }
 
 impl<'a> Visitor for BodyScanner<'a> {
+    fn visit_stmt(&mut self, stmt: &Stmt) {
+        // Do not descend into nested loops — Check::visit_stmt handles them separately
+        // to avoid reporting the same withColumn() call twice.
+        match stmt {
+            Stmt::For(_) | Stmt::While(_) => {}
+            _ => walk_stmt(self, stmt),
+        }
+    }
+
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()

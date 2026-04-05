@@ -6,28 +6,13 @@ use rustpython_parser::ast::{Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
-    rules::utils::{chain_has_method, for_loop_iters},
+    rules::utils::for_loop_iters,
+    spark_ops::{COLUMN_METHODS, DATAFRAME_METHODS},
     violation::{RuleId, Violation},
     visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "L001";
-
-/// DataFrame-like method names that indicate a loop body is operating on a DF.
-const DF_METHODS: &[&str] = &[
-    "filter",
-    "select",
-    "withColumn",
-    "groupBy",
-    "agg",
-    "join",
-    "union",
-    "unionByName",
-    "orderBy",
-    "sort",
-    "distinct",
-    "repartition",
-];
 
 struct BodyScanner {
     has_df_op: bool,
@@ -43,7 +28,7 @@ impl Visitor for BodyScanner {
             if name == "checkpoint" || name == "localCheckpoint" {
                 self.has_checkpoint = true;
             }
-            if DF_METHODS.contains(&name) {
+            if DATAFRAME_METHODS.contains(&name) && !COLUMN_METHODS.contains(&name) {
                 self.has_df_op = true;
             }
         }
@@ -121,7 +106,6 @@ impl<'a> Visitor for Check<'a> {
 
 /// Scan `stmts` for loops containing DataFrame operations without a checkpoint and flag each loop.
 pub fn check(stmts: &[Stmt], source: &str, file: &str, config: &Config, index: &LineIndex) -> Vec<Violation> {
-    let _ = chain_has_method; // used in other rules, suppress warning
     let mut v = Check {
         source,
         file,

@@ -5,31 +5,13 @@ use rustpython_parser::ast::{Expr, Stmt};
 use crate::{
     config::Config,
     line_index::LineIndex,
+    spark_ops::{COLUMN_METHODS, DATAFRAME_METHODS},
     violation::{RuleId, Violation},
     visitor::{Visitor, walk_expr, walk_stmt},
 };
 
 const ID: &str = "L002";
 const WHILE_ASSUMED_ITERS: i64 = 99;
-
-const DF_METHODS: &[&str] = &[
-    "filter",
-    "select",
-    "withColumn",
-    "groupBy",
-    "agg",
-    "join",
-    "union",
-    "unionByName",
-    "orderBy",
-    "sort",
-    "distinct",
-    "repartition",
-    "collect",
-    "count",
-    "show",
-    "write",
-];
 
 struct BodyScanner {
     has_df_op: bool,
@@ -39,7 +21,8 @@ impl Visitor for BodyScanner {
     fn visit_expr(&mut self, expr: &Expr) {
         if let Expr::Call(call) = expr
             && let Expr::Attribute(attr) = call.func.as_ref()
-            && DF_METHODS.contains(&attr.attr.as_str())
+            && DATAFRAME_METHODS.contains(&attr.attr.as_str())
+            && !COLUMN_METHODS.contains(&attr.attr.as_str())
         {
             self.has_df_op = true;
         }

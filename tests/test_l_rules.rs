@@ -61,3 +61,16 @@ fn l003_no_fire_below_threshold() {
     let src = "for i in range(5):\n    df = df.withColumn(f'col_{i}', col('x'))";
     assert_no_violation(&check(l003::check, src), "L003");
 }
+#[test]
+fn l003_nested_loops_no_duplicate() {
+    // withColumn inside inner loop must be reported exactly once, not twice
+    let src = "for i in range(20):\n    for j in range(20):\n        df = df.withColumn(f'col_{j}', col('x'))";
+    let violations = check(l003::check, src);
+    let l003_violations: Vec<_> = violations.iter().filter(|v| v.rule_id.0 == "L003").collect();
+    assert_eq!(
+        l003_violations.len(),
+        1,
+        "expected exactly 1 L003 violation, got {}",
+        l003_violations.len()
+    );
+}
