@@ -20,7 +20,7 @@ jobs:
             messages="$PR_TITLE"
           else
             # For direct pushes check every commit in the push.
-            messages=$(echo '${{ toJson(github.event.commits.*.message) }}' | jq -r '.[]')
+            messages=$(echo '${{ toJson(github.event.commits.*.message) }}' | jq -r '.[] | split("\n")[0]')
           fi
 
           valid_prefix='^(feat|fix|enhance|breaking|chore|chore\(deps\)|Merge branch )'
@@ -31,7 +31,7 @@ jobs:
             [ -z "$msg" ] && continue
             if ! echo "$msg" | grep -qE "$valid_prefix"; then
               echo "::error::Invalid commit message: \"$msg\""
-              echo "         Must start with one of: feat: | fix: | enhance: | breaking: | chore: | chore(deps): | Merge branch:"
+              echo "         Must start with one of: feat: | fix: | enhance: | breaking: | chore: | chore(deps): | Merge branch "
               failed=1
             fi
           done <<EOF
