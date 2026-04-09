@@ -204,10 +204,37 @@ jobs:
           else
             RANGE="HEAD"
           fi
-          BULLETS=$(git log $RANGE --pretty=format:"- %s" --no-merges)
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo "$BULLETS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+
+          BREAKING=""
+          FEAT=""
+          ENHANCE=""
+          FIX=""
+          CHORE=""
+
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            HASH="${line%% *}"
+            MSG="${line#* }"
+
+            case "$MSG" in
+              breaking:\ *)       BREAKING+="- ${MSG#breaking: } (\`${HASH}\`)"$'\n' ;;
+              feat:\ *)           FEAT+="- ${MSG#feat: } (\`${HASH}\`)"$'\n' ;;
+              enhance:\ *)        ENHANCE+="- ${MSG#enhance: } (\`${HASH}\`)"$'\n' ;;
+              fix:\ *)            FIX+="- ${MSG#fix: } (\`${HASH}\`)"$'\n' ;;
+              chore\(deps\):\ *)  CHORE+="- ${MSG#chore(deps): } (\`${HASH}\`)"$'\n' ;;
+              chore:\ *)          CHORE+="- ${MSG#chore: } (\`${HASH}\`)"$'\n' ;;
+            esac
+          done < <(git log $RANGE --pretty=format:"%h %s" --no-merges)
+
+          {
+            echo "body<<EOF"
+            [ -n "$BREAKING" ] && printf '## 💥 Breaking Changes\n%s\n' "$BREAKING"
+            [ -n "$FEAT" ]     && printf '## ⬆️ Features\n%s\n' "$FEAT"
+            [ -n "$ENHANCE" ]  && printf '## ✨ Enhancements\n%s\n' "$ENHANCE"
+            [ -n "$FIX" ]      && printf '## 🐛 Bug Fixes\n%s\n' "$FIX"
+            [ -n "$CHORE" ]    && printf '## 🧹 Chores\n%s\n' "$CHORE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
