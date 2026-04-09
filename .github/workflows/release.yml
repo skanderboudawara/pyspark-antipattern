@@ -217,30 +217,30 @@ jobs:
             MSG="${line#* }"
 
             case "$MSG" in
-              breaking:\ *)       BREAKING+="- ${MSG#breaking: } (\`${HASH}\`)"$'\n' ;;
-              feat:\ *)           FEAT+="- ${MSG#feat: } (\`${HASH}\`)"$'\n' ;;
-              enhance:\ *)        ENHANCE+="- ${MSG#enhance: } (\`${HASH}\`)"$'\n' ;;
-              fix:\ *)            FIX+="- ${MSG#fix: } (\`${HASH}\`)"$'\n' ;;
-              chore\(deps\):\ *)  CHORE+="- ${MSG#chore(deps): } (\`${HASH}\`)"$'\n' ;;
-              chore:\ *)          CHORE+="- ${MSG#chore: } (\`${HASH}\`)"$'\n' ;;
+              breaking:\ *)       BREAKING+="- ${MSG#breaking: } (${HASH})"$'\n' ;;
+              feat:\ *)           FEAT+="- ${MSG#feat: } (${HASH})"$'\n' ;;
+              enhance:\ *)        ENHANCE+="- ${MSG#enhance: } (${HASH})"$'\n' ;;
+              fix:\ *)            FIX+="- ${MSG#fix: } (${HASH})"$'\n' ;;
+              chore\(deps\):\ *)  CHORE+="- ${MSG#chore(deps): } (${HASH})"$'\n' ;;
+              chore:\ *)          CHORE+="- ${MSG#chore: } (${HASH})"$'\n' ;;
             esac
           done < <(git log $RANGE --pretty=format:"%h %s" --no-merges)
 
+          NOTESFILE=$(mktemp)
           {
-            echo "body<<EOF"
             [ -n "$BREAKING" ] && printf '## 💥 Breaking Changes\n%s\n' "$BREAKING"
             [ -n "$FEAT" ]     && printf '## ⬆️ Features\n%s\n' "$FEAT"
             [ -n "$ENHANCE" ]  && printf '## ✨ Enhancements\n%s\n' "$ENHANCE"
             [ -n "$FIX" ]      && printf '## 🐛 Bug Fixes\n%s\n' "$FIX"
             [ -n "$CHORE" ]    && printf '## 🧹 Chores\n%s\n' "$CHORE"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          } > "$NOTESFILE"
+          echo "notes_file=$NOTESFILE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.whl
-          body: ${{ steps.notes.outputs.body }}
+          body_path: ${{ steps.notes.outputs.notes_file }}
           fail_on_unmatched_files: true
 
   # ── 5. Publish all wheels to PyPI ──────────────────────────────────────────
