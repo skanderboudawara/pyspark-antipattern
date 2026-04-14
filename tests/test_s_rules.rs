@@ -486,3 +486,95 @@ fn s015_no_fire_no_groupby() {
     // first() without groupBy — not an aggregation context we flag
     assert_no_violation(&check(s015::check, "df.agg(first('email'))"), "S015");
 }
+
+// ── S016: first()/last() with .over(Window.partitionBy()) without orderBy() ──
+#[test]
+fn s016_fires_first_partition_only() {
+    assert_violation(
+        &check(s016::check, "first('email').over(Window.partitionBy('user_id'))"),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_fires_last_partition_only() {
+    assert_violation(
+        &check(s016::check, "last('login').over(Window.partitionBy('user_id'))"),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_fires_qualified_first() {
+    assert_violation(
+        &check(s016::check, "F.first('email').over(Window.partitionBy('user_id'))"),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_fires_qualified_last() {
+    assert_violation(
+        &check(s016::check, "F.last('email').over(Window.partitionBy('user_id'))"),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_fires_in_withcolumn() {
+    assert_violation(
+        &check(
+            s016::check,
+            "df.withColumn('e', first('email').over(Window.partitionBy('user_id')))",
+        ),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_fires_in_select() {
+    assert_violation(
+        &check(
+            s016::check,
+            "df.select(last('email').over(Window.partitionBy('user_id')))",
+        ),
+        "S016",
+        1,
+    );
+}
+#[test]
+fn s016_no_fire_with_order_by() {
+    assert_no_violation(
+        &check(
+            s016::check,
+            "first('email').over(Window.partitionBy('user_id').orderBy('created_at'))",
+        ),
+        "S016",
+    );
+}
+#[test]
+fn s016_no_fire_last_with_order_by() {
+    assert_no_violation(
+        &check(
+            s016::check,
+            "last('email').over(Window.partitionBy('user_id').orderBy('created_at'))",
+        ),
+        "S016",
+    );
+}
+#[test]
+fn s016_no_fire_min_partition_only() {
+    // min() is deterministic — should not fire even without orderBy
+    assert_no_violation(
+        &check(s016::check, "min('email').over(Window.partitionBy('user_id'))"),
+        "S016",
+    );
+}
+#[test]
+fn s016_no_fire_no_partition_by() {
+    // No partitionBy in the window spec — not the pattern we flag
+    assert_no_violation(
+        &check(s016::check, "first('email').over(Window.orderBy('created_at'))"),
+        "S016",
+    );
+}

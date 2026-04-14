@@ -113,7 +113,7 @@ pub fn rule_impact(id: &str) -> Impact {
         "P001" => Impact::High,
         "PERF001" | "PERF003" => Impact::High,
         "S003" | "S004" | "S005" | "S006" | "S007" | "S008" | "S010" | "S011" | "S013" | "S014" => Impact::High,
-        "S015" => Impact::Medium,
+        "S015" | "S016" => Impact::Medium,
         "U001" | "U002" | "U003" | "U004" | "U005" | "U006" | "U007" => Impact::High,
 
         _ => Impact::Low,
@@ -185,8 +185,8 @@ pub fn rule_pyspark_version(id: &str) -> PySparkVersion {
         // S013 — available since PySpark 1.6.0
         "S013" => PySparkVersion::new(1, 6, 0),
 
-        // S001/S003/S007/S014 — available since PySpark 1.4.0
-        "S001" | "S003" | "S007" | "S014" => PySparkVersion::new(1, 4, 0),
+        // S001/S003/S007/S014/S016 — available since PySpark 1.4.0
+        "S001" | "S003" | "S007" | "S014" | "S016" => PySparkVersion::new(1, 4, 0),
 
         // L003/PERF001/PERF004/PERF005/PERF007/S002/S004/S005/S006/S011/S012/S015 — available since PySpark 1.3.0
         "L003" | "PERF001" | "PERF004" | "PERF005" | "PERF007" | "S002" | "S004" | "S005" | "S006" | "S011"
@@ -249,6 +249,9 @@ pub fn rule_title(id: &str) -> &'static str {
         "S003" => ".groupBy() directly followed by .distinct() or .dropDuplicates()",
         "S014" => "Avoid .distinct() or .dropDuplicates() before .groupBy(); the dedup is redundant",
         "S015" => "Avoid first() or last() in .agg() without orderBy() after .agg(); result is non-deterministic",
+        "S016" => {
+            "Avoid first() or last() with .over(Window.partitionBy()) without orderBy(); result is non-deterministic"
+        }
         "S004" => "Too many .distinct() operations in one file",
         "S005" => ".repartition() with fewer partitions than the Spark default",
         "S006" => ".repartition() with more partitions than the Spark default",
