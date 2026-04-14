@@ -347,3 +347,142 @@ fn s014_no_fire_distinct_after() {
         "S014",
     );
 }
+
+// ── S015: first()/last() in .agg() without orderBy() ────────────────────────
+#[test]
+fn s015_fires_first() {
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(first('email'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_last() {
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(last('login_date'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_qualified_first() {
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(F.first('email'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_qualified_last() {
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(F.last('email'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_first_with_alias() {
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(first('email').alias('e'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_mixed_agg() {
+    // first() among other aggregates — still flags
+    assert_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(count('*'), first('email'))"),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_order_by_before_group_by() {
+    // orderBy before groupBy does NOT help — the shuffle destroys the ordering
+    assert_violation(
+        &check(
+            s015::check,
+            "df.orderBy('created_at').groupBy('user_id').agg(first('email'))",
+        ),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_sort_before_group_by() {
+    assert_violation(
+        &check(
+            s015::check,
+            "df.sort('created_at').groupBy('user_id').agg(first('email'))",
+        ),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_order_by_between_group_by_and_agg() {
+    // orderBy between groupBy and agg does NOT count — must be after agg
+    assert_violation(
+        &check(
+            s015::check,
+            "df.groupBy('user_id').orderBy('created_at').agg(first('email'))",
+        ),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_fires_sort_between_group_by_and_agg() {
+    assert_violation(
+        &check(
+            s015::check,
+            "df.groupBy('user_id').sort('created_at').agg(first('email'))",
+        ),
+        "S015",
+        1,
+    );
+}
+#[test]
+fn s015_no_fire_order_by_after_agg() {
+    assert_no_violation(
+        &check(
+            s015::check,
+            "df.groupBy('user_id').agg(first('email')).orderBy('created_at')",
+        ),
+        "S015",
+    );
+}
+#[test]
+fn s015_no_fire_sort_after_agg() {
+    assert_no_violation(
+        &check(
+            s015::check,
+            "df.groupBy('user_id').agg(first('email')).sort('created_at')",
+        ),
+        "S015",
+    );
+}
+#[test]
+fn s015_no_fire_sort_within_partitions_after_agg() {
+    assert_no_violation(
+        &check(
+            s015::check,
+            "df.groupBy('user_id').agg(first('email')).sortWithinPartitions('created_at')",
+        ),
+        "S015",
+    );
+}
+#[test]
+fn s015_no_fire_no_first_or_last() {
+    assert_no_violation(
+        &check(s015::check, "df.groupBy('user_id').agg(count('*'), sum('amount'))"),
+        "S015",
+    );
+}
+#[test]
+fn s015_no_fire_no_groupby() {
+    // first() without groupBy — not an aggregation context we flag
+    assert_no_violation(&check(s015::check, "df.agg(first('email'))"), "S015");
+}

@@ -18,3 +18,4 @@ Rules that flag patterns that cause expensive data movement across the cluster �
 | [S012](S012.md) | Avoid inner join followed by filter — prefer `leftSemi` join |
 | [S013](S013.md) | Avoid `reduceByKey()` — use DataFrame `groupBy().agg()` instead |
 | [S014](S014.md) | `.distinct()` or `.dropDuplicates()` called before `.groupBy()` — redundant shuffle |
+| [S015](S015.md) | `first()` or `last()` inside `.agg()` without `orderBy()` after `.agg()` — non-deterministic result |

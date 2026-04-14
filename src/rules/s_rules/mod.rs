@@ -1,4 +1,4 @@
-//! Shuffle-related anti-pattern rules (S001–S014).
+//! Shuffle-related anti-pattern rules (S001–S015).
 //! These rules flag join, repartition, distinct, and explode patterns that
 //! trigger unnecessary or costly network data exchanges.
 pub mod s001;
@@ -15,3 +15,4 @@ pub mod s011;
 pub mod s012;
 pub mod s013;
 pub mod s014;
+pub mod s015;

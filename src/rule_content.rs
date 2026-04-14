@@ -57,6 +57,7 @@ static RULE_MARKDOWN: &[(&str, &str)] = &[
     ("S012", include_str!("../docs/rules/shuffle/S012.md")),
     ("S013", include_str!("../docs/rules/shuffle/S013.md")),
     ("S014", include_str!("../docs/rules/shuffle/S014.md")),
+    ("S015", include_str!("../docs/rules/shuffle/S015.md")),
     ("PERF001", include_str!("../docs/rules/performance/PERF001.md")),
     ("PERF002", include_str!("../docs/rules/performance/PERF002.md")),
     ("PERF003", include_str!("../docs/rules/performance/PERF003.md")),

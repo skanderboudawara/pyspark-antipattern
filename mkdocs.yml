@@ -153,6 +153,7 @@ nav:
       - S012: rules/shuffle/S012.md
       - S013: rules/shuffle/S013.md
       - S014: rules/shuffle/S014.md
+      - S015: rules/shuffle/S015.md
     - U — UDF:
       - rules/udf/index.md
       - U001: rules/udf/U001.md
