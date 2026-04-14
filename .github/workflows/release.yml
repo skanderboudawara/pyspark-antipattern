@@ -6,6 +6,11 @@ on:
       - "v*"
   workflow_dispatch:
   workflow_call:
+    inputs:
+      version:
+        description: "Version to release (without v prefix, e.g. 0.4.1)"
+        required: false
+        type: string
 
 jobs:
   # ── 0. Verify tag matches versions in pyproject.toml and Cargo.toml ────────
@@ -19,14 +24,17 @@ jobs:
 
       - name: Verify tag matches pyproject.toml and Cargo.toml
         run: |
-          # When triggered by a tag push GITHUB_REF_NAME is the tag (e.g. v1.2.3).
-          # When called via workflow_call it is the branch name, so fall back to
-          # the tag that points at HEAD (set by bump-version before invoking us).
-          REF="${GITHUB_REF_NAME}"
-          if [[ "$REF" != v* ]]; then
-            REF=$(git tag --points-at HEAD | grep '^v' | sort -V | tail -1)
+          # 1. workflow_call with explicit version input (from bump-version)
+          # 2. tag push: GITHUB_REF_NAME is the tag (e.g. v1.2.3)
+          # 3. fallback: tag pointing at HEAD
+          TAG="${{ inputs.version }}"
+          if [ -z "$TAG" ]; then
+            REF="${GITHUB_REF_NAME}"
+            if [[ "$REF" != v* ]]; then
+              REF=$(git tag --points-at HEAD | grep '^v' | sort -V | tail -1)
+            fi
+            TAG="${REF#v}"
           fi
-          TAG="${REF#v}"
           PYPROJECT=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
           CARGO=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
 

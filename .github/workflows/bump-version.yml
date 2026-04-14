@@ -17,6 +17,8 @@ jobs:
   bump:
     name: Bump version and update Cargo.lock
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new }}
     permissions:
       contents: write
 
@@ -85,6 +87,8 @@ jobs:
     name: Release
     needs: bump
     uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ needs.bump.outputs.new_version }}
     permissions:
       contents: write
       id-token: write
