@@ -12,31 +12,31 @@
         <meta name="author" content="Skander Boudawara">
       
       
-        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/settings/distinct_threshold/">
+        <link rel="canonical" href="https://skanderboudawara.github.io/pyspark-antipattern/rules/shuffle/S016/">
       
       
-        <link rel="prev" href="../show_best_practice/">
+        <link rel="prev" href="../S015/">
       
       
-        <link rel="next" href="../explode_threshold/">
+        <link rel="next" href="../../udf/">
       
       
         
       
       
-      <link rel="icon" href="../../icon.jpg">
+      <link rel="icon" href="../../../icon.jpg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>distinct_threshold - pyspark-antipattern</title>
+        <title>S016 - pyspark-antipattern</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,9 +55,9 @@
       
     
     
-      <link rel="stylesheet" href="../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#distinct_threshold" class="md-skip">
+        <a href="#rule-s016" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +98,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="pyspark-antipattern" class="md-header__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
+    <a href="../../.." title="pyspark-antipattern" class="md-header__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
       
-  <img src="../../icon.jpg" alt="logo">
+  <img src="../../../icon.jpg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              distinct_threshold
+              S016
             
           </span>
         </div>
@@ -235,9 +235,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="pyspark-antipattern" class="md-nav__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
+    <a href="../../.." title="pyspark-antipattern" class="md-nav__button md-logo" aria-label="pyspark-antipattern" data-md-component="logo">
       
-  <img src="../../icon.jpg" alt="logo">
+  <img src="../../../icon.jpg" alt="logo">
 
     </a>
     pyspark-antipattern
@@ -264,7 +264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -318,7 +318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../../../installation/" class="md-nav__link">
         
   
   
@@ -345,7 +345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/" class="md-nav__link">
+      <a href="../../../configuration/" class="md-nav__link">
         
   
   
@@ -372,7 +372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/" class="md-nav__link">
+      <a href="../../../cli/" class="md-nav__link">
         
   
   
@@ -396,8 +396,6 @@
       
   
   
-    
-  
   
   
     
@@ -437,15 +435,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../../settings/" class="md-nav__link ">
               
   
   
@@ -469,7 +467,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -489,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../select/" class="md-nav__link">
+      <a href="../../../settings/select/" class="md-nav__link">
         
   
   
@@ -517,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../warn/" class="md-nav__link">
+      <a href="../../../settings/warn/" class="md-nav__link">
         
   
   
@@ -545,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ignore/" class="md-nav__link">
+      <a href="../../../settings/ignore/" class="md-nav__link">
         
   
   
@@ -573,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../severity/" class="md-nav__link">
+      <a href="../../../settings/severity/" class="md-nav__link">
         
   
   
@@ -601,7 +599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pyspark_version/" class="md-nav__link">
+      <a href="../../../settings/pyspark_version/" class="md-nav__link">
         
   
   
@@ -629,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../show_information/" class="md-nav__link">
+      <a href="../../../settings/show_information/" class="md-nav__link">
         
   
   
@@ -657,7 +655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../show_best_practice/" class="md-nav__link">
+      <a href="../../../settings/show_best_practice/" class="md-nav__link">
         
   
   
@@ -682,37 +680,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    distinct_threshold
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../settings/distinct_threshold/" class="md-nav__link">
         
   
   
@@ -728,59 +699,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -793,7 +711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../explode_threshold/" class="md-nav__link">
+      <a href="../../../settings/explode_threshold/" class="md-nav__link">
         
   
   
@@ -821,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop_threshold/" class="md-nav__link">
+      <a href="../../../settings/loop_threshold/" class="md-nav__link">
         
   
   
@@ -849,7 +767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../exclude_dirs/" class="md-nav__link">
+      <a href="../../../settings/exclude_dirs/" class="md-nav__link">
         
   
   
@@ -877,7 +795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../max_shuffle_operations/" class="md-nav__link">
+      <a href="../../../settings/max_shuffle_operations/" class="md-nav__link">
         
   
   
@@ -905,7 +823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../noqa/" class="md-nav__link">
+      <a href="../../../settings/noqa/" class="md-nav__link">
         
   
   
@@ -937,6 +855,8 @@
       
   
   
+    
+  
   
   
     
@@ -966,15 +886,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/" class="md-nav__link ">
+            <a href="../../" class="md-nav__link ">
               
   
   
@@ -998,7 +918,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1048,7 +968,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/arr/" class="md-nav__link ">
+            <a href="../../arr/" class="md-nav__link ">
               
   
   
@@ -1092,7 +1012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR001/" class="md-nav__link">
+      <a href="../../arr/ARR001/" class="md-nav__link">
         
   
   
@@ -1120,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR002/" class="md-nav__link">
+      <a href="../../arr/ARR002/" class="md-nav__link">
         
   
   
@@ -1148,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR003/" class="md-nav__link">
+      <a href="../../arr/ARR003/" class="md-nav__link">
         
   
   
@@ -1176,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR004/" class="md-nav__link">
+      <a href="../../arr/ARR004/" class="md-nav__link">
         
   
   
@@ -1204,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR005/" class="md-nav__link">
+      <a href="../../arr/ARR005/" class="md-nav__link">
         
   
   
@@ -1232,7 +1152,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/arr/ARR006/" class="md-nav__link">
+      <a href="../../arr/ARR006/" class="md-nav__link">
         
   
   
@@ -1304,7 +1224,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/driver/" class="md-nav__link ">
+            <a href="../../driver/" class="md-nav__link ">
               
   
   
@@ -1348,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D001/" class="md-nav__link">
+      <a href="../../driver/D001/" class="md-nav__link">
         
   
   
@@ -1376,7 +1296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D002/" class="md-nav__link">
+      <a href="../../driver/D002/" class="md-nav__link">
         
   
   
@@ -1404,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D003/" class="md-nav__link">
+      <a href="../../driver/D003/" class="md-nav__link">
         
   
   
@@ -1432,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D004/" class="md-nav__link">
+      <a href="../../driver/D004/" class="md-nav__link">
         
   
   
@@ -1460,7 +1380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D005/" class="md-nav__link">
+      <a href="../../driver/D005/" class="md-nav__link">
         
   
   
@@ -1488,7 +1408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D006/" class="md-nav__link">
+      <a href="../../driver/D006/" class="md-nav__link">
         
   
   
@@ -1516,7 +1436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D007/" class="md-nav__link">
+      <a href="../../driver/D007/" class="md-nav__link">
         
   
   
@@ -1544,7 +1464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D008/" class="md-nav__link">
+      <a href="../../driver/D008/" class="md-nav__link">
         
   
   
@@ -1572,7 +1492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/driver/D009/" class="md-nav__link">
+      <a href="../../driver/D009/" class="md-nav__link">
         
   
   
@@ -1666,7 +1586,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/format/" class="md-nav__link ">
+            <a href="../../format/" class="md-nav__link ">
               
   
   
@@ -1710,7 +1630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F001/" class="md-nav__link">
+      <a href="../../format/F001/" class="md-nav__link">
         
   
   
@@ -1738,7 +1658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F002/" class="md-nav__link">
+      <a href="../../format/F002/" class="md-nav__link">
         
   
   
@@ -1766,7 +1686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F003/" class="md-nav__link">
+      <a href="../../format/F003/" class="md-nav__link">
         
   
   
@@ -1794,7 +1714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F004/" class="md-nav__link">
+      <a href="../../format/F004/" class="md-nav__link">
         
   
   
@@ -1822,7 +1742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F005/" class="md-nav__link">
+      <a href="../../format/F005/" class="md-nav__link">
         
   
   
@@ -1850,7 +1770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F006/" class="md-nav__link">
+      <a href="../../format/F006/" class="md-nav__link">
         
   
   
@@ -1878,7 +1798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F007/" class="md-nav__link">
+      <a href="../../format/F007/" class="md-nav__link">
         
   
   
@@ -1906,7 +1826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F008/" class="md-nav__link">
+      <a href="../../format/F008/" class="md-nav__link">
         
   
   
@@ -1934,7 +1854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F009/" class="md-nav__link">
+      <a href="../../format/F009/" class="md-nav__link">
         
   
   
@@ -1962,7 +1882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F010/" class="md-nav__link">
+      <a href="../../format/F010/" class="md-nav__link">
         
   
   
@@ -1990,7 +1910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F011/" class="md-nav__link">
+      <a href="../../format/F011/" class="md-nav__link">
         
   
   
@@ -2018,7 +1938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F012/" class="md-nav__link">
+      <a href="../../format/F012/" class="md-nav__link">
         
   
   
@@ -2046,7 +1966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F013/" class="md-nav__link">
+      <a href="../../format/F013/" class="md-nav__link">
         
   
   
@@ -2074,7 +1994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F014/" class="md-nav__link">
+      <a href="../../format/F014/" class="md-nav__link">
         
   
   
@@ -2102,7 +2022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F015/" class="md-nav__link">
+      <a href="../../format/F015/" class="md-nav__link">
         
   
   
@@ -2130,7 +2050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F016/" class="md-nav__link">
+      <a href="../../format/F016/" class="md-nav__link">
         
   
   
@@ -2158,7 +2078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F017/" class="md-nav__link">
+      <a href="../../format/F017/" class="md-nav__link">
         
   
   
@@ -2186,7 +2106,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F018/" class="md-nav__link">
+      <a href="../../format/F018/" class="md-nav__link">
         
   
   
@@ -2214,7 +2134,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F019/" class="md-nav__link">
+      <a href="../../format/F019/" class="md-nav__link">
         
   
   
@@ -2242,7 +2162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/format/F020/" class="md-nav__link">
+      <a href="../../format/F020/" class="md-nav__link">
         
   
   
@@ -2302,7 +2222,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/looping/" class="md-nav__link ">
+            <a href="../../looping/" class="md-nav__link ">
               
   
   
@@ -2346,7 +2266,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/looping/L001/" class="md-nav__link">
+      <a href="../../looping/L001/" class="md-nav__link">
         
   
   
@@ -2374,7 +2294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/looping/L002/" class="md-nav__link">
+      <a href="../../looping/L002/" class="md-nav__link">
         
   
   
@@ -2402,7 +2322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/looping/L003/" class="md-nav__link">
+      <a href="../../looping/L003/" class="md-nav__link">
         
   
   
@@ -2458,7 +2378,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/pandas/" class="md-nav__link ">
+            <a href="../../pandas/" class="md-nav__link ">
               
   
   
@@ -2502,7 +2422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/pandas/P001/" class="md-nav__link">
+      <a href="../../pandas/P001/" class="md-nav__link">
         
   
   
@@ -2572,7 +2492,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/performance/" class="md-nav__link ">
+            <a href="../../performance/" class="md-nav__link ">
               
   
   
@@ -2616,7 +2536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF001/" class="md-nav__link">
+      <a href="../../performance/PERF001/" class="md-nav__link">
         
   
   
@@ -2644,7 +2564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF002/" class="md-nav__link">
+      <a href="../../performance/PERF002/" class="md-nav__link">
         
   
   
@@ -2672,7 +2592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF003/" class="md-nav__link">
+      <a href="../../performance/PERF003/" class="md-nav__link">
         
   
   
@@ -2700,7 +2620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF004/" class="md-nav__link">
+      <a href="../../performance/PERF004/" class="md-nav__link">
         
   
   
@@ -2728,7 +2648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF005/" class="md-nav__link">
+      <a href="../../performance/PERF005/" class="md-nav__link">
         
   
   
@@ -2756,7 +2676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF006/" class="md-nav__link">
+      <a href="../../performance/PERF006/" class="md-nav__link">
         
   
   
@@ -2784,7 +2704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF007/" class="md-nav__link">
+      <a href="../../performance/PERF007/" class="md-nav__link">
         
   
   
@@ -2812,7 +2732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/performance/PERF008/" class="md-nav__link">
+      <a href="../../performance/PERF008/" class="md-nav__link">
         
   
   
@@ -2845,6 +2765,8 @@
                 
   
   
+    
+  
   
   
     
@@ -2890,15 +2812,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/shuffle/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -2922,7 +2844,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7_8">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2942,7 +2864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S001/" class="md-nav__link">
+      <a href="../S001/" class="md-nav__link">
         
   
   
@@ -2970,7 +2892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S002/" class="md-nav__link">
+      <a href="../S002/" class="md-nav__link">
         
   
   
@@ -2998,7 +2920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S003/" class="md-nav__link">
+      <a href="../S003/" class="md-nav__link">
         
   
   
@@ -3026,7 +2948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S004/" class="md-nav__link">
+      <a href="../S004/" class="md-nav__link">
         
   
   
@@ -3054,7 +2976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S005/" class="md-nav__link">
+      <a href="../S005/" class="md-nav__link">
         
   
   
@@ -3082,7 +3004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S006/" class="md-nav__link">
+      <a href="../S006/" class="md-nav__link">
         
   
   
@@ -3110,7 +3032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S007/" class="md-nav__link">
+      <a href="../S007/" class="md-nav__link">
         
   
   
@@ -3138,7 +3060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S008/" class="md-nav__link">
+      <a href="../S008/" class="md-nav__link">
         
   
   
@@ -3166,7 +3088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S009/" class="md-nav__link">
+      <a href="../S009/" class="md-nav__link">
         
   
   
@@ -3194,7 +3116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S010/" class="md-nav__link">
+      <a href="../S010/" class="md-nav__link">
         
   
   
@@ -3222,7 +3144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S011/" class="md-nav__link">
+      <a href="../S011/" class="md-nav__link">
         
   
   
@@ -3250,7 +3172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S012/" class="md-nav__link">
+      <a href="../S012/" class="md-nav__link">
         
   
   
@@ -3278,7 +3200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S013/" class="md-nav__link">
+      <a href="../S013/" class="md-nav__link">
         
   
   
@@ -3306,7 +3228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S014/" class="md-nav__link">
+      <a href="../S014/" class="md-nav__link">
         
   
   
@@ -3334,7 +3256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/shuffle/S015/" class="md-nav__link">
+      <a href="../S015/" class="md-nav__link">
         
   
   
@@ -3359,10 +3281,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../rules/shuffle/S016/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S016
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3378,6 +3327,87 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#severity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Severity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3430,7 +3460,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../rules/udf/" class="md-nav__link ">
+            <a href="../../udf/" class="md-nav__link ">
               
   
   
@@ -3474,7 +3504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U001/" class="md-nav__link">
+      <a href="../../udf/U001/" class="md-nav__link">
         
   
   
@@ -3502,7 +3532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U002/" class="md-nav__link">
+      <a href="../../udf/U002/" class="md-nav__link">
         
   
   
@@ -3530,7 +3560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U003/" class="md-nav__link">
+      <a href="../../udf/U003/" class="md-nav__link">
         
   
   
@@ -3558,7 +3588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U004/" class="md-nav__link">
+      <a href="../../udf/U004/" class="md-nav__link">
         
   
   
@@ -3586,7 +3616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U005/" class="md-nav__link">
+      <a href="../../udf/U005/" class="md-nav__link">
         
   
   
@@ -3614,7 +3644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U006/" class="md-nav__link">
+      <a href="../../udf/U006/" class="md-nav__link">
         
   
   
@@ -3642,7 +3672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/udf/U007/" class="md-nav__link">
+      <a href="../../udf/U007/" class="md-nav__link">
         
   
   
@@ -3742,7 +3772,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/versioning/" class="md-nav__link">
+      <a href="../../../contributing/versioning/" class="md-nav__link">
         
   
   
@@ -3770,7 +3800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/adding-a-rule/" class="md-nav__link">
+      <a href="../../../contributing/adding-a-rule/" class="md-nav__link">
         
   
   
@@ -3798,7 +3828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/commit-messages/" class="md-nav__link">
+      <a href="../../../contributing/commit-messages/" class="md-nav__link">
         
   
   
@@ -3881,10 +3911,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
+  <a href="#severity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Description
+        Severity
       
     </span>
   </a>
@@ -3892,6 +3922,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pyspark-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PySpark version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Information
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3901,15 +3965,9 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notes
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3933,29 +3991,61 @@
   
 
 
-<h1 id="distinct_threshold">distinct_threshold</h1>
-<p><strong>Type:</strong> <code>int</code>
-<strong>Default:</strong> <code>5</code></p>
-<hr />
-<h2 id="description">Description</h2>
-<p>Controls when rule <a href="../../rules/shuffle/S004/">S004</a> fires. S004 flags files that contain too many <code>.distinct()</code> calls, since each call triggers a full shuffle.</p>
-<p>The threshold is a <strong>weighted count</strong> across the whole file — a <code>.distinct()</code> inside a loop counts more than one at the top level. When the weighted total exceeds <code>distinct_threshold</code>, all <code>.distinct()</code> call sites in the file are reported.</p>
-<hr />
-<h2 id="example">Example</h2>
-<div class="language-toml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">[tool.pyspark-antipattern]</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># Allow up to 3 distinct() calls before flagging</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">distinct_threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<h1 id="rule-s016">Rule S016</h1>
+<p><code>first()</code> or <code>last()</code> with <code>.over(Window.partitionBy(...))</code> without <code>orderBy()</code> — non-deterministic result</p>
+<h2 id="severity">Severity</h2>
+<p>🟡 <strong>MEDIUM</strong> — Non-deterministic results across runs.</p>
+<h2 id="pyspark-version">PySpark version</h2>
+<p>Compatible with <strong>PySpark 1.4</strong> and later.</p>
+<h2 id="information">Information</h2>
+<p>Using <code>first()</code> or <code>last()</code> as window functions with a <code>Window.partitionBy(...)</code> that has no <code>orderBy()</code> is <strong>non-deterministic</strong>. Without an explicit ordering inside the window specification, the "first" or "last" row within each partition is undefined and depends on how Spark distributes data across executors.</p>
+<p>Just like with <code>groupBy().agg()</code>, each shuffle redistributes rows differently. Without ordering in the window spec, <code>first()</code> and <code>last()</code> return arbitrary values that <strong>can change between runs</strong>, even on the same cluster with the same data.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Run 1 — Window partition &quot;user_1&quot;       Run 2 — Window partition &quot;user_1&quot;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>┌─────────────┐                         ┌─────────────┐
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│  row A  &lt;── first()                   │  row C  &lt;── first()
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  row B                                │  row A
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  row C                                │  row B
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>└─────────────┘                         └─────────────┘
 </span></code></pre></div>
-<hr />
-<h2 id="notes">Notes</h2>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Setting <code>distinct_threshold = 0</code> effectively flags any file that contains even a single <code>.distinct()</code> call.</p>
-</div>
+<p>This leads to:</p>
 <ul>
-<li>To silence S004 entirely, add it to <code>ignore_rules</code> rather than setting a very high threshold</li>
-<li>Related rule: <a href="../../rules/shuffle/S003/">S003</a> — flags <code>.groupBy()</code> directly followed by <code>.distinct()</code></li>
+<li><strong>Silent correctness bugs</strong> — different results each run without any error</li>
+<li><strong>Unreproducible analytics</strong> — dashboards and reports that shift between runs</li>
+<li><strong>Hard-to-debug issues</strong> — non-determinism only manifests at scale</li>
 </ul>
+<h2 id="best-practices">Best practices</h2>
+<ul>
+<li>Always include <code>orderBy()</code> in the Window specification when using <code>first()</code> or <code>last()</code></li>
+<li>Alternatively, replace <code>first()</code> / <code>last()</code> with a deterministic function such as <code>min()</code> or <code>max()</code></li>
+</ul>
+<p><strong>Rule of thumb:</strong> Never use <code>first()</code> or <code>last()</code> with a window that only has <code>partitionBy()</code> — always add <code>orderBy()</code> to the window spec.</p>
+<h3 id="example">Example</h3>
+<p>Bad:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Non-deterministic: no ordering in the window spec</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">w</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;first_email&quot;</span><span class="p">,</span> <span class="n">first</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Inline window spec without orderBy</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)))</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># F-qualified calls are also flagged</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;last_login&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="s2">&quot;login_date&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)))</span>
+</span></code></pre></div></p>
+<p>Good:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql.window</span><span class="w"> </span><span class="kn">import</span> <span class="n">Window</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Deterministic: orderBy in the window spec</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">w</span> <span class="o">=</span> <span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;first_email&quot;</span><span class="p">,</span> <span class="n">first</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Inline with orderBy</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">)))</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Use a deterministic aggregate instead</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;min_email&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">over</span><span class="p">(</span><span class="n">Window</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)))</span>
+</span></code></pre></div></p>
 
 
 
@@ -4011,10 +4101,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.top", "navigation.instant", "content.code.copy", "content.code.annotate", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.indexes", "navigation.top", "navigation.instant", "content.code.copy", "content.code.annotate", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

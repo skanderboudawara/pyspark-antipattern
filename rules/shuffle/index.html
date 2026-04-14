@@ -2804,6 +2804,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -3232,6 +3236,62 @@
     
   
     S014
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="S015/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S015
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="S016/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S016
   
 
     
@@ -3819,6 +3879,14 @@
 <tr>
 <td><a href="S014/">S014</a></td>
 <td><code>.distinct()</code> or <code>.dropDuplicates()</code> called before <code>.groupBy()</code> — redundant shuffle</td>
+</tr>
+<tr>
+<td><a href="S015/">S015</a></td>
+<td><code>first()</code> or <code>last()</code> inside <code>.agg()</code> without <code>orderBy()</code> after <code>.agg()</code> — non-deterministic result</td>
+</tr>
+<tr>
+<td><a href="S016/">S016</a></td>
+<td><code>first()</code> or <code>last()</code> with <code>.over(Window.partitionBy())</code> without <code>orderBy()</code> — non-deterministic result</td>
 </tr>
 </tbody>
 </table>
